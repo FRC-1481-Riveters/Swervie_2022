@@ -4,20 +4,27 @@
 
 package frc.robot;
 
-import edu.wpi.first.wpilibj.GenericHID;
-import edu.wpi.first.wpilibj.XboxController;
 //import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 //import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 //import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.button.Button;
+//import edu.wpi.first.wpilibj2.command.button.Button;
 import frc.robot.commands.DriveCommand;
+import util.AutonomousChooser;
+import util.AutonomousTrajectories;
 import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ClimbSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.commands.AutonMacroPlayback;
 import frc.robot.commands.AutonMacroRecord;
+import common.math.Rotation2;
+import common.math.Vector2;
+import common.robot.input.Axis;
+import common.robot.input.DPadButton;
+import common.robot.input.XboxController;
+import java.io.IOException;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -35,6 +42,9 @@ public class RobotContainer {
   private final XboxController m_controller = new XboxController(0);
   private final XboxController m_operatorController = new XboxController(1);
 
+  private AutonomousTrajectories autonomousTrajectories;
+  private final AutonomousChooser autonomousChooser;
+
   private double joystickDivider = 1.5;
 
   private final Command AutonPlayback =
@@ -49,18 +59,41 @@ public class RobotContainer {
     // Left stick Y axis -> forward and backwards movement
     // Left stick X axis -> left and right movement
     // Right stick X axis -> rotation
-    m_drivetrainSubsystem.setDefaultCommand(new DriveCommand(
-            m_drivetrainSubsystem,
-            () -> -modifyAxis(m_controller.getLeftY() / joystickDivider) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
-            () -> -modifyAxis(m_controller.getLeftX() / joystickDivider) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
-            () -> -modifyAxis(m_controller.getRightX() / joystickDivider) * DrivetrainSubsystem.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
-    ));
+    try {
+      autonomousTrajectories = new AutonomousTrajectories(DrivetrainSubsystem.TRAJECTORY_CONSTRAINTS);
+  } catch (IOException e) {
+      e.printStackTrace();
+  }
+  autonomousChooser = new AutonomousChooser(autonomousTrajectories);
+
+  m_controller.getLeftXAxis().setInverted(true);
+  m_controller.getRightXAxis().setInverted(true);
+
+    CommandScheduler.getInstance().registerSubsystem(m_drivetrainSubsystem);
+    CommandScheduler.getInstance().setDefaultCommand(m_drivetrainSubsystem, new DriveCommand(m_drivetrainSubsystem, getDriveForwardAxis(), getDriveStrafeAxis(), getDriveRotationAxis()));
 
     // Configure the button bindings
     configureButtonBindings();
   }
 
-  /**
+  public DrivetrainSubsystem getDrivetrainSubsystem()
+  {
+    return m_drivetrainSubsystem;
+  }
+
+  private double getDriveForwardAxis() {
+    return m_controller.getLeftYAxis().get(true) / joystickDivider;
+}
+
+private double getDriveStrafeAxis() {
+    return m_controller.getLeftXAxis().get(true) / joystickDivider;
+}
+
+private double getDriveRotationAxis() {
+    return m_controller.getRightXAxis().get(true);
+}
+
+/**
    * Use this method to define your button->command mappings. Buttons can be created by
    * instantiating a {@link GenericHID} or one of its subclasses ({@link
    * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then passing it to a {@link
@@ -68,18 +101,17 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
     // Back button zeros the gyroscope
-    new Button(m_controller::getBackButton)
-            // No requirements because we don't need to interrupt anything
-            .whenPressed(m_drivetrainSubsystem::zeroGyroscope);
+    m_controller.getBackButton().whenPressed(
+      () -> m_drivetrainSubsystem.resetGyroAngle(Rotation2.ZERO) );
 
-    new Button(m_controller::getStartButton)
-            .whenPressed( new AutonMacroRecord( "/home/lvuser/autonpath.csv", m_drivetrainSubsystem) );
+    m_controller.getStartButton().whenPressed(
+      new AutonMacroRecord( "/home/lvuser/autonpath.csv", m_drivetrainSubsystem) );
 
   }
 
   public void checkBumper()
   {
-    if(m_controller.getRightBumper()){
+    if(m_controller.getRightBumperButton().get()){
       joystickDivider = 1.0;
     }else{
       joystickDivider = 1.5;
@@ -87,7 +119,7 @@ public class RobotContainer {
   }
 
   public void controlIntake(){
-    m_intakeSubsystem.setIntakeSpeed(m_operatorController.getRightY() / 1.4);
+    m_intakeSubsystem.setIntakeSpeed(m_operatorController.getRightYAxis().get() / 1.4);
   }
 
   public void controlClimb(){
@@ -95,10 +127,10 @@ public class RobotContainer {
     double climb10Speed;
     double climb15Speed;
 
-    if(m_operatorController.getLeftBumper()==true){
+    if(m_operatorController.getLeftBumperButton().getAsBoolean()==true){
       climb6Speed=0.3;
     }
-    else if(m_operatorController.getLeftTriggerAxis()>=0.5){
+    else if(m_operatorController.getLeftTriggerAxis().get()>=0.5){
       climb6Speed=-0.3;
     }
     else{
@@ -106,20 +138,20 @@ public class RobotContainer {
     }
 
 
-    if(m_operatorController.getRightBumper()==true){
+    if(m_operatorController.getRightBumperButton().getAsBoolean()==true){
       climb10Speed=0.3;
     }
-    else if(m_operatorController.getRightTriggerAxis()>=0.5){
+    else if(m_operatorController.getRightTriggerAxis().get()>=0.5){
       climb10Speed=-0.3;
     }
     else{
       climb10Speed=0;
     }
 
-    if(m_operatorController.getYButton()){
+    if(m_operatorController.getYButton().getAsBoolean()){
       climb15Speed=0.3;
     }
-    else if(m_operatorController.getAButton()){
+    else if(m_operatorController.getAButton().getAsBoolean()){
       climb15Speed=-0.3;
     }
     else{
@@ -132,22 +164,22 @@ public class RobotContainer {
 
 public void shooterYeet(){
   /*High A goal*/
-  if(m_controller.getYButton()){
+  if(m_controller.getYButton().getAsBoolean()){
     m_shooterSubsystem.setYeetSpeed(0.6);
   }/*Low A goal*/
-  else if(m_controller.getXButton()){
+  else if(m_controller.getXButton().getAsBoolean()){
     m_shooterSubsystem.setYeetSpeed(0.2);
   }/*B goal*/
-  else if(m_controller.getBButton()){
+  else if(m_controller.getBButton().getAsBoolean()){
     m_shooterSubsystem.setYeetSpeed(0.8);
   }/*C goal*/
-  else if(m_controller.getAButton()){
+  else if(m_controller.getAButton().getAsBoolean()){
     m_shooterSubsystem.setYeetSpeed(1.0);
   }
 }
 
 public void kickerPunt(){
-  m_shooterSubsystem.setKickerSpeed(m_operatorController.getLeftY());
+  m_shooterSubsystem.setKickerSpeed(m_operatorController.getLeftYAxis().get());
 }
 
   /**
@@ -160,25 +192,4 @@ public void kickerPunt(){
     return AutonPlayback;
   }
 
-  private static double deadband(double value, double deadband) {
-    if (Math.abs(value) > deadband) {
-      if (value > 0.0) {
-        return (value - deadband) / (1.0 - deadband);
-      } else {
-        return (value + deadband) / (1.0 - deadband);
-      }
-    } else {
-      return 0.0;
-    }
-  }
-
-  private static double modifyAxis(double value) {
-    // Deadband
-    value = deadband(value, 0.1);
-
-    // Square the axis
-    value = Math.copySign(value * value, value);
-
-    return value;
-  }
 }

@@ -9,21 +9,31 @@ import edu.wpi.first.wpilibj.SPI;
 //import com.ctre.phoenix.sensors.PigeonIMU;
 import com.swervedrivespecialties.swervelib.Mk3SwerveModuleHelper;
 import com.swervedrivespecialties.swervelib.SwerveModule;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
-import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
-import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.Subsystem;
+
+import common.control.*;
+import common.robot.drivers.NavX;
+import common.kinematics.ChassisVelocity;
+import common.kinematics.SwerveKinematics;
+import common.kinematics.SwerveOdometry;
+import common.math.RigidTransform2;
+import common.math.Rotation2;
+import common.math.Vector2;
+import common.robot.UpdateManager;
+import common.util.*;
+
+import java.util.Optional;
 
 import static frc.robot.Constants.*;
 
-public class DrivetrainSubsystem extends SubsystemBase {
+public class DrivetrainSubsystem implements Subsystem, UpdateManager.Updatable {
   /**
    * The maximum voltage that will be delivered to the drive motors.
    * <p>
@@ -45,21 +55,73 @@ public class DrivetrainSubsystem extends SubsystemBase {
   public static final double MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND = MAX_VELOCITY_METERS_PER_SECOND /
           Math.hypot(DRIVETRAIN_TRACKWIDTH_METERS / 2.0, DRIVETRAIN_WHEELBASE_METERS / 2.0);
 
-  private final SwerveDriveKinematics kinematics = new SwerveDriveKinematics(
-          // Front left
-          new Translation2d(DRIVETRAIN_TRACKWIDTH_METERS / 2.0, DRIVETRAIN_WHEELBASE_METERS / 2.0),
-          // Front right
-          new Translation2d(DRIVETRAIN_TRACKWIDTH_METERS / 2.0, -DRIVETRAIN_WHEELBASE_METERS / 2.0),
-          // Back left
-          new Translation2d(-DRIVETRAIN_TRACKWIDTH_METERS / 2.0, DRIVETRAIN_WHEELBASE_METERS / 2.0),
-          // Back right
-          new Translation2d(-DRIVETRAIN_TRACKWIDTH_METERS / 2.0, -DRIVETRAIN_WHEELBASE_METERS / 2.0)
+  public static final DrivetrainFeedforwardConstants FEEDFORWARD_CONSTANTS = new DrivetrainFeedforwardConstants(
+        0.042746,
+        0.0032181,
+        0.30764
   );
 
+  public static final TrajectoryConstraint[] TRAJECTORY_CONSTRAINTS = {
+        new FeedforwardConstraint(11.0, FEEDFORWARD_CONSTANTS.getVelocityConstant(), FEEDFORWARD_CONSTANTS.getAccelerationConstant(), false),
+        new MaxAccelerationConstraint(12.5 * 12.0),
+        new CentripetalAccelerationConstraint(15 * 12.0)
+  };
+
+  private static final int MAX_LATENCY_COMPENSATION_MAP_ENTRIES = 25;
+
+  private final HolonomicMotionProfiledTrajectoryFollower follower = new HolonomicMotionProfiledTrajectoryFollower(
+    new PidConstants(0.4, 0.0, 0.025),
+    new PidConstants(5.0, 0.0, 0.0),
+    new HolonomicFeedforward(FEEDFORWARD_CONSTANTS)
+  );
+
+  private final SwerveKinematics swerveKinematics = new SwerveKinematics(
+        new Vector2(DRIVETRAIN_TRACKWIDTH_METERS / 2.0, DRIVETRAIN_WHEELBASE_METERS / 2.0),        //front left
+        new Vector2(DRIVETRAIN_TRACKWIDTH_METERS / 2.0, -DRIVETRAIN_WHEELBASE_METERS / 2.0),       //front right
+        new Vector2(-DRIVETRAIN_TRACKWIDTH_METERS / 2.0, DRIVETRAIN_WHEELBASE_METERS / 2.0),       //back left
+        new Vector2(-DRIVETRAIN_TRACKWIDTH_METERS / 2.0, -DRIVETRAIN_WHEELBASE_METERS / 2.0)       //back right
+);
+
+private final SwerveDriveKinematics wpi_driveKinematics = new SwerveDriveKinematics(
+        // Front left
+        new Translation2d(DRIVETRAIN_TRACKWIDTH_METERS / 2.0, DRIVETRAIN_WHEELBASE_METERS / 2.0),
+        // Front right
+        new Translation2d(DRIVETRAIN_TRACKWIDTH_METERS / 2.0, DRIVETRAIN_WHEELBASE_METERS / 2.0),
+        // Back left
+        new Translation2d(-DRIVETRAIN_TRACKWIDTH_METERS / 2.0, -DRIVETRAIN_WHEELBASE_METERS / 2.0),
+        // Back right
+        new Translation2d(-DRIVETRAIN_TRACKWIDTH_METERS / 2.0, -DRIVETRAIN_WHEELBASE_METERS / 2.0)
+  );
+
+  private final SwerveModule[] modules;
+
+  private final Object sensorLock = new Object();
+  //@GuardedBy("sensorLock")
   // By default we use a Pigeon for our gyroscope. But if you use another gyroscope, like a NavX, you can change this.
   // The important thing about how you configure your gyroscope is that rotating the robot counter-clockwise should
   // cause the angle reading to increase until it wraps back over to zero.
-  private final AHRS gyroscope = new AHRS(SPI.Port.kMXP, (byte) 200); // NavX connected over MXP
+  private final NavX gyroscope = new NavX(SPI.Port.kMXP, (byte) 200); // NavX connected over MXP
+
+  private final Object kinematicsLock = new Object();
+  //@GuardedBy("kinematicsLock")
+  private final SwerveOdometry swerveOdometry = new SwerveOdometry(swerveKinematics, RigidTransform2.ZERO);
+  //@GuardedBy("kinematicsLock")
+  private RigidTransform2 pose = RigidTransform2.ZERO;
+  //@GuardedBy("kinematicsLock")
+  private final InterpolatingTreeMap<InterpolatingDouble, RigidTransform2> latencyCompensationMap = new InterpolatingTreeMap<>();
+  //@GuardedBy("kinematicsLock")
+  private Vector2 velocity = Vector2.ZERO;
+  //@GuardedBy("kinematicsLock")
+  private double angularVelocity = 0.0;
+
+  private final Object stateLock = new Object();
+  //@GuardedBy("stateLock")
+  private HolonomicDriveSignal driveSignal = null;
+
+  // Logging
+  private final NetworkTableEntry odometryXEntry;
+  private final NetworkTableEntry odometryYEntry;
+  private final NetworkTableEntry odometryAngleEntry;
 
   // These are our modules. We initialize them in the constructor.
   public final SwerveModule frontLeftModule;
@@ -67,11 +129,10 @@ public class DrivetrainSubsystem extends SubsystemBase {
   public final SwerveModule backLeftModule;
   public final SwerveModule backRightModule;
 
-  private final SwerveDriveOdometry odometry = new SwerveDriveOdometry(kinematics, Rotation2d.fromDegrees(gyroscope.getFusedHeading()));
-
-  private ChassisSpeeds chassisSpeeds = new ChassisSpeeds(0.0, 0.0, 0.0);
-
   public DrivetrainSubsystem() {
+        synchronized (sensorLock) {
+                gyroscope.setInverted(false);
+            }
         ShuffleboardTab shuffleboardTab = Shuffleboard.getTab("Drivetrain");
 
         frontLeftModule = Mk3SwerveModuleHelper.createFalcon500(
@@ -118,45 +179,201 @@ public class DrivetrainSubsystem extends SubsystemBase {
                 BACK_RIGHT_MODULE_STEER_OFFSET
         );
 
-        shuffleboardTab.addNumber("Gyroscope Angle", () -> getRotation().getDegrees());
-        shuffleboardTab.addNumber("Pose X", () -> odometry.getPoseMeters().getX());
-        shuffleboardTab.addNumber("Pose Y", () -> odometry.getPoseMeters().getY());
+        modules = new SwerveModule[]{frontLeftModule, frontRightModule, backLeftModule, backRightModule};
 
-  }
+        odometryXEntry = shuffleboardTab.add("X", 0.0)
+                .withPosition(0, 0)
+                .withSize(1, 1)
+                .getEntry();
+        odometryYEntry = shuffleboardTab.add("Y", 0.0)
+                .withPosition(0, 1)
+                .withSize(1, 1)
+                .getEntry();
+        odometryAngleEntry = shuffleboardTab.add("Angle", 0.0)
+                .withPosition(0, 2)
+                .withSize(1, 1)
+                .getEntry();
+        shuffleboardTab.addNumber("Trajectory X", () -> {
+                if (follower.getLastState() == null) {
+                        return 0.0;
+                }
+                return follower.getLastState().getPathState().getPosition().x;
+                })
+                .withPosition(1, 0)
+                .withSize(1, 1);
+        shuffleboardTab.addNumber("Trajectory Y", () -> {
+                if (follower.getLastState() == null) {
+                        return 0.0;
+                }
+                return follower.getLastState().getPathState().getPosition().y;
+                })
+                .withPosition(1, 1)
+                .withSize(1, 1);
 
-  /**
-   * Sets the gyroscope angle to zero. This can be used to set the direction the robot is currently facing to the
-   * 'forwards' direction.
-   */
-  public void zeroGyroscope() {
-        odometry.resetPosition(
-                new Pose2d(odometry.getPoseMeters().getTranslation(), Rotation2d.fromDegrees(0.0)),
-                Rotation2d.fromDegrees(gyroscope.getFusedHeading())
+        shuffleboardTab.addNumber("Rotation Voltage", () -> {
+        HolonomicDriveSignal signal;
+        synchronized (stateLock) {
+                signal = driveSignal;
+        }
+
+        if (signal == null) {
+                return 0.0;
+        }
+
+        return signal.getRotation() * RobotController.getBatteryVoltage();
+        });
+
+        shuffleboardTab.addNumber("Average Velocity", this::getAverageAbsoluteValueVelocity);
+
+}
+
+public RigidTransform2 getPose() {
+        synchronized (kinematicsLock) {
+            return pose;
+        }
+    }
+
+    public Vector2 getVelocity() {
+        synchronized (kinematicsLock) {
+            return velocity;
+        }
+    }
+
+    public double getAngularVelocity() {
+        synchronized (kinematicsLock) {
+            return angularVelocity;
+        }
+    }
+
+    public void drive(Vector2 translationalVelocity, double rotationalVelocity, boolean isFieldOriented) {
+        synchronized (stateLock) {
+            driveSignal = new HolonomicDriveSignal(translationalVelocity, rotationalVelocity, isFieldOriented);
+        }
+    }
+
+    public void resetPose(RigidTransform2 pose) {
+        synchronized (kinematicsLock) {
+            this.pose = pose;
+            swerveOdometry.resetPose(pose);
+        }
+    }
+
+    public void resetGyroAngle(Rotation2 angle) {
+        synchronized (sensorLock) {
+            gyroscope.setAdjustmentAngle(
+                    gyroscope.getUnadjustedAngle().rotateBy(angle.inverse())
+            );
+        }
+    }
+
+    public double getAverageAbsoluteValueVelocity() {
+        double averageVelocity = 0;
+        for (var module : modules) {
+            averageVelocity += Math.abs(module.getDriveVelocity());
+        }
+        return averageVelocity / 4;
+    }
+
+    private void updateOdometry(double time, double dt) {
+        Vector2[] moduleVelocities = new Vector2[modules.length];
+        for (int i = 0; i < modules.length; i++) {
+            var module = modules[i];
+
+            moduleVelocities[i] = Vector2.fromAngle(Rotation2.fromRadians(module.getSteerAngle())).scale(module.getDriveVelocity() * 39.37008);
+        }
+
+        Rotation2 angle;
+        double angularVelocity;
+        synchronized (sensorLock) {
+            angle = gyroscope.getAngle();
+            angularVelocity = gyroscope.getRate();
+        }
+
+        ChassisVelocity velocity = swerveKinematics.toChassisVelocity(moduleVelocities);
+
+        synchronized (kinematicsLock) {
+
+            this.pose = swerveOdometry.update(angle, dt, moduleVelocities);
+            if (latencyCompensationMap.size() > MAX_LATENCY_COMPENSATION_MAP_ENTRIES) {
+                latencyCompensationMap.remove(latencyCompensationMap.firstKey());
+            }
+            latencyCompensationMap.put(new InterpolatingDouble(time), pose);
+            this.velocity = velocity.getTranslationalVelocity();
+            this.angularVelocity = angularVelocity;
+        }
+    }
+
+    private void updateModules(HolonomicDriveSignal driveSignal, double dt) {
+        ChassisVelocity chassisVelocity;
+        if (driveSignal == null) {
+            chassisVelocity = new ChassisVelocity(Vector2.ZERO, 0.0);
+        } else if (driveSignal.isFieldOriented()) {
+            chassisVelocity = new ChassisVelocity(
+                    driveSignal.getTranslation().rotateBy(getPose().rotation.inverse()),
+                    driveSignal.getRotation()
+            );
+        } else {
+            chassisVelocity = new ChassisVelocity(
+                    driveSignal.getTranslation(),
+                    driveSignal.getRotation()
+            );
+        }
+
+        Vector2[] moduleOutputs = swerveKinematics.toModuleVelocities(chassisVelocity);
+        SwerveKinematics.normalizeModuleVelocities(moduleOutputs, 1);
+        for (int i = 0; i < moduleOutputs.length; i++) {
+            var module = modules[i];
+            module.set(moduleOutputs[i].length * 12.0, moduleOutputs[i].getAngle().toRadians());
+        }
+    }
+
+    public RigidTransform2 getPoseAtTime(double timestamp) {
+        synchronized (kinematicsLock) {
+            if (latencyCompensationMap.isEmpty()) {
+                return RigidTransform2.ZERO;
+            }
+            return latencyCompensationMap.getInterpolated(new InterpolatingDouble(timestamp));
+        }
+    }
+
+    @Override
+    public void update(double time, double dt) {
+        updateOdometry(time, dt);
+
+        HolonomicDriveSignal driveSignal;
+        Optional<HolonomicDriveSignal> trajectorySignal = follower.update(
+                getPose(),
+                getVelocity(),
+                getAngularVelocity(),
+                time,
+                dt
         );
-  }
+        if (trajectorySignal.isPresent()) {
+            driveSignal = trajectorySignal.get();
+            driveSignal = new HolonomicDriveSignal(
+                    driveSignal.getTranslation().scale(1.0 / RobotController.getBatteryVoltage()),
+                    driveSignal.getRotation() / RobotController.getBatteryVoltage(),
+                    driveSignal.isFieldOriented()
+            );
+        } else {
+            synchronized (stateLock) {
+                driveSignal = this.driveSignal;
+            }
+        }
 
-  public Rotation2d getRotation() {
-        return odometry.getPoseMeters().getRotation();
-  }
+        updateModules(driveSignal, dt);
+    }
 
-  public void drive(ChassisSpeeds chassisSpeeds) {
-    this.chassisSpeeds = chassisSpeeds;
-  }
+    @Override
+    public void periodic() {
+        RigidTransform2 pose = getPose();
+        odometryXEntry.setDouble(pose.translation.x);
+        odometryYEntry.setDouble(pose.translation.y);
+        odometryAngleEntry.setDouble(getPose().rotation.toDegrees());
+    }
 
-  @Override
-  public void periodic() {
-        odometry.update(Rotation2d.fromDegrees(gyroscope.getFusedHeading()),
-                new SwerveModuleState(frontLeftModule.getDriveVelocity(), new Rotation2d(frontLeftModule.getSteerAngle())),
-                new SwerveModuleState(frontRightModule.getDriveVelocity(), new Rotation2d(frontRightModule.getSteerAngle())),
-                new SwerveModuleState(backLeftModule.getDriveVelocity(), new Rotation2d(backLeftModule.getSteerAngle())),
-                new SwerveModuleState(backRightModule.getDriveVelocity(), new Rotation2d(backRightModule.getSteerAngle()))
-        );
+    public HolonomicMotionProfiledTrajectoryFollower getFollower() {
+        return follower;
+    }
 
-        SwerveModuleState[] states = kinematics.toSwerveModuleStates(chassisSpeeds);
-
-        frontLeftModule.set(states[0].speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE, states[0].angle.getRadians());
-        frontRightModule.set(states[1].speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE, states[1].angle.getRadians());
-        backLeftModule.set(states[2].speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE, states[2].angle.getRadians());
-        backRightModule.set(states[3].speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE, states[3].angle.getRadians());
-  }
 }
