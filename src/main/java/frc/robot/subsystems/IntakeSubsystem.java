@@ -8,9 +8,9 @@ import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import static frc.robot.Constants.*;
 
 public class IntakeSubsystem extends SubsystemBase {
-    TalonSRX m_intakeMotor = new TalonSRX(INTAKE_MOTOR); 
+    //TalonSRX m_intakeMotor = new TalonSRX(INTAKE_MOTOR); 
 
     public void setIntakeSpeed(double value){
-        m_intakeMotor.set(ControlMode.PercentOutput, value);
+        //m_intakeMotor.set(ControlMode.PercentOutput, value);
     }
 }

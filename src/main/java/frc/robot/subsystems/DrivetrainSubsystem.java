@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.Subsystem;
+import edu.wpi.first.wpilibj.Timer;
 
 import common.control.*;
 import common.robot.drivers.NavX;
@@ -364,12 +365,18 @@ public RigidTransform2 getPose() {
         updateModules(driveSignal, dt);
     }
 
+    private double lastTimestamp = 0.0;
+
     @Override
     public void periodic() {
         RigidTransform2 pose = getPose();
         odometryXEntry.setDouble(pose.translation.x);
         odometryYEntry.setDouble(pose.translation.y);
         odometryAngleEntry.setDouble(getPose().rotation.toDegrees());
+        final double timestamp = Timer.getFPGATimestamp();
+        final double dt = timestamp - lastTimestamp;
+        lastTimestamp = timestamp;
+        update(timestamp, dt);
     }
 
     public HolonomicMotionProfiledTrajectoryFollower getFollower() {

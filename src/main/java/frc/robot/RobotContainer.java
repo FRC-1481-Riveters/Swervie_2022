@@ -81,16 +81,16 @@ public class RobotContainer {
     return m_drivetrainSubsystem;
   }
 
-  private double getDriveForwardAxis() {
-    return m_controller.getLeftYAxis().get(true) / joystickDivider;
+private Axis getDriveForwardAxis() {
+    return m_controller.getLeftYAxis();
 }
 
-private double getDriveStrafeAxis() {
-    return m_controller.getLeftXAxis().get(true) / joystickDivider;
+private Axis getDriveStrafeAxis() {
+    return m_controller.getLeftXAxis();
 }
 
-private double getDriveRotationAxis() {
-    return m_controller.getRightXAxis().get(true);
+private Axis getDriveRotationAxis() {
+    return m_controller.getRightXAxis();
 }
 
 /**
