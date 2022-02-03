@@ -10,7 +10,9 @@ import static frc.robot.Constants.*;
 
 public class ClimbSubsystem extends SubsystemBase 
 {
-    /*TalonSRX m_climb6Motor = new TalonSRX(CLIMB_6_MOTOR); 
+    /*
+    FIXME: enable these when ready
+    TalonSRX m_climb6Motor = new TalonSRX(CLIMB_6_MOTOR); 
     TalonSRX m_climb10Motor = new TalonSRX(CLIMB_10_MOTOR); 
     TalonSRX m_climb15Motor = new TalonSRX(CLIMB_15_MOTOR); 
     CANCoder m_climb6Encoder = new  CANCoder(CLIMB_6_ENCODER);

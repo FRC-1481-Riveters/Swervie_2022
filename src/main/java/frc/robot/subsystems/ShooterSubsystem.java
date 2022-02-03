@@ -9,8 +9,11 @@ import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import static frc.robot.Constants.*;
 
 public class ShooterSubsystem extends SubsystemBase{
-    //private CANSparkMax m_yeetMotor = new CANSparkMax(YEET_MOTOR, MotorType.kBrushless);
-    //TalonSRX m_kickerMotor = new TalonSRX(KICKER_MOTOR);
+    /*
+    FIXME: enable this when ready
+    private CANSparkMax m_yeetMotor = new CANSparkMax(YEET_MOTOR, MotorType.kBrushless);
+    TalonSRX m_kickerMotor = new TalonSRX(KICKER_MOTOR);
+    */
 
     public void setYeetSpeed (double value){
         //m_yeetMotor.set(value);
