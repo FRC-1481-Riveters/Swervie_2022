@@ -4,7 +4,7 @@ import edu.wpi.first.wpilibj2.command.button.Button;
 import common.robot.Utilities;
 
 public abstract class Axis {
-	public static final double DEADBAND = 0.06;
+	public static final double DEADBAND = 0.1;
 
 	private boolean inverted = false;
 	private double scale = 1.0;

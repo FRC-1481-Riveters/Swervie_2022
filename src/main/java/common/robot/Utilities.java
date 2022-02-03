@@ -2,11 +2,25 @@ package common.robot;
 
 public class Utilities {
 	public static double deadband(double input) {
-		return deadband(input, 0.025);
+		return deadband(input, 0.1);
 	}
 
 	public static double deadband(double input, double buffer) {
-		if (Math.abs(input) < buffer) return 0;
-		return input;
+		double result=0;
+		if( input >= 0 )
+		{
+			if( input > buffer )
+			{
+				input = input - buffer;
+				result = input *  (1 - buffer);
+			}
+		}
+		else
+		if( input < -buffer )
+		{
+			input = input + buffer;
+			result = input *  (1 - buffer);
+		}
+		return result;
 	}
 }

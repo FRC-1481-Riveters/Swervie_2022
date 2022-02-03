@@ -48,7 +48,7 @@ public class MacroRecorder {
 	{
 		double convert_voltage;
 		
-		convert_voltage = m_drivetrain.MAX_VOLTAGE * m_drivetrain.MAX_VELOCITY_METERS_PER_SECOND;
+		convert_voltage = m_drivetrain.MAX_VOLTAGE * m_drivetrain.MAX_VELOCITY_INCHES_PER_SECOND;
 
 		if(writer != null)
 		{

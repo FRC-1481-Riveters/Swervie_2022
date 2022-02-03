@@ -52,47 +52,36 @@ public class DrivetrainSubsystem implements Subsystem, UpdateManager.Updatable {
    * <p>
    * This is a measure of how fast the robot should be able to drive in a straight line.
    */
-  public static final double MAX_VELOCITY_METERS_PER_SECOND = 4.14528;
-  public static final double MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND = MAX_VELOCITY_METERS_PER_SECOND /
-          Math.hypot(DRIVETRAIN_TRACKWIDTH_METERS / 2.0, DRIVETRAIN_WHEELBASE_METERS / 2.0);
+  public static final double MAX_VELOCITY_INCHES_PER_SECOND = 120;
+  public static final double MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND = MAX_VELOCITY_INCHES_PER_SECOND /
+          Math.hypot(DRIVETRAIN_TRACKWIDTH_INCHES / 2.0, DRIVETRAIN_WHEELBASE_INCHES / 2.0);
 
   public static final DrivetrainFeedforwardConstants FEEDFORWARD_CONSTANTS = new DrivetrainFeedforwardConstants(
-        0.042746,
-        0.0032181,
-        0.30764
+        1.0/(10.0*12.0),
+        0,
+        0
   );
 
   public static final TrajectoryConstraint[] TRAJECTORY_CONSTRAINTS = {
         new FeedforwardConstraint(11.0, FEEDFORWARD_CONSTANTS.getVelocityConstant(), FEEDFORWARD_CONSTANTS.getAccelerationConstant(), false),
         new MaxAccelerationConstraint(12.5 * 12.0),
-        new CentripetalAccelerationConstraint(15 * 12.0)
+        new CentripetalAccelerationConstraint(20 * 12.0)
   };
 
   private static final int MAX_LATENCY_COMPENSATION_MAP_ENTRIES = 25;
 
   private final HolonomicMotionProfiledTrajectoryFollower follower = new HolonomicMotionProfiledTrajectoryFollower(
-    new PidConstants(0.4, 0.0, 0.025),
-    new PidConstants(5.0, 0.0, 0.0),
+    new PidConstants(0.5, 0.01, 0.025),
+    new PidConstants(0.2, 0.01, 0.0),
     new HolonomicFeedforward(FEEDFORWARD_CONSTANTS)
   );
 
   private final SwerveKinematics swerveKinematics = new SwerveKinematics(
-        new Vector2(DRIVETRAIN_TRACKWIDTH_METERS / 2.0, DRIVETRAIN_WHEELBASE_METERS / 2.0),        //front left
-        new Vector2(DRIVETRAIN_TRACKWIDTH_METERS / 2.0, -DRIVETRAIN_WHEELBASE_METERS / 2.0),       //front right
-        new Vector2(-DRIVETRAIN_TRACKWIDTH_METERS / 2.0, DRIVETRAIN_WHEELBASE_METERS / 2.0),       //back left
-        new Vector2(-DRIVETRAIN_TRACKWIDTH_METERS / 2.0, -DRIVETRAIN_WHEELBASE_METERS / 2.0)       //back right
+        new Vector2(DRIVETRAIN_TRACKWIDTH_INCHES / 2.0, DRIVETRAIN_WHEELBASE_INCHES / 2.0),        //front left
+        new Vector2(DRIVETRAIN_TRACKWIDTH_INCHES / 2.0, -DRIVETRAIN_WHEELBASE_INCHES / 2.0),       //front right
+        new Vector2(-DRIVETRAIN_TRACKWIDTH_INCHES / 2.0, DRIVETRAIN_WHEELBASE_INCHES / 2.0),       //back left
+        new Vector2(-DRIVETRAIN_TRACKWIDTH_INCHES / 2.0, -DRIVETRAIN_WHEELBASE_INCHES / 2.0)       //back right
 );
-
-private final SwerveDriveKinematics wpi_driveKinematics = new SwerveDriveKinematics(
-        // Front left
-        new Translation2d(DRIVETRAIN_TRACKWIDTH_METERS / 2.0, DRIVETRAIN_WHEELBASE_METERS / 2.0),
-        // Front right
-        new Translation2d(DRIVETRAIN_TRACKWIDTH_METERS / 2.0, DRIVETRAIN_WHEELBASE_METERS / 2.0),
-        // Back left
-        new Translation2d(-DRIVETRAIN_TRACKWIDTH_METERS / 2.0, -DRIVETRAIN_WHEELBASE_METERS / 2.0),
-        // Back right
-        new Translation2d(-DRIVETRAIN_TRACKWIDTH_METERS / 2.0, -DRIVETRAIN_WHEELBASE_METERS / 2.0)
-  );
 
   private final SwerveModule[] modules;
 
@@ -212,9 +201,9 @@ private final SwerveDriveKinematics wpi_driveKinematics = new SwerveDriveKinemat
                 .withSize(1, 1);
 
         shuffleboardTab.addNumber("Rotation Voltage", () -> {
-        HolonomicDriveSignal signal;
-        synchronized (stateLock) {
-                signal = driveSignal;
+            HolonomicDriveSignal signal;
+            synchronized (stateLock) {
+                    signal = driveSignal;
         }
 
         if (signal == null) {
@@ -310,7 +299,9 @@ public RigidTransform2 getPose() {
             chassisVelocity = new ChassisVelocity(Vector2.ZERO, 0.0);
         } else if (driveSignal.isFieldOriented()) {
             chassisVelocity = new ChassisVelocity(
-                    driveSignal.getTranslation().rotateBy(getPose().rotation.inverse()),
+                    // FIXME:  ask 2910 whether this inverse was intentional
+                    // FIXME:  because it screws up swerve orientation when turned by more than 45 degrees!
+                    driveSignal.getTranslation().rotateBy(getPose().rotation), //.inverse()),
                     driveSignal.getRotation()
             );
         } else {

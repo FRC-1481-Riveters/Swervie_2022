@@ -189,7 +189,7 @@ public void kickerPunt(){
    */
   public Command getAutonomousCommand() {
     // An ExampleCommand will run in autonomous
-    return AutonPlayback;
+    return autonomousChooser.getCommand(this);
   }
 
 }
