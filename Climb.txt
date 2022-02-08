@@ -1,0 +1,13 @@
+Requirements for climb:
+- Hold position
+- Encoder Counts (to ensure what length the arms are at)(possible 0 component to reset encoder counts)
+- PID controls
+- current (voltage) threshold to make sure the motors dont burn out 
+
+Other information:
+- 3 775 motors 
+- First arm = hoist 1
+- Second arm = hoist 2 
+- Third arm = hoist 3
+- Gear ratio 40:1 
+
