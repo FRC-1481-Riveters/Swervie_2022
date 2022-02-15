@@ -56,7 +56,14 @@ public final class Constants {
     public static final int CLIMB_10_ENCODER = 34;
     public static final int CLIMB_15_ENCODER = 35;
 
-    public static final int YEET_MOTOR = 40;
+    
     public static final int KICKER_MOTOR = 41;
     public static final int KICKER_ENCODER = 42;
+
+    public static final int YEET_MOTOR = 40;
+    public static final int YEET_SPEED_A = 0;
+    public static final int YEET_SPEED_B = 0;
+    public static final int YEET_SPEED_C = 0;
+    public static final int YEET_SPEED_D = 0;
+    public static final double YEET_SPEED_TOLERANCE = 0.02;
 }
