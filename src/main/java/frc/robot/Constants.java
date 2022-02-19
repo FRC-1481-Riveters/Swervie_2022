@@ -29,23 +29,24 @@ public final class Constants {
     public static final int FRONT_LEFT_MODULE_DRIVE_MOTOR = 15;
     public static final int FRONT_LEFT_MODULE_STEER_MOTOR = 13;
     public static final int FRONT_LEFT_MODULE_STEER_ENCODER = 14;
-    public static final double FRONT_LEFT_MODULE_STEER_OFFSET = -Math.toRadians(318.33); // FIXME Measure and set front left steer offset
+    public static final double FRONT_LEFT_MODULE_STEER_OFFSET = -Math.toRadians(175.7); // FIXME Measure and set front left steer offset
 
     public static final int FRONT_RIGHT_MODULE_DRIVE_MOTOR = 12;
     public static final int FRONT_RIGHT_MODULE_STEER_MOTOR = 10;
     public static final int FRONT_RIGHT_MODULE_STEER_ENCODER = 11;
-    public static final double FRONT_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(131.04); // FIXME Measure and set front right steer offset
+    public static final double FRONT_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(143.5); // FIXME Measure and set front right steer offset
 
     public static final int BACK_LEFT_MODULE_DRIVE_MOTOR = 18;
     public static final int BACK_LEFT_MODULE_STEER_MOTOR = 16;
     public static final int BACK_LEFT_MODULE_STEER_ENCODER = 17;
-    public static final double BACK_LEFT_MODULE_STEER_OFFSET = -Math.toRadians(345.32); // FIXME Measure and set back left steer offset
+    public static final double BACK_LEFT_MODULE_STEER_OFFSET = -Math.toRadians(179.5); // FIXME Measure and set back left steer offset
 
     public static final int BACK_RIGHT_MODULE_DRIVE_MOTOR = 21;
     public static final int BACK_RIGHT_MODULE_STEER_MOTOR = 19;
     public static final int BACK_RIGHT_MODULE_STEER_ENCODER = 20;
-    public static final double BACK_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(184.74); // FIXME Measure and set back right steer offset
+    public static final double BACK_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(164.7); // FIXME Measure and set back right steer offset
 
+    public static final int INTAKE_ARM_MOTOR = 7;
     public static final int INTAKE_MOTOR = 8;
 
     public static final int CLIMB_6_MOTOR = 30;

@@ -23,11 +23,11 @@ public class ShooterSubsystem extends SubsystemBase{
 
     public void setYeetSpeed (double value){
         m_yeetMotor.set(value);
-        if (m_shooterIntendedSpeed > 10.0) {
-            m_pidController.setReference(value, ControlType.kVelocity);
-          } else {
-            m_yeetMotor.set(0.0);
-          }
+      //  if (m_shooterIntendedSpeed > 10.0) {
+      //      m_pidController.setReference(value, ControlType.kVelocity);
+      //    } else {
+      //      m_yeetMotor.set(0.0);
+      //    }
     }
 
     public void setKickerSpeed(double value){

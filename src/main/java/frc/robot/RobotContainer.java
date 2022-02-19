@@ -24,7 +24,11 @@ import common.math.Vector2;
 import common.robot.input.Axis;
 import common.robot.input.DPadButton;
 import common.robot.input.XboxController;
+import common.robot.input.DPadButton.Direction;
+
 import java.io.IOException;
+
+import javax.lang.model.util.ElementScanner6;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -119,7 +123,16 @@ private Axis getDriveRotationAxis() {
   }
 
   public void controlIntake(){
-    m_intakeSubsystem.setIntakeSpeed(m_operatorController.getRightYAxis().get() / 1.4);
+    double intakeArmSpeed;
+
+    m_intakeSubsystem.setIntakeSpeed(m_operatorController.getRightYAxis().get() );
+    if( Math.abs(m_operatorController.getLeftYAxis().get()) < 0.08 )
+    {
+       intakeArmSpeed = -0.0;
+    }
+    else {
+      m_intakeSubsystem.setIntakeArmSpeed(-m_operatorController.getLeftYAxis().get() / 3);
+    }
   }
 
   public void controlClimb(){
@@ -127,32 +140,32 @@ private Axis getDriveRotationAxis() {
     double climb10Speed;
     double climb15Speed;
 
-    if(m_operatorController.getLeftBumperButton().getAsBoolean()==true){
-      climb6Speed=0.3;
+    if(m_operatorController.getLeftBumperButton().get()==true){
+      climb6Speed=-0.4;
     }
     else if(m_operatorController.getLeftTriggerAxis().get()>=0.5){
-      climb6Speed=-0.3;
+      climb6Speed=1.0;
     }
     else{
       climb6Speed=0;
     }
 
 
-    if(m_operatorController.getRightBumperButton().getAsBoolean()==true){
-      climb10Speed=0.3;
+    if(m_operatorController.getRightBumperButton().get()==true){
+      climb10Speed=0.4;
     }
     else if(m_operatorController.getRightTriggerAxis().get()>=0.5){
-      climb10Speed=-0.3;
+      climb10Speed=-1.0;
     }
     else{
       climb10Speed=0;
     }
 
-    if(m_operatorController.getYButton().getAsBoolean()){
-      climb15Speed=0.3;
+    if(m_operatorController.getYButton().get()==true){
+      climb15Speed=0.4;
     }
-    else if(m_operatorController.getAButton().getAsBoolean()){
-      climb15Speed=-0.3;
+    else if(m_operatorController.getAButton().get()==true){
+      climb15Speed=-1.0;
     }
     else{
       climb15Speed=0;
@@ -164,22 +177,37 @@ private Axis getDriveRotationAxis() {
 
 public void shooterYeet(){
   /*High A goal*/
-  if(m_controller.getYButton().getAsBoolean()){
-    m_shooterSubsystem.setYeetSpeed(0.6);
+  if(m_controller.getYButton().get()==true){
+    m_shooterSubsystem.setYeetSpeed(-0.6);
   }/*Low A goal*/
-  else if(m_controller.getXButton().getAsBoolean()){
-    m_shooterSubsystem.setYeetSpeed(0.2);
+  else if(m_controller.getXButton().get()==true){
+    m_shooterSubsystem.setYeetSpeed(-0.5);
   }/*B goal*/
-  else if(m_controller.getBButton().getAsBoolean()){
-    m_shooterSubsystem.setYeetSpeed(0.8);
+  else if(m_controller.getBButton().get()==true){
+    m_shooterSubsystem.setYeetSpeed(-0.8);
   }/*C goal*/
-  else if(m_controller.getAButton().getAsBoolean()){
-    m_shooterSubsystem.setYeetSpeed(1.0);
+  else if(m_controller.getAButton().get()==true){
+   m_shooterSubsystem.setYeetSpeed(-1.0);
   }
+  else{
+    m_shooterSubsystem.setYeetSpeed(0.0);
+  }
+
 }
 
 public void kickerPunt(){
-  m_shooterSubsystem.setKickerSpeed(m_operatorController.getLeftYAxis().get());
+  if( m_operatorController.getDPadButton(Direction.UP).get()==true)
+  {
+    m_shooterSubsystem.setKickerSpeed(0.4);
+  }
+  else if( m_operatorController.getDPadButton(Direction.DOWN).get()==true)
+  {
+    m_shooterSubsystem.setKickerSpeed(-0.4);
+  }
+  else
+  {
+    m_shooterSubsystem.setKickerSpeed(0.0);
+  }
 }
 
   /**

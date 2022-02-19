@@ -313,10 +313,18 @@ public RigidTransform2 getPose() {
 
         Vector2[] moduleOutputs = swerveKinematics.toModuleVelocities(chassisVelocity);
         SwerveKinematics.normalizeModuleVelocities(moduleOutputs, 1);
+
+        modules[0].set(-moduleOutputs[0].length * 12.0, moduleOutputs[0].getAngle().toRadians());
+        modules[1].set(moduleOutputs[1].length * 12.0, moduleOutputs[1].getAngle().toRadians());
+        modules[2].set(-moduleOutputs[2].length * 12.0, moduleOutputs[2].getAngle().toRadians());
+        modules[3].set(moduleOutputs[3].length * 12.0, moduleOutputs[3].getAngle().toRadians());
+
+        /*
         for (int i = 0; i < moduleOutputs.length; i++) {
             var module = modules[i];
             module.set(moduleOutputs[i].length * 12.0, moduleOutputs[i].getAngle().toRadians());
         }
+    */
     }
 
     public RigidTransform2 getPoseAtTime(double timestamp) {
