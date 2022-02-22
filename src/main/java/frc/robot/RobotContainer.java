@@ -51,6 +51,8 @@ public class RobotContainer {
 
   private double joystickDivider = 1.5;
 
+  private double intakeArmPosition=0;
+
   private final Command AutonPlayback =
   new AutonMacroPlayback( "/home/lvuser/autonpath.csv", m_drivetrainSubsystem );
 
@@ -58,6 +60,7 @@ public class RobotContainer {
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
+    
     // Set up the default command for the drivetrain.
     // The controls are for field-oriented driving:
     // Left stick Y axis -> forward and backwards movement
@@ -78,6 +81,7 @@ public class RobotContainer {
 
     // Configure the button bindings
     configureButtonBindings();
+    m_intakeSubsystem.IntakeSubsystemInit();
   }
 
   public DrivetrainSubsystem getDrivetrainSubsystem()
@@ -123,16 +127,18 @@ private Axis getDriveRotationAxis() {
   }
 
   public void controlIntake(){
-    double intakeArmSpeed;
 
     m_intakeSubsystem.setIntakeSpeed(m_operatorController.getRightYAxis().get() );
-    if( Math.abs(m_operatorController.getLeftYAxis().get()) < 0.08 )
+
+    if( m_operatorController.getLeftYAxis().get() > 0.5 )
     {
-       intakeArmSpeed = -0.0;
+      intakeArmPosition = Constants.INTAKE_ARM_POSITION_OUT;
     }
-    else {
-      m_intakeSubsystem.setIntakeArmSpeed(-m_operatorController.getLeftYAxis().get() / 3);
+    else if( m_operatorController.getLeftYAxis().get() < -0.5 ) 
+    {
+      intakeArmPosition = Constants.INTAKE_ARM_POSITION_IN;
     }
+    m_intakeSubsystem.setIntakeArmPosition(intakeArmPosition);
   }
 
   public void controlClimb(){
