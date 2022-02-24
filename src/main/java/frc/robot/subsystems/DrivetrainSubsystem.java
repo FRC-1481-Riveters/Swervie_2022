@@ -119,6 +119,11 @@ public class DrivetrainSubsystem implements Subsystem, UpdateManager.Updatable {
   public final SwerveModule backLeftModule;
   public final SwerveModule backRightModule;
 
+  // For macro record/playback
+  public double m_forward;
+  public double m_strafe;
+  public double m_rotation;
+
   public DrivetrainSubsystem() {
         synchronized (sensorLock) {
                 gyroscope.setInverted(false);
@@ -239,6 +244,9 @@ public RigidTransform2 getPose() {
         synchronized (stateLock) {
             driveSignal = new HolonomicDriveSignal(translationalVelocity, rotationalVelocity, isFieldOriented);
         }
+        m_forward = translationalVelocity.x;
+        m_strafe = translationalVelocity.y;
+        m_rotation = rotationalVelocity;
     }
 
     public void resetPose(RigidTransform2 pose) {

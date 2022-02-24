@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
 import frc.robot.subsystems.DrivetrainSubsystem;
+import common.math.Vector2;
 
 /*Code outline to implement playing back a macro recorded in BTMacroRecord
 *Be sure to read out of the same file created in BTMacroRecord
@@ -24,23 +25,13 @@ public class MacroPlayback {
 	boolean onTime = true;
     double nextDouble;
     double current_time;
-    double current_front_left_angle;
-    double current_front_left_drive;
-    double current_front_right_angle;
-    double current_front_right_drive;
-    double current_back_left_angle;
-    double current_back_left_drive;
-    double current_back_right_angle;
-    double current_back_right_drive;
+    double current_forward;
+    double current_strafe;
+    double current_rotation;
     double next_time;
-    double next_front_left_angle;
-    double next_front_left_drive;
-    double next_front_right_angle;
-    double next_front_right_drive;
-    double next_back_left_angle;
-    double next_back_left_drive;
-    double next_back_right_angle;
-    double next_back_right_drive;
+    double next_forward;
+    double next_strafe;
+    double next_rotation;
     boolean m_finished;
 
 	public MacroPlayback( String filename, DrivetrainSubsystem drivetrain ) throws FileNotFoundException
@@ -74,32 +65,19 @@ public class MacroPlayback {
             while( next_time < elapsed_time)
             {
                 current_time  = next_time;
-                current_front_left_drive = next_front_left_drive;
-                current_front_left_angle = next_front_left_angle;
-                current_front_right_drive = next_front_right_drive;
-                current_front_right_angle = next_front_right_angle;
-                current_back_left_drive = next_back_left_drive;
-                current_back_left_angle = next_back_left_angle;
-                current_back_right_drive = next_back_right_drive;
-                current_back_right_angle = next_back_right_angle;
+                current_forward = next_forward;
+                current_strafe = next_strafe;
+                current_rotation = next_rotation;
 
                 next_time = scanner.nextDouble();
-                next_front_left_drive = scanner.nextDouble();
-                next_front_left_angle = scanner.nextDouble();
-                next_front_right_drive = scanner.nextDouble();
-                next_front_right_angle = scanner.nextDouble();
-                next_back_left_drive = scanner.nextDouble();
-                next_back_left_angle = scanner.nextDouble();
-                next_back_right_drive = scanner.nextDouble();
-                next_back_right_angle = scanner.nextDouble();
+                next_forward = scanner.nextDouble();
+                next_strafe = scanner.nextDouble();
+                next_rotation = scanner.nextDouble();
             }
 
             if( current_time <= elapsed_time)
             {
-                m_drivetrain.frontLeftModule.set( current_front_left_angle, current_front_left_drive );
-                m_drivetrain.frontRightModule.set( current_front_right_drive, current_front_right_angle );
-                m_drivetrain.backLeftModule.set( current_back_left_drive, current_back_left_angle );
-                m_drivetrain.backRightModule.set( current_back_right_drive, current_back_right_angle );
+                m_drivetrain.drive( new Vector2(current_forward,current_strafe), current_rotation, true );
             }
 			
 		}

@@ -60,14 +60,9 @@ public class MacroRecorder {
 			
 			//drive motors
 			writer.append( 
-				"," + safe_write( m_drivetrain.frontLeftModule.getDriveVelocity(), convert_voltage ) +
-				"," + m_drivetrain.frontLeftModule.getSteerAngle() +
-				"," + safe_write(  m_drivetrain.frontRightModule.getDriveVelocity(), convert_voltage ) +
-				"," + m_drivetrain.frontRightModule.getSteerAngle() +
-				"," + safe_write(  m_drivetrain.backLeftModule.getDriveVelocity(), convert_voltage ) +
-				"," + m_drivetrain.backLeftModule.getSteerAngle() +
-				"," + safe_write(  m_drivetrain.backRightModule.getDriveVelocity(), convert_voltage ) +
-				"," + m_drivetrain.backRightModule.getSteerAngle()
+				"," + m_drivetrain.m_forward +
+				"," + m_drivetrain.m_strafe +
+				"," + m_drivetrain.m_rotation
 			);
 			
 			/*
