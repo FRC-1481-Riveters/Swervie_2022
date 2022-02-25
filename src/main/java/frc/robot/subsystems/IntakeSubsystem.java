@@ -55,6 +55,5 @@ public class IntakeSubsystem extends SubsystemBase {
 
     public void setIntakeArmPosition(double value){
         m_intakeArmMotor.set(ControlMode.MotionMagic, value);
-//        m_intakeArmMotor.set(ControlMode.PercentOutput, value);
     }
 }
