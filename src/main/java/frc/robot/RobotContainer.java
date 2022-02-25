@@ -82,6 +82,7 @@ public class RobotContainer {
     // Configure the button bindings
     configureButtonBindings();
     m_intakeSubsystem.IntakeSubsystemInit();
+    m_climbSubsystem.ClimbSubsystemInit();
   }
 
   public DrivetrainSubsystem getDrivetrainSubsystem()
@@ -147,10 +148,10 @@ private Axis getDriveRotationAxis() {
     double climb15Speed;
 
     if(m_operatorController.getLeftBumperButton().get()==true){
-      climb6Speed=-0.4;
+      climb6Speed=0.4;
     }
     else if(m_operatorController.getLeftTriggerAxis().get()>=0.5){
-      climb6Speed=1.0;
+      climb6Speed=-1.0;
     }
     else{
       climb6Speed=0;

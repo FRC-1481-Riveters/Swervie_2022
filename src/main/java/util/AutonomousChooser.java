@@ -22,10 +22,21 @@ public class AutonomousChooser {
         autonomousModeChooser.setDefaultOption("6 Ball Auto", AutonomousMode.EIGHT_BALL);
         autonomousModeChooser.addOption("6 Ball Compatible", AutonomousMode.EIGHT_BALL_COMPATIBLE);
         autonomousModeChooser.addOption("Simple Shoot Three", AutonomousMode.SIMPLE_SHOOT_THREE);
+        autonomousModeChooser.addOption("Simple Shoot Three", AutonomousMode.SIMPLE_SHOOT_THREE);
+        autonomousModeChooser.addOption("PlaybackSomething", AutonomousMode.PLAYBACK_SOMETHING);
     }
 
     public SendableChooser<AutonomousMode> getAutonomousModeChooser() {
         return autonomousModeChooser;
+    }
+
+    public Command getPlaybackSomethingCommand(RobotContainer container) {
+        SequentialCommandGroup command = new SequentialCommandGroup();
+
+    //    resetRobotPose(command, container, trajectories.autonPlaybackTrajectory());
+    //    command.addCommands(new AutonMacroPlayback( "/home/lvuser/autonpath.csv", container) );
+
+        return command;
     }
 
     private SequentialCommandGroup get10BallAutoCommand(RobotContainer container) {
@@ -121,6 +132,8 @@ public class AutonomousChooser {
                 return getCircuit10BallAutoCommand(container);
             case SIMPLE_SHOOT_THREE:
                 return getSimpleShootThreeAutoCommand(container);
+            case PLAYBACK_SOMETHING:
+                return getPlaybackSomethingCommand(container);
         }
 
         return get10BallAutoCommand(container);
@@ -176,5 +189,6 @@ public class AutonomousChooser {
         TEN_BALL,
         TEN_BALL_CIRCUIT,
         SIMPLE_SHOOT_THREE,
+        PLAYBACK_SOMETHING
     }
 }
