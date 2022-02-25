@@ -49,8 +49,6 @@ public class RobotContainer {
   private AutonomousTrajectories autonomousTrajectories;
   private final AutonomousChooser autonomousChooser;
 
-  private double joystickDivider = 1.5;
-
   private double intakeArmPosition=0;
 
   private final Command AutonPlayback =
@@ -120,10 +118,10 @@ private Axis getDriveRotationAxis() {
 
   public void checkBumper()
   {
-    if(m_controller.getRightBumperButton().get()){
-      joystickDivider = 1.0;
+    if(m_controller.getRightBumperButton().get()==true){
+      m_drivetrainSubsystem.joystickDivider = 1.0;
     }else{
-      joystickDivider = 1.5;
+      m_drivetrainSubsystem.joystickDivider = 1.5;
     }
   }
 

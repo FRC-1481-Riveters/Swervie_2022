@@ -123,6 +123,7 @@ public class DrivetrainSubsystem implements Subsystem, UpdateManager.Updatable {
   public double m_forward;
   public double m_strafe;
   public double m_rotation;
+  public double joystickDivider = 1.5;
 
   public DrivetrainSubsystem() {
         synchronized (sensorLock) {

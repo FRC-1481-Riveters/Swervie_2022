@@ -24,7 +24,10 @@ public class DriveCommand extends CommandBase {
     @Override
     public void execute() {
         // !*!*!* FIXME: not sure why we have to divide rotate by 10 here...  maybe it should be radians instead of -1..1
-        drivetrainSubsystem.drive(new Vector2(forward.get(true), strafe.get(true)), rotation.get(true) / 10.0, true);
+        drivetrainSubsystem.drive(new Vector2(forward.get(true)/drivetrainSubsystem.joystickDivider,
+                                              strafe.get(true)/drivetrainSubsystem.joystickDivider),
+                                      rotation.get(true) / 10.0, 
+                                      true);
     }
 
     @Override
