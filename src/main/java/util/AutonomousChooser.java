@@ -19,11 +19,11 @@ public class AutonomousChooser {
     public AutonomousChooser(AutonomousTrajectories trajectories) {
         this.trajectories = trajectories;
 
-        autonomousModeChooser.setDefaultOption("6 Ball Auto", AutonomousMode.EIGHT_BALL);
+        autonomousModeChooser.setDefaultOption("PlaybackSomething", AutonomousMode.PLAYBACK_SOMETHING);
+        autonomousModeChooser.addOption("6 Ball Auto", AutonomousMode.EIGHT_BALL);
         autonomousModeChooser.addOption("6 Ball Compatible", AutonomousMode.EIGHT_BALL_COMPATIBLE);
         autonomousModeChooser.addOption("Simple Shoot Three", AutonomousMode.SIMPLE_SHOOT_THREE);
         autonomousModeChooser.addOption("Simple Shoot Three", AutonomousMode.SIMPLE_SHOOT_THREE);
-        autonomousModeChooser.addOption("PlaybackSomething", AutonomousMode.PLAYBACK_SOMETHING);
     }
 
     public SendableChooser<AutonomousMode> getAutonomousModeChooser() {
@@ -33,8 +33,8 @@ public class AutonomousChooser {
     public Command getPlaybackSomethingCommand(RobotContainer container) {
         SequentialCommandGroup command = new SequentialCommandGroup();
 
-    //    resetRobotPose(command, container, trajectories.autonPlaybackTrajectory());
-    //    command.addCommands(new AutonMacroPlayback( "/home/lvuser/autonpath.csv", container) );
+        resetRobotPose(command, container, trajectories.getAutonPlaybackTrajectory());
+        command.addCommands(new AutonMacroPlayback( "/home/lvuser/autonpath.csv", container.getDrivetrainSubsystem() ) );
 
         return command;
     }
@@ -122,6 +122,8 @@ public class AutonomousChooser {
 
     public Command getCommand(RobotContainer container) {
         switch (autonomousModeChooser.getSelected()) {
+            case PLAYBACK_SOMETHING:
+                return getPlaybackSomethingCommand(container);
             case EIGHT_BALL:
                 return get8BallAutoCommand(container);
             case EIGHT_BALL_COMPATIBLE:
@@ -132,8 +134,6 @@ public class AutonomousChooser {
                 return getCircuit10BallAutoCommand(container);
             case SIMPLE_SHOOT_THREE:
                 return getSimpleShootThreeAutoCommand(container);
-            case PLAYBACK_SOMETHING:
-                return getPlaybackSomethingCommand(container);
         }
 
         return get10BallAutoCommand(container);

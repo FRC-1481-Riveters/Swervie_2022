@@ -35,6 +35,7 @@ public class AutonomousTrajectories {
     private Trajectory tenBallAutoPartTwo;
     private Trajectory circuitTenBallAutoPartOne;
     private Trajectory circuitTenBallAutoPartTwo;
+    private Trajectory autonPlaybackTrajectory;
 
     private final Trajectory eightBallCompatiblePartOne;
     private final Trajectory eightBallCompatiblePartTwo;
@@ -48,6 +49,11 @@ public class AutonomousTrajectories {
         slowConstraints[slowConstraints.length - 1] = new MaxVelocityConstraint(6.0 * 12.0);
         slowConstraints[slowConstraints.length - 2] = new MaxAccelerationConstraint(4.0 * 12.0);
 
+        autonPlaybackTrajectory = new Trajectory(
+                new SimplePathBuilder(new Vector2(0,0), Rotation2.ZERO)
+                        .build(),
+                slowConstraints, SAMPLE_DISTANCE
+        );
         eightBallAutoPartOne = new Trajectory(
                 new SimplePathBuilder(new Vector2(0,0), Rotation2.ZERO)
                         .lineTo(new Vector2(100,0))
@@ -103,6 +109,10 @@ public class AutonomousTrajectories {
         );
     }
 
+    public Trajectory getAutonPlaybackTrajectory() {
+        return autonPlaybackTrajectory;    
+    }
+    
     public Trajectory getEightBallAutoPartOne() {
         return eightBallAutoPartOne;
     }
