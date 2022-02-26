@@ -36,9 +36,9 @@ public class ClimbSubsystem extends SubsystemBase {
         m_climb6Motor.configPeakOutputForward(1, Constants.TALON_TIMEOUT_MS);
         m_climb6Motor.configPeakOutputReverse(-1, Constants.TALON_TIMEOUT_MS);
         // Set peak current
-        m_climb6Motor.configPeakCurrentLimit(30, Constants.TALON_TIMEOUT_MS);
+        m_climb6Motor.configPeakCurrentLimit(35, Constants.TALON_TIMEOUT_MS);
         m_climb6Motor.configPeakCurrentDuration(200, Constants.TALON_TIMEOUT_MS);
-        m_climb6Motor.configContinuousCurrentLimit(25, Constants.TALON_TIMEOUT_MS);
+        m_climb6Motor.configContinuousCurrentLimit(30, Constants.TALON_TIMEOUT_MS);
         m_climb6Motor.enableCurrentLimit(true);
         // Set Motion Magic gains in slot0
         m_climb6Motor.selectProfileSlot(0, 0);
@@ -67,9 +67,9 @@ public class ClimbSubsystem extends SubsystemBase {
         m_climb10Motor.configPeakOutputForward(1, Constants.TALON_TIMEOUT_MS);
         m_climb10Motor.configPeakOutputReverse(-1, Constants.TALON_TIMEOUT_MS);
         // Set peak current
-        m_climb10Motor.configPeakCurrentLimit(30, Constants.TALON_TIMEOUT_MS);
+        m_climb10Motor.configPeakCurrentLimit(35, Constants.TALON_TIMEOUT_MS);
         m_climb10Motor.configPeakCurrentDuration(200, Constants.TALON_TIMEOUT_MS);
-        m_climb10Motor.configContinuousCurrentLimit(25, Constants.TALON_TIMEOUT_MS);
+        m_climb10Motor.configContinuousCurrentLimit(30, Constants.TALON_TIMEOUT_MS);
         m_climb10Motor.enableCurrentLimit(true);
         // Set Motion Magic gains in slot0
         m_climb10Motor.selectProfileSlot(0, 0);
@@ -98,9 +98,9 @@ public class ClimbSubsystem extends SubsystemBase {
         m_climb15Motor.configPeakOutputForward(1, Constants.TALON_TIMEOUT_MS);
         m_climb15Motor.configPeakOutputReverse(-1, Constants.TALON_TIMEOUT_MS);
         // Set peak current
-        m_climb15Motor.configPeakCurrentLimit(30, Constants.TALON_TIMEOUT_MS);
+        m_climb15Motor.configPeakCurrentLimit(35, Constants.TALON_TIMEOUT_MS);
         m_climb15Motor.configPeakCurrentDuration(200, Constants.TALON_TIMEOUT_MS);
-        m_climb15Motor.configContinuousCurrentLimit(25, Constants.TALON_TIMEOUT_MS);
+        m_climb15Motor.configContinuousCurrentLimit(30, Constants.TALON_TIMEOUT_MS);
         m_climb15Motor.enableCurrentLimit(true);
         // Set Motion Magic gains in slot0
         m_climb15Motor.selectProfileSlot(0, 0);
@@ -128,13 +128,19 @@ public class ClimbSubsystem extends SubsystemBase {
     }
 
     public void setClimb6Position(double value){
+        m_climb6Motor.configPeakCurrentLimit(35, Constants.TALON_TIMEOUT_MS);
+        m_climb6Motor.configContinuousCurrentLimit(30, Constants.TALON_TIMEOUT_MS);
         m_climb6Motor.set(ControlMode.MotionMagic, value);
     }
     public void setClimb10Position(double value){
+        m_climb10Motor.configPeakCurrentLimit(35, Constants.TALON_TIMEOUT_MS);
+        m_climb10Motor.configContinuousCurrentLimit(30, Constants.TALON_TIMEOUT_MS);
         m_climb10Motor.set(ControlMode.MotionMagic, value);
     }    
 
     public void setClimb15Position(double value){
+        m_climb15Motor.configPeakCurrentLimit(35, Constants.TALON_TIMEOUT_MS);
+        m_climb15Motor.configContinuousCurrentLimit(30, Constants.TALON_TIMEOUT_MS);
         m_climb15Motor.set(ControlMode.MotionMagic, value);
     }
 
