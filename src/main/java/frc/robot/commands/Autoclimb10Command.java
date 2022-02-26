@@ -14,10 +14,10 @@ public class Autoclimb10Command extends SequentialCommandGroup {
       addRequirements(m_climbSubsystem);
 
       addCommands( 
-          new SequentialCommandGroup( 
-            new ParallelCommandGroup(
+          sequence( 
+            parallel(
               new Climb6PositionCommand( m_climbSubsystem, 0 ),
-              new SequentialCommandGroup(
+              sequence(
                 new Climb10PositionCommand( m_climbSubsystem, -2000 ),
                 new Climb10PositionCommand( m_climbSubsystem, 50000 )
               )
@@ -37,7 +37,6 @@ public class Autoclimb10Command extends SequentialCommandGroup {
         4) (serial) extend Climb6 to 8" from full down (disengage from the 6 point hook from bar)
         5) (serial) retract Climb10 to 21" from full down.  Note: we really only need to go 9" from full down if transitioning into 15 point climb
         */
-
     }
     
 
