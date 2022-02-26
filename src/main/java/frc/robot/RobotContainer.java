@@ -21,6 +21,7 @@ import frc.robot.commands.AutonMacroRecord;
 import frc.robot.commands.Climb6ManualCommand;
 import frc.robot.commands.Climb10ManualCommand;
 import frc.robot.commands.Climb15ManualCommand;
+import frc.robot.commands.ClimbZeroPosition;
 
 import common.math.Rotation2;
 import common.robot.input.Axis;
@@ -108,7 +109,7 @@ private class JoystickTriggerPressed extends Trigger {
   }
   @Override
   public boolean get() {
-    if( m_axis.get() >= 0.5 )
+    if( m_axis.get() >= 0.25 )
     {
       return true;
     }
@@ -137,45 +138,50 @@ private class JoystickTriggerPressed extends Trigger {
 
     // Climb6 manual retract
     operatorLeftTrigger = new JoystickTriggerPressed( m_operatorController.getLeftTriggerAxis() );
-    m_operatorController.getStartButton() 
+    m_operatorController.getBackButton() 
       .and( operatorLeftTrigger )
-      .whileActiveOnce( new Climb6ManualCommand(m_climbSubsystem, -1.0) );
+        .whileActiveOnce( new Climb6ManualCommand(m_climbSubsystem, -1.0) );
 
     // Climb6 manual extend
-    m_operatorController.getStartButton() 
+    m_operatorController.getBackButton() 
       .and( m_operatorController.getLeftBumperButton() )
       .whileActiveOnce( new Climb6ManualCommand( m_climbSubsystem, 0.4) );
 
     // Climb10 manual retract
     operatorRightTrigger = new JoystickTriggerPressed( m_operatorController.getRightTriggerAxis() );
-    m_operatorController.getStartButton() 
+    m_operatorController.getBackButton() 
       .and( operatorRightTrigger )
       .whileActiveOnce( new Climb10ManualCommand(m_climbSubsystem, -1.0) );
 
     // Climb10 manual extend
-    m_operatorController.getStartButton() 
+    m_operatorController.getBackButton() 
       .and( m_operatorController.getRightBumperButton() )
       .whileActiveOnce( new Climb10ManualCommand(m_climbSubsystem, 0.4) );
 
     // Climb15 manual retract
-    m_operatorController.getStartButton() 
+    m_operatorController.getBackButton() 
       .and( m_operatorController.getAButton() )
       .whileActiveOnce( new Climb15ManualCommand( m_climbSubsystem, -1.0) );
 
     // Climb15 manual extend
-    m_operatorController.getStartButton() 
+    m_operatorController.getBackButton() 
       .and( m_operatorController.getYButton() )
       .whileActiveOnce( new Climb15ManualCommand( m_climbSubsystem, 0.4) );
 
     // Autoclimb10
-    m_operatorController.getBackButton()
+    m_operatorController.getStartButton()
       .and( m_operatorController.getXButton() )
       .whileActiveOnce( new Autoclimb10Command(m_climbSubsystem) );
 
     // Autoclimb15
-    m_operatorController.getBackButton()
+    m_operatorController.getStartButton()
       .and( m_operatorController.getBButton() )
       .whileActiveOnce( new Autoclimb15Command(m_climbSubsystem) );
+
+    //Zero climb positions
+    m_operatorController.getStartButton()
+      .and(m_operatorController.getBackButton())
+      .whileActiveOnce(new ClimbZeroPosition(m_climbSubsystem));
 
   }
 
@@ -209,7 +215,7 @@ public void shooterYeet(){
     m_shooterSubsystem.setYeetSpeed(-0.6);
   }/*Low A goal*/
   else if(m_controller.getXButton().get()==true){
-    m_shooterSubsystem.setYeetSpeed(-0.5);
+    m_shooterSubsystem.setYeetSpeed(-0.48);
   }/*B goal*/
   else if(m_controller.getBButton().get()==true){
     m_shooterSubsystem.setYeetSpeed(-0.8);
@@ -226,11 +232,11 @@ public void shooterYeet(){
 public void kickerPunt(){
   if( m_operatorController.getDPadButton(Direction.UP).get()==true)
   {
-    m_shooterSubsystem.setKickerSpeed(0.4);
+    m_shooterSubsystem.setKickerSpeed(0.6);
   }
   else if( m_operatorController.getDPadButton(Direction.DOWN).get()==true)
   {
-    m_shooterSubsystem.setKickerSpeed(-0.4);
+    m_shooterSubsystem.setKickerSpeed(-0.6);
   }
   else
   {

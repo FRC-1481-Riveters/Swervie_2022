@@ -88,7 +88,7 @@ public class ClimbSubsystem extends SubsystemBase {
         m_climb15Motor.configNeutralDeadband(0.10, Constants.TALON_TIMEOUT_MS);
         // Configure Talon  SRX output and sensor direction
         m_climb15Motor.setSensorPhase(true);
-        m_climb15Motor.setInverted(false);
+        m_climb15Motor.setInverted(true);
         // Set relevant frame periods to be at least twice as fast as periodic rate
         m_climb15Motor.setStatusFramePeriod(StatusFrameEnhanced.Status_13_Base_PIDF0, 10, Constants.TALON_TIMEOUT_MS);
         m_climb15Motor.setStatusFramePeriod(StatusFrameEnhanced.Status_10_MotionMagic, 10, Constants.TALON_TIMEOUT_MS);
@@ -128,20 +128,26 @@ public class ClimbSubsystem extends SubsystemBase {
     }
 
     public void setClimb6Position(double value){
-        m_climb6Motor.configPeakCurrentLimit(35, Constants.TALON_TIMEOUT_MS);
-        m_climb6Motor.configContinuousCurrentLimit(30, Constants.TALON_TIMEOUT_MS);
+        m_climb6Motor.configPeakCurrentLimit(5, Constants.TALON_TIMEOUT_MS);
+        m_climb6Motor.configContinuousCurrentLimit(4, Constants.TALON_TIMEOUT_MS);
         m_climb6Motor.set(ControlMode.MotionMagic, value);
     }
     public void setClimb10Position(double value){
-        m_climb10Motor.configPeakCurrentLimit(35, Constants.TALON_TIMEOUT_MS);
-        m_climb10Motor.configContinuousCurrentLimit(30, Constants.TALON_TIMEOUT_MS);
+        m_climb10Motor.configPeakCurrentLimit(5, Constants.TALON_TIMEOUT_MS);
+        m_climb10Motor.configContinuousCurrentLimit(4, Constants.TALON_TIMEOUT_MS);
         m_climb10Motor.set(ControlMode.MotionMagic, value);
     }    
 
     public void setClimb15Position(double value){
-        m_climb15Motor.configPeakCurrentLimit(35, Constants.TALON_TIMEOUT_MS);
-        m_climb15Motor.configContinuousCurrentLimit(30, Constants.TALON_TIMEOUT_MS);
+        m_climb15Motor.configPeakCurrentLimit(5, Constants.TALON_TIMEOUT_MS);
+        m_climb15Motor.configContinuousCurrentLimit(4, Constants.TALON_TIMEOUT_MS);
         m_climb15Motor.set(ControlMode.MotionMagic, value);
+    }
+
+    public void zeroClimbSensors(){
+        m_climb6Motor.setSelectedSensorPosition(CLIMB6_POSITION_IN, 0, Constants.TALON_TIMEOUT_MS);
+        m_climb10Motor.setSelectedSensorPosition(CLIMB6_POSITION_IN, 0, Constants.TALON_TIMEOUT_MS);
+        m_climb15Motor.setSelectedSensorPosition(CLIMB6_POSITION_IN, 0, Constants.TALON_TIMEOUT_MS);
     }
 
     public double getClimb6Position() {

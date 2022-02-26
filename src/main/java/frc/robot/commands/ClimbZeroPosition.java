@@ -3,23 +3,19 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.ClimbSubsystem;
 
-public class Climb6ManualCommand extends CommandBase {
+public class ClimbZeroPosition extends CommandBase {
 
     private ClimbSubsystem m_climbSubsystem;
-    private double m_output;
 
-    public Climb6ManualCommand( ClimbSubsystem subsystem, double value )
+    public ClimbZeroPosition( ClimbSubsystem subsystem )
     {
         m_climbSubsystem = subsystem;
-        m_output = value;
-
-        addRequirements(m_climbSubsystem);
     }
     
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_climbSubsystem.setClimb6Speed(m_output);
+    m_climbSubsystem.zeroClimbSensors();
     super.initialize();
   }
 
@@ -32,13 +28,12 @@ public class Climb6ManualCommand extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-      return false;
+    return true;
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_climbSubsystem.setClimb6Speed(0);
     super.end(interrupted);
   }
 }

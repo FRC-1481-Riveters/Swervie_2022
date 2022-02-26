@@ -15,17 +15,17 @@ public class Autoclimb15Command extends SequentialCommandGroup {
 
       addCommands( 
           sequence( 
-            new Climb15PositionCommand( m_climbSubsystem, -2000 ),
+            new Climb15PositionCommand( m_climbSubsystem, -2500 ),
             parallel(
               new Climb10PositionCommand( m_climbSubsystem, 0 ),
-              new Climb15PositionCommand( m_climbSubsystem, 50000 )
+              new Climb15PositionCommand( m_climbSubsystem, 49000 )
             ),
             new Climb15PositionCommand( m_climbSubsystem, 45000 ),
             parallel(
               new Climb10PositionCommand( m_climbSubsystem, 52500 ),
-              new Climb15PositionCommand( m_climbSubsystem, 22500 )
+              new Climb15PositionCommand( m_climbSubsystem, 21000 )
             ),
-            new Climb15PositionCommand( m_climbSubsystem, 52500 )
+            new Climb15PositionCommand( m_climbSubsystem, 49000 )
           )
           .withTimeout( 10.0 )
         );

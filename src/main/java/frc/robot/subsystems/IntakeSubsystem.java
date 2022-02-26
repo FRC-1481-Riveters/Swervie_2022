@@ -17,7 +17,7 @@ public class IntakeSubsystem extends SubsystemBase {
     TalonSRX m_intakeMotor = new TalonSRX(INTAKE_MOTOR); 
 
     public void IntakeSubsystemInit() {
-         m_intakeArmMotor.configFactoryDefault();
+        m_intakeArmMotor.configFactoryDefault();
         m_intakeArmMotor.configSelectedFeedbackSensor( FeedbackDevice.CTRE_MagEncoder_Relative, 0, Constants.TALON_TIMEOUT_MS);
         m_intakeArmMotor.configNeutralDeadband(0.10, Constants.TALON_TIMEOUT_MS);
         // Configure Talon  SRX output and sensor direction
@@ -46,7 +46,7 @@ public class IntakeSubsystem extends SubsystemBase {
         m_intakeArmMotor.configMotionCruiseVelocity(1000, Constants.TALON_TIMEOUT_MS);
         m_intakeArmMotor.configMotionAcceleration(1000, Constants.TALON_TIMEOUT_MS);
         //  Zero the sensor once on robot startup
-        m_intakeArmMotor.setSelectedSensorPosition(INTAKE_ARM_POSITION_IN, 0, Constants.TALON_TIMEOUT_MS);
+        m_intakeArmMotor.setSelectedSensorPosition(0, 0, Constants.TALON_TIMEOUT_MS);
         m_intakeArmMotor.set(ControlMode.MotionMagic, INTAKE_ARM_POSITION_IN);
     }
     public void setIntakeSpeed(double value){

@@ -51,6 +51,7 @@ public class AutonomousTrajectories {
 
         autonPlaybackTrajectory = new Trajectory(
                 new SimplePathBuilder(new Vector2(0,0), Rotation2.ZERO)
+                        .lineTo(new Vector2(0,0))
                         .build(),
                 slowConstraints, SAMPLE_DISTANCE
         );

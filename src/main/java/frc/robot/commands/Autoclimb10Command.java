@@ -18,13 +18,13 @@ public class Autoclimb10Command extends SequentialCommandGroup {
             parallel(
               new Climb6PositionCommand( m_climbSubsystem, 0 ),
               sequence(
-                new Climb10PositionCommand( m_climbSubsystem, -2000 ),
-                new Climb10PositionCommand( m_climbSubsystem, 50000 )
+                new Climb10PositionCommand( m_climbSubsystem, -2500 ),
+                new Climb10PositionCommand( m_climbSubsystem, 52300 )
               )
             ),
-            new Climb10PositionCommand(m_climbSubsystem, 47500 ),
-            new Climb6PositionCommand(m_climbSubsystem, 20000 ),
-            new Climb10PositionCommand(m_climbSubsystem, 12500 )
+            new Climb10PositionCommand(m_climbSubsystem, 50000 ),
+            new Climb6PositionCommand(m_climbSubsystem, 15672 ),
+            new Climb10PositionCommand(m_climbSubsystem, 22500 )
           )
           .withTimeout( 10.0 )
         );

@@ -17,6 +17,7 @@ public class Climb10PositionCommand extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    System.out.println("Climb 10 initialized");
     m_climbSubsystem.setClimb10Position(m_setPosition);
     super.initialize();
   }
