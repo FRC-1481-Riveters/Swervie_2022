@@ -14,14 +14,14 @@ public class Autoclimb15Command extends SequentialCommandGroup {
       addRequirements(m_climbSubsystem);
 
       addCommands( 
-          new SequentialCommandGroup( 
+          sequence( 
             new Climb15PositionCommand( m_climbSubsystem, -2000 ),
-            new ParallelCommandGroup(
+            parallel(
               new Climb10PositionCommand( m_climbSubsystem, 0 ),
               new Climb15PositionCommand( m_climbSubsystem, 50000 )
             ),
             new Climb15PositionCommand( m_climbSubsystem, 45000 ),
-            new ParallelCommandGroup(
+            parallel(
               new Climb10PositionCommand( m_climbSubsystem, 52500 ),
               new Climb15PositionCommand( m_climbSubsystem, 22500 )
             ),
@@ -40,7 +40,6 @@ public class Autoclimb15Command extends SequentialCommandGroup {
         5) (parallel) retract Climb15 to 9" from full down 
         6) (serial) extend Climb15 to 21" from full down (hanging position)
         */
-
     }
     
 
