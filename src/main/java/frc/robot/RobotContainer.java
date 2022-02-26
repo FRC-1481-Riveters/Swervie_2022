@@ -4,12 +4,10 @@
 
 package frc.robot;
 
-//import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-//import edu.wpi.first.wpilibj2.command.FunctionalCommand;
-//import edu.wpi.first.wpilibj2.command.InstantCommand;
-//import edu.wpi.first.wpilibj2.command.button.Button;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
+
 import frc.robot.commands.DriveCommand;
 import util.AutonomousChooser;
 import util.AutonomousTrajectories;
@@ -17,18 +15,18 @@ import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ClimbSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
-import frc.robot.commands.AutonMacroPlayback;
+import frc.robot.commands.Autoclimb10Command;
+import frc.robot.commands.Autoclimb15Command;
 import frc.robot.commands.AutonMacroRecord;
+import frc.robot.commands.Climb6ManualCommand;
+import frc.robot.commands.ClimbRetractCommand;
+
 import common.math.Rotation2;
-import common.math.Vector2;
 import common.robot.input.Axis;
-import common.robot.input.DPadButton;
 import common.robot.input.XboxController;
 import common.robot.input.DPadButton.Direction;
 
 import java.io.IOException;
-
-import javax.lang.model.util.ElementScanner6;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -51,8 +49,8 @@ public class RobotContainer {
 
   private double intakeArmPosition=0;
 
-  private final Command AutonPlayback =
-  new AutonMacroPlayback( "/home/lvuser/autonpath.csv", m_drivetrainSubsystem );
+  private JoystickTriggerPressed operatorLeftTrigger;
+  private JoystickTriggerPressed operatorRightTrigger;
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -66,16 +64,17 @@ public class RobotContainer {
     // Right stick X axis -> rotation
     try {
       autonomousTrajectories = new AutonomousTrajectories(DrivetrainSubsystem.TRAJECTORY_CONSTRAINTS);
-  } catch (IOException e) {
-      e.printStackTrace();
-  }
-  autonomousChooser = new AutonomousChooser(autonomousTrajectories);
-
-  m_controller.getLeftXAxis().setInverted(true);
-  m_controller.getRightXAxis().setInverted(true);
+    } catch (IOException e) {
+        e.printStackTrace();
+    }
 
     CommandScheduler.getInstance().registerSubsystem(m_drivetrainSubsystem);
     CommandScheduler.getInstance().setDefaultCommand(m_drivetrainSubsystem, new DriveCommand(m_drivetrainSubsystem, getDriveForwardAxis(), getDriveStrafeAxis(), getDriveRotationAxis()));
+
+    autonomousChooser = new AutonomousChooser(autonomousTrajectories);
+
+    m_controller.getLeftXAxis().setInverted(true);
+    m_controller.getRightXAxis().setInverted(true);
 
     // Configure the button bindings
     configureButtonBindings();
@@ -100,6 +99,26 @@ private Axis getDriveRotationAxis() {
     return m_controller.getRightXAxis();
 }
 
+private class JoystickTriggerPressed extends Trigger {
+  private Axis m_axis;
+  public JoystickTriggerPressed( Axis axis )
+  {
+    m_axis = axis;
+  }
+  @Override
+  public boolean get() {
+    if( m_axis.get() >= 0.5 )
+    {
+      return true;
+    }
+    else
+    {
+      return false;
+    }
+  }
+}
+
+
 /**
    * Use this method to define your button->command mappings. Buttons can be created by
    * instantiating a {@link GenericHID} or one of its subclasses ({@link
@@ -107,12 +126,31 @@ private Axis getDriveRotationAxis() {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
+
     // Back button zeros the gyroscope
     m_controller.getBackButton().whenPressed(
       () -> m_drivetrainSubsystem.resetGyroAngle(Rotation2.ZERO) );
 
-    m_controller.getStartButton().whenPressed(
-      new AutonMacroRecord( "/home/lvuser/autonpath.csv", m_drivetrainSubsystem) );
+    // Start button records a macro
+    m_controller.getStartButton().whenPressed( new AutonMacroRecord( "/home/lvuser/autonpath.csv", m_drivetrainSubsystem) );
+
+    operatorLeftTrigger = new JoystickTriggerPressed( m_operatorController.getLeftTriggerAxis() );
+    operatorLeftTrigger.whileActiveContinuous( new Climb6ManualCommand(m_climbSubsystem, -1.0) );
+
+    m_operatorController.getLeftBumperButton().whileActiveContinuous( new Climb6ManualCommand( m_climbSubsystem, 0.4) );
+
+    operatorRightTrigger = new JoystickTriggerPressed( m_operatorController.getRightTriggerAxis() );
+    operatorRightTrigger
+      .and( m_operatorController.getRightBumperButton() )
+      .whileActiveContinuous( new ClimbRetractCommand(m_climbSubsystem) );
+
+    m_operatorController.getStartButton()
+      .and( m_operatorController.getXButton() )
+      .whileActiveContinuous( new Autoclimb10Command(m_climbSubsystem) );
+
+      m_operatorController.getStartButton()
+      .and( m_operatorController.getYButton() )
+      .whileActiveContinuous( new Autoclimb15Command(m_climbSubsystem) );
 
   }
 
@@ -138,46 +176,6 @@ private Axis getDriveRotationAxis() {
       intakeArmPosition = Constants.INTAKE_ARM_POSITION_IN;
     }
     m_intakeSubsystem.setIntakeArmPosition(intakeArmPosition);
-  }
-
-  public void controlClimb(){
-    double climb6Speed;
-    double climb10Speed;
-    double climb15Speed;
-
-    if(m_operatorController.getLeftBumperButton().get()==true){
-      climb6Speed=0.4;
-    }
-    else if(m_operatorController.getLeftTriggerAxis().get()>=0.5){
-      climb6Speed=-1.0;
-    }
-    else{
-      climb6Speed=0;
-    }
-
-
-    if(m_operatorController.getRightBumperButton().get()==true){
-      climb10Speed=0.4;
-    }
-    else if(m_operatorController.getRightTriggerAxis().get()>=0.5){
-      climb10Speed=-1.0;
-    }
-    else{
-      climb10Speed=0;
-    }
-
-    if(m_operatorController.getYButton().get()==true){
-      climb15Speed=0.4;
-    }
-    else if(m_operatorController.getAButton().get()==true){
-      climb15Speed=-1.0;
-    }
-    else{
-      climb15Speed=0;
-    }
-    m_climbSubsystem.setClimb6Speed(climb6Speed);
-    m_climbSubsystem.setClimb10Speed(climb10Speed);
-    m_climbSubsystem.setClimb15Speed(climb15Speed);
   }
 
 public void shooterYeet(){

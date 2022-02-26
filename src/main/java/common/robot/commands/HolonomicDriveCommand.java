@@ -5,7 +5,7 @@ import edu.wpi.first.wpilibj.PIDSource;
 import edu.wpi.first.wpilibj.PIDSourceType;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.buttons.Button;
-import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandBase;
 
 import common.Logger;
 import common.math.MathUtils;
@@ -16,7 +16,7 @@ import common.control.PidConstants;
 
 @Deprecated
 @SuppressWarnings("removal")
-public final class HolonomicDriveCommand extends Command {
+public final class HolonomicDriveCommand extends CommandBase {
 	private static final double ROTATION_END_TIMEOUT = 0.5;
 	private static final Logger LOGGER = new Logger(HolonomicDriveCommand.class);
 
@@ -65,11 +65,11 @@ public final class HolonomicDriveCommand extends Command {
 		angleController.setInputRange(0, 360);
 		angleController.setContinuous(true);
 
-		requires(drivetrain);
+		addRequirements(drivetrain);
 	}
 
 	@Override
-	protected void initialize() {
+	public void initialize() {
 		waitingForRotationTimer = false;
 
 		angleController.setSetpoint(drivetrain.getGyroscope().getAngle().toDegrees());
@@ -77,7 +77,7 @@ public final class HolonomicDriveCommand extends Command {
 	}
 
 	@Override
-	protected void execute() {
+	public void execute() {
 		double forward = forwardAxis.get(true);
 		double strafe = strafeAxis.get(true);
 		double rotation = rotationAxis.get(true);
@@ -110,13 +110,13 @@ public final class HolonomicDriveCommand extends Command {
 	}
 
 	@Override
-	protected void end() {
+	public void end(boolean interrupted) {
 		angleController.disable();
 		drivetrain.stop();
 	}
 
 	@Override
-	protected boolean isFinished() {
+	public boolean isFinished() {
 		return false;
 	}
 }

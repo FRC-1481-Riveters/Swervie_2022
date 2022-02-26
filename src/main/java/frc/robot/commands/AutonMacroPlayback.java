@@ -16,6 +16,8 @@ public class AutonMacroPlayback extends CommandBase {
         super();
         m_filename = filename;
         m_drivetrain = drivetrain;
+
+        addRequirements(drivetrain);
     }
   // Called when the command is initially scheduled.
   @Override
