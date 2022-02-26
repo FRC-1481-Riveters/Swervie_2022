@@ -19,7 +19,8 @@ import frc.robot.commands.Autoclimb10Command;
 import frc.robot.commands.Autoclimb15Command;
 import frc.robot.commands.AutonMacroRecord;
 import frc.robot.commands.Climb6ManualCommand;
-import frc.robot.commands.ClimbRetractCommand;
+import frc.robot.commands.Climb10ManualCommand;
+import frc.robot.commands.Climb15ManualCommand;
 
 import common.math.Rotation2;
 import common.robot.input.Axis;
@@ -134,23 +135,47 @@ private class JoystickTriggerPressed extends Trigger {
     // Start button records a macro
     m_controller.getStartButton().whenPressed( new AutonMacroRecord( "/home/lvuser/autonpath.csv", m_drivetrainSubsystem) );
 
+    // Climb6 manual retract
     operatorLeftTrigger = new JoystickTriggerPressed( m_operatorController.getLeftTriggerAxis() );
-    operatorLeftTrigger.whileActiveContinuous( new Climb6ManualCommand(m_climbSubsystem, -1.0) );
+    m_operatorController.getStartButton() 
+      .and( operatorLeftTrigger )
+      .whileActiveOnce( new Climb6ManualCommand(m_climbSubsystem, -1.0) );
 
-    m_operatorController.getLeftBumperButton().whileActiveContinuous( new Climb6ManualCommand( m_climbSubsystem, 0.4) );
+    // Climb6 manual extend
+    m_operatorController.getStartButton() 
+      .and( m_operatorController.getLeftBumperButton() )
+      .whileActiveOnce( new Climb6ManualCommand( m_climbSubsystem, 0.4) );
 
+    // Climb10 manual retract
     operatorRightTrigger = new JoystickTriggerPressed( m_operatorController.getRightTriggerAxis() );
-    operatorRightTrigger
+    m_operatorController.getStartButton() 
+      .and( operatorRightTrigger )
+      .whileActiveOnce( new Climb10ManualCommand(m_climbSubsystem, -1.0) );
+
+    // Climb10 manual extend
+    m_operatorController.getStartButton() 
       .and( m_operatorController.getRightBumperButton() )
-      .whileActiveContinuous( new ClimbRetractCommand(m_climbSubsystem) );
+      .whileActiveOnce( new Climb10ManualCommand(m_climbSubsystem, 0.4) );
 
-    m_operatorController.getStartButton()
-      .and( m_operatorController.getXButton() )
-      .whileActiveContinuous( new Autoclimb10Command(m_climbSubsystem) );
+    // Climb15 manual retract
+    m_operatorController.getStartButton() 
+      .and( m_operatorController.getAButton() )
+      .whileActiveOnce( new Climb15ManualCommand( m_climbSubsystem, -1.0) );
 
-      m_operatorController.getStartButton()
+    // Climb15 manual extend
+    m_operatorController.getStartButton() 
       .and( m_operatorController.getYButton() )
-      .whileActiveContinuous( new Autoclimb15Command(m_climbSubsystem) );
+      .whileActiveOnce( new Climb15ManualCommand( m_climbSubsystem, 0.4) );
+
+    // Autoclimb10
+    m_operatorController.getBackButton()
+      .and( m_operatorController.getXButton() )
+      .whileActiveOnce( new Autoclimb10Command(m_climbSubsystem) );
+
+    // Autoclimb15
+    m_operatorController.getBackButton()
+      .and( m_operatorController.getBButton() )
+      .whileActiveOnce( new Autoclimb15Command(m_climbSubsystem) );
 
   }
 

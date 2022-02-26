@@ -156,31 +156,4 @@ public class ClimbSubsystem extends SubsystemBase {
         return m_climb15Motor.getSelectedSensorPosition(0);
     }
 
-    public void retractClimb()
-    {
-        m_climb6Motor.configPeakCurrentLimit(3, Constants.TALON_TIMEOUT_MS);
-        m_climb6Motor.configContinuousCurrentLimit(2, Constants.TALON_TIMEOUT_MS);
-        m_climb10Motor.configPeakCurrentLimit(3, Constants.TALON_TIMEOUT_MS);
-        m_climb10Motor.configContinuousCurrentLimit(2, Constants.TALON_TIMEOUT_MS);
-        m_climb15Motor.configPeakCurrentLimit(3, Constants.TALON_TIMEOUT_MS);
-        m_climb15Motor.configContinuousCurrentLimit(2, Constants.TALON_TIMEOUT_MS);
-
-        m_climb6Motor.set(ControlMode.PercentOutput, -1);
-        m_climb10Motor.set(ControlMode.PercentOutput, -1);
-        m_climb15Motor.set(ControlMode.PercentOutput, -1);
-    }
-
-    public void stopClimb()
-    {
-        m_climb6Motor.configPeakCurrentLimit(30, Constants.TALON_TIMEOUT_MS);
-        m_climb6Motor.configContinuousCurrentLimit(25, Constants.TALON_TIMEOUT_MS);
-        m_climb10Motor.configPeakCurrentLimit(30, Constants.TALON_TIMEOUT_MS);
-        m_climb10Motor.configContinuousCurrentLimit(25, Constants.TALON_TIMEOUT_MS);
-        m_climb15Motor.configPeakCurrentLimit(30, Constants.TALON_TIMEOUT_MS);
-        m_climb15Motor.configContinuousCurrentLimit(25, Constants.TALON_TIMEOUT_MS);
-
-        m_climb6Motor.set(ControlMode.PercentOutput, 0);
-        m_climb10Motor.set(ControlMode.PercentOutput, 0);
-        m_climb15Motor.set(ControlMode.PercentOutput, 0);
-    }
 }
