@@ -22,6 +22,9 @@ import frc.robot.commands.Climb6ManualCommand;
 import frc.robot.commands.Climb10ManualCommand;
 import frc.robot.commands.Climb15ManualCommand;
 import frc.robot.commands.ClimbZeroPosition;
+import frc.robot.commands.KickerMultipleCommand;
+import frc.robot.commands.KickerCommand;
+import frc.robot.commands.ShooterCommand;
 
 import common.math.Rotation2;
 import common.robot.input.Axis;
@@ -151,7 +154,7 @@ private class JoystickTriggerPressed extends Trigger {
     operatorRightTrigger = new JoystickTriggerPressed( m_operatorController.getRightTriggerAxis() );
     m_operatorController.getBackButton() 
       .and( operatorRightTrigger )
-      .whileActiveOnce( new Climb10ManualCommand(m_climbSubsystem, -1.0) );
+      .whileActiveOnce( new Climb10ManualCommand(m_climbSubsystem, -0.4) );
 
     // Climb10 manual extend
     m_operatorController.getBackButton() 
@@ -161,7 +164,7 @@ private class JoystickTriggerPressed extends Trigger {
     // Climb15 manual retract
     m_operatorController.getBackButton() 
       .and( m_operatorController.getAButton() )
-      .whileActiveOnce( new Climb15ManualCommand( m_climbSubsystem, -1.0) );
+      .whileActiveOnce( new Climb15ManualCommand( m_climbSubsystem, -0.4) );
 
     // Climb15 manual extend
     m_operatorController.getBackButton() 
@@ -183,7 +186,24 @@ private class JoystickTriggerPressed extends Trigger {
       .and(m_operatorController.getBackButton())
       .whileActiveOnce(new ClimbZeroPosition(m_climbSubsystem));
 
-  }
+    m_operatorController.getYButton()
+      .whileActiveOnce( new ShooterCommand( m_shooterSubsystem, -0.6) );
+
+    m_operatorController.getXButton()
+      .whileActiveOnce( new ShooterCommand( m_shooterSubsystem, -0.43) );
+
+    m_operatorController.getBButton()
+      .whileActiveOnce( new ShooterCommand( m_shooterSubsystem, -0.8) );
+
+    m_operatorController.getAButton()
+      .whileActiveOnce( new ShooterCommand( m_shooterSubsystem, -0.9) );
+
+    m_operatorController.getDPadButton(Direction.UP)
+      .whileActiveOnce( new KickerCommand( m_shooterSubsystem, 0.6, false ) );
+
+    m_controller.getAButton()
+      .whileActiveOnce( new KickerMultipleCommand( m_shooterSubsystem, -0.6 ) );
+}
 
   public void checkBumper()
   {
@@ -209,40 +229,6 @@ private class JoystickTriggerPressed extends Trigger {
     m_intakeSubsystem.setIntakeArmPosition(intakeArmPosition);
   }
 
-public void shooterYeet(){
-  /*High A goal*/
-  if(m_controller.getYButton().get()==true){
-    m_shooterSubsystem.setYeetSpeed(-0.6);
-  }/*Low A goal*/
-  else if(m_controller.getXButton().get()==true){
-    m_shooterSubsystem.setYeetSpeed(-0.48);
-  }/*B goal*/
-  else if(m_controller.getBButton().get()==true){
-    m_shooterSubsystem.setYeetSpeed(-0.8);
-  }/*C goal*/
-  else if(m_controller.getAButton().get()==true){
-   m_shooterSubsystem.setYeetSpeed(-1.0);
-  }
-  else{
-    m_shooterSubsystem.setYeetSpeed(0.0);
-  }
-
-}
-
-public void kickerPunt(){
-  if( m_operatorController.getDPadButton(Direction.UP).get()==true)
-  {
-    m_shooterSubsystem.setKickerSpeed(0.6);
-  }
-  else if( m_operatorController.getDPadButton(Direction.DOWN).get()==true)
-  {
-    m_shooterSubsystem.setKickerSpeed(-0.6);
-  }
-  else
-  {
-    m_shooterSubsystem.setKickerSpeed(0.0);
-  }
-}
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
