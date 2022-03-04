@@ -1,9 +1,14 @@
 package frc.robot.subsystems;
 
+import edu.wpi.first.networktables.EntryListenerFlags;
+import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj.smartdashboard.*;
 
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.*;
 import com.revrobotics.CANSparkMax.ControlType;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.SparkMaxPIDController;
@@ -16,18 +21,43 @@ import static frc.robot.Constants.*;
 
 public class ShooterSubsystem extends SubsystemBase{
     private double m_shooterIntendedSpeed = 10000.0;
-    private SparkMaxPIDController m_pidController;
     private CANSparkMax m_yeetMotor = new CANSparkMax(YEET_MOTOR, MotorType.kBrushless);
     private SparkMaxRelativeEncoder m_encoder = (SparkMaxRelativeEncoder) m_yeetMotor.getEncoder();
     TalonSRX m_kickerMotor = new TalonSRX(KICKER_MOTOR);
+    private SparkMaxPIDController m_pidController = m_yeetMotor.getPIDController();
+    private NetworkTableEntry shooterKp;
+    private NetworkTableEntry shooterKi;
+    private NetworkTableEntry shooterKd;
+    private NetworkTableEntry shooterKf;
+    
+    public ShooterSubsystem(){
+      m_yeetMotor.restoreFactoryDefaults();
+      m_yeetMotor.setInverted(true);
+      m_pidController.setP(0.00004);
+      m_pidController.setI(0.000000005);
+      m_pidController.setD(0.0001);
+      m_pidController.setFF(0.00018);
+      setYeetSpeed(0.0);
 
-    public void setYeetSpeed (double value){
-        m_yeetMotor.set(value);
-      //  if (m_shooterIntendedSpeed > 10.0) {
-      //      m_pidController.setReference(value, ControlType.kVelocity);
-      //    } else {
-      //      m_yeetMotor.set(0.0);
-      //    }
+      shooterKp = NetworkTableInstance.getDefault().getTable("SmartDashboard").getEntry("Shooter kP");
+      shooterKi = NetworkTableInstance.getDefault().getTable("SmartDashboard").getEntry("Shooter kI");
+      shooterKd = NetworkTableInstance.getDefault().getTable("SmartDashboard").getEntry("Shooter kD");
+      shooterKf = NetworkTableInstance.getDefault().getTable("SmartDashboard").getEntry("Shooter kF");
+
+      shooterKp.setDouble(m_pidController.getP());
+      shooterKi.setDouble(m_pidController.getI());
+      shooterKd.setDouble(m_pidController.getD());
+      shooterKf.setDouble(m_pidController.getFF());
+
+    }
+
+    public void setYeetSpeed (double RPM){
+        m_yeetMotor.set(RPM);
+        if (m_shooterIntendedSpeed > 10.0) {
+            m_pidController.setReference(RPM, ControlType.kVelocity);
+          } else {
+            m_yeetMotor.set(0.0);
+          }
     }
 
     public void setKickerSpeed(double value){
