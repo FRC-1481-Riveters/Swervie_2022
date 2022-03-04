@@ -26,7 +26,7 @@ public class ClimbSubsystem extends SubsystemBase {
         m_climb6Motor.configNeutralDeadband(0.10, Constants.TALON_TIMEOUT_MS);
         // Configure Talon  SRX output and sensor direction
         m_climb6Motor.setSensorPhase(true);
-        m_climb6Motor.setInverted(false);
+        m_climb6Motor.setInverted(true);
         // Set relevant frame periods to be at least twice as fast as periodic rate
         m_climb6Motor.setStatusFramePeriod(StatusFrameEnhanced.Status_13_Base_PIDF0, 10, Constants.TALON_TIMEOUT_MS);
         m_climb6Motor.setStatusFramePeriod(StatusFrameEnhanced.Status_10_MotionMagic, 10, Constants.TALON_TIMEOUT_MS);
@@ -57,7 +57,7 @@ public class ClimbSubsystem extends SubsystemBase {
         m_climb10Motor.configNeutralDeadband(0.10, Constants.TALON_TIMEOUT_MS);
         // Configure Talon  SRX output and sensor direction
         m_climb10Motor.setSensorPhase(true);
-        m_climb10Motor.setInverted(false);
+        m_climb10Motor.setInverted(true);
         // Set relevant frame periods to be at least twice as fast as periodic rate
         m_climb10Motor.setStatusFramePeriod(StatusFrameEnhanced.Status_13_Base_PIDF0, 10, Constants.TALON_TIMEOUT_MS);
         m_climb10Motor.setStatusFramePeriod(StatusFrameEnhanced.Status_10_MotionMagic, 10, Constants.TALON_TIMEOUT_MS);
@@ -87,8 +87,8 @@ public class ClimbSubsystem extends SubsystemBase {
         m_climb15Motor.configSelectedFeedbackSensor( FeedbackDevice.CTRE_MagEncoder_Relative, 0, Constants.TALON_TIMEOUT_MS);
         m_climb15Motor.configNeutralDeadband(0.10, Constants.TALON_TIMEOUT_MS);
         // Configure Talon  SRX output and sensor direction
-        m_climb15Motor.setSensorPhase(true);
-        m_climb15Motor.setInverted(true);
+        m_climb15Motor.setSensorPhase(false);
+        m_climb15Motor.setInverted(false);
         // Set relevant frame periods to be at least twice as fast as periodic rate
         m_climb15Motor.setStatusFramePeriod(StatusFrameEnhanced.Status_13_Base_PIDF0, 10, Constants.TALON_TIMEOUT_MS);
         m_climb15Motor.setStatusFramePeriod(StatusFrameEnhanced.Status_10_MotionMagic, 10, Constants.TALON_TIMEOUT_MS);
@@ -116,37 +116,42 @@ public class ClimbSubsystem extends SubsystemBase {
     }
     
     public void setClimb6Speed(double value){
-        m_climb6Motor.configPeakCurrentLimit(5, Constants.TALON_TIMEOUT_MS);
-        m_climb6Motor.configContinuousCurrentLimit(4, Constants.TALON_TIMEOUT_MS);
+        m_climb6Motor.configPeakCurrentLimit(5);
+        m_climb6Motor.configContinuousCurrentLimit(4);
         m_climb6Motor.set(ControlMode.PercentOutput, value);
     }
 
     public void setClimb10Speed(double value){
-        m_climb10Motor.configPeakCurrentLimit(5, Constants.TALON_TIMEOUT_MS);
-        m_climb10Motor.configContinuousCurrentLimit(4, Constants.TALON_TIMEOUT_MS);
+        m_climb10Motor.configPeakCurrentLimit(5);
+        m_climb10Motor.configContinuousCurrentLimit(4);
+        m_climb10Motor.enableCurrentLimit(true);
         m_climb10Motor.set(ControlMode.PercentOutput, value);
     }
 
     public void setClimb15Speed(double value){
-        m_climb15Motor.configPeakCurrentLimit(5, Constants.TALON_TIMEOUT_MS);
-        m_climb15Motor.configContinuousCurrentLimit(4, Constants.TALON_TIMEOUT_MS);
+        m_climb15Motor.configPeakCurrentLimit(5);
+        m_climb15Motor.configContinuousCurrentLimit(4);
+        m_climb10Motor.enableCurrentLimit(true);
         m_climb15Motor.set(ControlMode.PercentOutput, value);
     }
 
     public void setClimb6Position(double value){
-        m_climb6Motor.configPeakCurrentLimit(35, Constants.TALON_TIMEOUT_MS);
-        m_climb6Motor.configContinuousCurrentLimit(30, Constants.TALON_TIMEOUT_MS);
+        m_climb6Motor.configPeakCurrentLimit(35);
+        m_climb6Motor.configContinuousCurrentLimit(30);
+        m_climb10Motor.enableCurrentLimit(false);
         m_climb6Motor.set(ControlMode.MotionMagic, value);
     }
     public void setClimb10Position(double value){
-        m_climb10Motor.configPeakCurrentLimit(35, Constants.TALON_TIMEOUT_MS);
-        m_climb10Motor.configContinuousCurrentLimit(30, Constants.TALON_TIMEOUT_MS);
+        m_climb10Motor.configPeakCurrentLimit(35);
+        m_climb10Motor.configContinuousCurrentLimit(30);
+        m_climb10Motor.enableCurrentLimit(false);
         m_climb10Motor.set(ControlMode.MotionMagic, value);
     }    
 
     public void setClimb15Position(double value){
         m_climb15Motor.configPeakCurrentLimit(35, Constants.TALON_TIMEOUT_MS);
         m_climb15Motor.configContinuousCurrentLimit(30, Constants.TALON_TIMEOUT_MS);
+        m_climb10Motor.enableCurrentLimit(false);
         m_climb15Motor.set(ControlMode.MotionMagic, value);
     }
 

@@ -15,6 +15,8 @@ import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ClimbSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
+import frc.robot.commands.Autoclimb6Command;
+import frc.robot.commands.Autoclimb6StartCommand;
 import frc.robot.commands.Autoclimb10Command;
 import frc.robot.commands.Autoclimb15Command;
 import frc.robot.commands.AutonMacroRecord;
@@ -143,7 +145,7 @@ private class JoystickTriggerPressed extends Trigger {
     operatorLeftTrigger = new JoystickTriggerPressed( m_operatorController.getLeftTriggerAxis() );
     m_operatorController.getBackButton() 
       .and( operatorLeftTrigger )
-        .whileActiveOnce( new Climb6ManualCommand(m_climbSubsystem, -1.0) );
+        .whileActiveOnce( new Climb6ManualCommand(m_climbSubsystem, -0.4) );
 
     // Climb6 manual extend
     m_operatorController.getBackButton() 
@@ -171,9 +173,19 @@ private class JoystickTriggerPressed extends Trigger {
       .and( m_operatorController.getYButton() )
       .whileActiveOnce( new Climb15ManualCommand( m_climbSubsystem, 0.4) );
 
+    //Autoclimb6 Start
+    m_controller.getStartButton()
+      .and(m_controller.getYButton())
+      .whileActiveOnce(new Autoclimb6StartCommand(m_climbSubsystem));
+
+    //Autoclimb6
+    m_operatorController.getStartButton()
+      .and(m_operatorController.getXButton())
+      .whileActiveOnce(new Autoclimb6Command(m_climbSubsystem));
+
     // Autoclimb10
     m_operatorController.getStartButton()
-      .and( m_operatorController.getXButton() )
+      .and( m_operatorController.getYButton() )
       .whileActiveOnce( new Autoclimb10Command(m_climbSubsystem) );
 
     // Autoclimb15
@@ -186,20 +198,25 @@ private class JoystickTriggerPressed extends Trigger {
       .and(m_operatorController.getBackButton())
       .whileActiveOnce(new ClimbZeroPosition(m_climbSubsystem));
 
-    m_operatorController.getYButton()
+    //Shooter controls on operator controller
+    m_operatorController.getDPadButton(Direction.UP)
       .whileActiveOnce( new ShooterCommand( m_shooterSubsystem, -0.6) );
 
-    m_operatorController.getXButton()
+    m_operatorController.getDPadButton(Direction.LEFT)
       .whileActiveOnce( new ShooterCommand( m_shooterSubsystem, -0.43) );
 
-    m_operatorController.getBButton()
+    m_operatorController.getDPadButton(Direction.RIGHT)
       .whileActiveOnce( new ShooterCommand( m_shooterSubsystem, -0.8) );
 
-    m_operatorController.getAButton()
+    m_operatorController.getDPadButton(Direction.DOWN)
       .whileActiveOnce( new ShooterCommand( m_shooterSubsystem, -0.9) );
 
-    m_operatorController.getDPadButton(Direction.UP)
+    //Kicker controls on drive controller
+    m_controller.getDPadButton(Direction.UP)
       .whileActiveOnce( new KickerCommand( m_shooterSubsystem, 0.6, false ) );
+
+    m_controller.getDPadButton(Direction.DOWN)
+      .whileActiveOnce(new KickerCommand(m_shooterSubsystem, -0.6, false));
 
     m_controller.getAButton()
       .whileActiveOnce( new KickerMultipleCommand( m_shooterSubsystem, -0.6 ) );

@@ -13,19 +13,21 @@ public class Autoclimb15Command extends SequentialCommandGroup {
       m_climbSubsystem = subsystem;
       addRequirements(m_climbSubsystem);
 
+      // climb15 46882 fully extended
+      // 51500 = climb10 fully extended
       addCommands( 
           sequence( 
-            new Climb15PositionCommand( m_climbSubsystem, -2500 ),
+            new Climb15PositionCommand( m_climbSubsystem, -5700 ),
             parallel(
               new Climb10PositionCommand( m_climbSubsystem, 0 ),
-              new Climb15PositionCommand( m_climbSubsystem, 49000 )
+              new Climb15PositionCommand( m_climbSubsystem, 47300 )
             ),
-            new Climb15PositionCommand( m_climbSubsystem, 45000 ),
+            new Climb15PositionCommand( m_climbSubsystem, 42500 ),
             parallel(
-              new Climb10PositionCommand( m_climbSubsystem, 52500 ),
+              new Climb10PositionCommand( m_climbSubsystem, 51500 ),
               new Climb15PositionCommand( m_climbSubsystem, 21000 )
             ),
-            new Climb15PositionCommand( m_climbSubsystem, 49000 )
+            new Climb15PositionCommand( m_climbSubsystem, 47300 )
           )
           .withTimeout( 10.0 )
         );
@@ -43,30 +45,11 @@ public class Autoclimb15Command extends SequentialCommandGroup {
     }
     
 
-  // Called when the command is initially scheduled.
-  @Override
-  public void initialize() {
-    super.initialize();
-  }
-
-  // Called every time the scheduler runs while the command is scheduled.
-  @Override
-  public void execute() {
-    super.execute();
-  }
-
-  // Returns true when the command should end.
-  @Override
-  public boolean isFinished() {
-      return false;
-  }
-
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
     m_climbSubsystem.setClimb6Speed(0);
     m_climbSubsystem.setClimb10Speed(0);
     m_climbSubsystem.setClimb15Speed(0);
-    super.end(interrupted);
   }
 }

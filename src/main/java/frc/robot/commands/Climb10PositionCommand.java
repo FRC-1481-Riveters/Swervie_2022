@@ -31,7 +31,7 @@ public class Climb10PositionCommand extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-      if( Math.abs(m_setPosition - m_climbSubsystem.getClimb10Position()) < 500 )
+      if( Math.abs(m_setPosition - m_climbSubsystem.getClimb10Position()) < 300 )
       {
         return true;
       }

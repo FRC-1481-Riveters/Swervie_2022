@@ -4,32 +4,36 @@ import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.subsystems.ClimbSubsystem;
 
-public class Autoclimb10Command extends SequentialCommandGroup {
+public class Autoclimb6StartCommand extends SequentialCommandGroup {
 
     private ClimbSubsystem m_climbSubsystem;
-
-    public Autoclimb10Command( ClimbSubsystem subsystem )
+    public Autoclimb6StartCommand( ClimbSubsystem subsystem )
     {
       m_climbSubsystem = subsystem;
       addRequirements(m_climbSubsystem);
 
-      // 51500 = climb10 fully extended
-      addCommands( 
+      addCommands(
+        // 51000 = full travel
+        new Climb6PositionCommand(m_climbSubsystem, -3800)
+        .withTimeout(2.0),
+        new Climb6PositionCommand(m_climbSubsystem, 51000)
+        .withTimeout(5.0)
+      );
+
+      /*addCommands( 
           sequence( 
             parallel(
               new Climb6PositionCommand( m_climbSubsystem, 12000 ),
-              sequence(
-                new Climb10PositionCommand( m_climbSubsystem, -3500 ),  // unlatch climb10
-                new Climb10PositionCommand( m_climbSubsystem, 53300 )  
-              )
+              new Climb10PositionCommand( m_climbSubsystem, -2500 ),
+              new Climb10PositionCommand( m_climbSubsystem, 53300 )
             ),
             new Climb6PositionCommand( m_climbSubsystem, 0 ),
-            new Climb10PositionCommand(m_climbSubsystem, 47000 ),
+            new Climb10PositionCommand(m_climbSubsystem, 50000 ),
             new Climb6PositionCommand(m_climbSubsystem, 15672 ),
             new Climb10PositionCommand(m_climbSubsystem, 22500 )
           )
           .withTimeout( 10.0 )
-        );
+        );*/
 
         /*
         Autoclimb 10 - button 1 (while held): 
@@ -40,12 +44,11 @@ public class Autoclimb10Command extends SequentialCommandGroup {
         5) (serial) retract Climb10 to 21" from full down.  Note: we really only need to go 9" from full down if transitioning into 15 point climb
         */
     }
-    
+
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
     m_climbSubsystem.setClimb6Speed(0);
     m_climbSubsystem.setClimb10Speed(0);
-    m_climbSubsystem.setClimb15Speed(0);
   }
 }

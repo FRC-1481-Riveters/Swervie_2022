@@ -77,10 +77,9 @@ public final class Constants {
     public static final int INTAKE_ARM_POSITION_IN = 450;
     public static final int INTAKE_ARM_POSITION_OUT = 1410;
 
-    public static final double CLIMB6_MOTOR_KF = 0.00;
-    public static final double CLIMB6_MOTOR_KP = 50.0;
-    public static final double CLIMB6_MOTOR_KI = 0.10;
-    public static final double CLIMB6_MOTOR_KD = 0.00;
+    public static final double CLIMB6_MOTOR_KF = 0.01;
+    public static final double CLIMB6_MOTOR_KP = 1.0;
+    public static final double CLIMB6_MOTOR_KI = 0.00001;
+    public static final double CLIMB6_MOTOR_KD = 0.0000;
     public static final int CLIMB6_POSITION_IN = 0;
-    public static final int CLIMB6_POSITION_OUT = 107;
 }

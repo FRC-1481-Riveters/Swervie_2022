@@ -15,6 +15,7 @@ public class ClimbZeroPosition extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    System.out.println("****************** ZERO CLIMB SENSORS ******************");
     m_climbSubsystem.zeroClimbSensors();
     super.initialize();
   }

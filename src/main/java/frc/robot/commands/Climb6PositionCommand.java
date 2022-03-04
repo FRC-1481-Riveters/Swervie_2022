@@ -17,7 +17,6 @@ public class Climb6PositionCommand extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    System.out.println("Climb 6 initailized");
     m_climbSubsystem.setClimb6Position(m_setPosition);
     super.initialize();
   }
@@ -31,7 +30,7 @@ public class Climb6PositionCommand extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-      if( Math.abs(m_setPosition - m_climbSubsystem.getClimb6Position()) < 500 )
+      if( Math.abs(m_setPosition - m_climbSubsystem.getClimb6Position()) < 300 )
       {
         return true;
       }
