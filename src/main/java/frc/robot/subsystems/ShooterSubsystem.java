@@ -33,7 +33,7 @@ public class ShooterSubsystem extends SubsystemBase{
     public ShooterSubsystem(){
       m_yeetMotor.restoreFactoryDefaults();
       m_yeetMotor.setInverted(true);
-      m_pidController.setP(0.00004);
+      m_pidController.setP(0.0001);
       m_pidController.setI(0.000000005);
       m_pidController.setD(0.0001);
       m_pidController.setFF(0.00018);

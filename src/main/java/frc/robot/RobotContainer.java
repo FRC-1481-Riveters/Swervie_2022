@@ -27,7 +27,7 @@ import frc.robot.commands.ClimbZeroPosition;
 import frc.robot.commands.KickerMultipleCommand;
 import frc.robot.commands.KickerCommand;
 import frc.robot.commands.ShooterCommand;
-
+import frc.robot.commands.ShooterYeetCommandPart2ElectricBoogaloo;
 import common.math.Rotation2;
 import common.robot.input.Axis;
 import common.robot.input.XboxController;
@@ -200,16 +200,16 @@ private class JoystickTriggerPressed extends Trigger {
 
     //Shooter controls on operator controller
     m_operatorController.getDPadButton(Direction.UP)
-      .whileActiveOnce( new ShooterCommand( m_shooterSubsystem, -0.6) );
+      .whileActiveOnce( new ShooterYeetCommandPart2ElectricBoogaloo( m_shooterSubsystem, 3200) );
 
     m_operatorController.getDPadButton(Direction.LEFT)
-      .whileActiveOnce( new ShooterCommand( m_shooterSubsystem, -0.43) );
+      .whileActiveOnce( new ShooterYeetCommandPart2ElectricBoogaloo( m_shooterSubsystem, 2250) );
 
     m_operatorController.getDPadButton(Direction.RIGHT)
-      .whileActiveOnce( new ShooterCommand( m_shooterSubsystem, -0.8) );
+      .whileActiveOnce( new ShooterYeetCommandPart2ElectricBoogaloo( m_shooterSubsystem, 3800) );
 
     m_operatorController.getDPadButton(Direction.DOWN)
-      .whileActiveOnce( new ShooterCommand( m_shooterSubsystem, -0.9) );
+      .whileActiveOnce( new ShooterYeetCommandPart2ElectricBoogaloo( m_shooterSubsystem, 4500) );
 
     //Kicker controls on drive controller
     m_controller.getDPadButton(Direction.UP)

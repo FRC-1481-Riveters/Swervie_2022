@@ -12,8 +12,6 @@ public class Climb6ManualCommand extends CommandBase {
     {
         m_climbSubsystem = subsystem;
         m_output = value;
-
-        addRequirements(m_climbSubsystem);
     }
     
   // Called when the command is initially scheduled.

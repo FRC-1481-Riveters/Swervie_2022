@@ -2,6 +2,7 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.subsystems.ClimbSubsystem;
 
 public class Autoclimb10Command extends SequentialCommandGroup {
@@ -20,10 +21,11 @@ public class Autoclimb10Command extends SequentialCommandGroup {
               new Climb6PositionCommand( m_climbSubsystem, 12000 ),
               sequence(
                 new Climb10PositionCommand( m_climbSubsystem, -3500 ),  // unlatch climb10
-                new Climb10PositionCommand( m_climbSubsystem, 53300 )  
+                new Climb10PositionCommand( m_climbSubsystem, 53300 )
               )
             ),
-            new Climb6PositionCommand( m_climbSubsystem, 0 ),
+            new Climb6PositionCommand( m_climbSubsystem, -3300 ),
+            new WaitCommand(2.0),
             new Climb10PositionCommand(m_climbSubsystem, 47000 ),
             new Climb6PositionCommand(m_climbSubsystem, 15672 ),
             new Climb10PositionCommand(m_climbSubsystem, 22500 )
