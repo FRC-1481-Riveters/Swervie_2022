@@ -74,6 +74,7 @@ public final class Constants {
     public static final double INTAKE_ARM_MOTOR_KP = 0.5;
     public static final double INTAKE_ARM_MOTOR_KI = 0.00;
     public static final double INTAKE_ARM_MOTOR_KD = 0.00;
+    public static final int INTAKE_ARM_POSITION_IN_FULL = 0;
     public static final int INTAKE_ARM_POSITION_IN = 350;
     public static final int INTAKE_ARM_POSITION_OUT = 1410;
 

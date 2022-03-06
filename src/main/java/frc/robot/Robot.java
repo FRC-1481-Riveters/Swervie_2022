@@ -7,6 +7,7 @@ package frc.robot;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.networktables.NetworkTableInstance;
 
 import edu.wpi.first.cameraserver.CameraServer;
 
@@ -34,6 +35,7 @@ public class Robot extends TimedRobot {
 
     // Creates UsbCamera and MjpegServer [1] and connects them
     CameraServer.startAutomaticCapture();
+    NetworkTableInstance.getDefault().getTable("limelight").getEntry("ledMode").setNumber(0); // force light off
   }
 
   /**
@@ -62,6 +64,8 @@ public class Robot extends TimedRobot {
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   @Override
   public void autonomousInit() {
+    NetworkTableInstance.getDefault().getTable("limelight").getEntry("ledMode").setNumber(1); // force light on
+
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
     // schedule the autonomous command (example)
@@ -72,7 +76,8 @@ public class Robot extends TimedRobot {
 
   /** This function is called periodically during autonomous. */
   @Override
-  public void autonomousPeriodic() {}
+  public void autonomousPeriodic() {
+  }
 
   @Override
   public void teleopInit() {
@@ -90,6 +95,11 @@ public class Robot extends TimedRobot {
   public void teleopPeriodic() {
     m_robotContainer.checkBumper();
     m_robotContainer.controlIntake();
+  }
+
+  @Override
+  public void teleopExit() {
+    NetworkTableInstance.getDefault().getTable("limelight").getEntry("ledMode").setNumber(0); // force light off
   }
 
   @Override

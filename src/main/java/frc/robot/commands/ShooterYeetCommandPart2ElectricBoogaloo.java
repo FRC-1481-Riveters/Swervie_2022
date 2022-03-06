@@ -1,41 +1,34 @@
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.subsystems.ShooterSubsystem;
+import frc.robot.commands.KickerCommand;
+import frc.robot.commands.ShooterWait;
 
-//yeet means to throw (cargo)
-//electric boogaloo: idk it's a meme ig
+public class ShooterYeetCommandPart2ElectricBoogaloo extends SequentialCommandGroup {
 
-public class ShooterYeetCommandPart2ElectricBoogaloo extends CommandBase{
-    private ShooterSubsystem m_shooterSubsystem;
-    private double m_shooterYeetSpeed;
-    public ShooterYeetCommandPart2ElectricBoogaloo(ShooterSubsystem subsystem, double shooterIntendedSpeed) {
-        m_shooterSubsystem = subsystem;
-        m_shooterYeetSpeed = shooterIntendedSpeed;
-        addRequirements(subsystem);
-        // Use addRequirements() here to declare subsystem dependencies.
-      }
+  private ShooterSubsystem m_shooterSubsystem;
+  private double shooterIntendedSpeed;
+
+  public ShooterYeetCommandPart2ElectricBoogaloo( ShooterSubsystem shooterSubsystem, double speed )
+  {
+      m_shooterSubsystem = shooterSubsystem;
+      shooterIntendedSpeed = speed;
+
+      addCommands(
+          new KickerCommand( m_shooterSubsystem, -0.4, true ),
+          new WaitCommand( 0.1 ),
+          new KickerCommand( m_shooterSubsystem, 0, true ),
+          new ShooterYeetCommandPart3ElectricBoogaloo(m_shooterSubsystem, shooterIntendedSpeed)
+      );
+  
+  }
+
+  // Called once the command ends or is interrupted.
+  @Override
+  public void end(boolean interrupted) {
+    m_shooterSubsystem.setKickerSpeed(0.0);
+  }
     
-      // Called when the command is initially scheduled.
-      @Override
-      public void initialize() {
-        m_shooterSubsystem.setYeetSpeed(m_shooterYeetSpeed);
-      }
-    
-      // Called every time the scheduler runs while the command is scheduled.
-      @Override
-      public void execute() {
-      }
-    
-      // Called once the command ends or is interrupted.
-      @Override
-      public void end(boolean interrupted) {
-        m_shooterSubsystem.setYeetSpeed(0.0);
-      }
-    
-      // Returns true when the command should end.
-      @Override
-      public boolean isFinished() {
-        return m_shooterSubsystem.isAtSpeed();
-      }
-    }
+}

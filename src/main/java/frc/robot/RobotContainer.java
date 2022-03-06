@@ -15,6 +15,7 @@ import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ClimbSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
+import frc.robot.commands.AutoAimCommand;
 import frc.robot.commands.Autoclimb6Command;
 import frc.robot.commands.Autoclimb6StartCommand;
 import frc.robot.commands.Autoclimb10Command;
@@ -24,10 +25,13 @@ import frc.robot.commands.Climb6ManualCommand;
 import frc.robot.commands.Climb10ManualCommand;
 import frc.robot.commands.Climb15ManualCommand;
 import frc.robot.commands.ClimbZeroPosition;
+import frc.robot.commands.IntakePositionCommand;
+import frc.robot.commands.IntakeRetractCommand;
 import frc.robot.commands.KickerMultipleCommand;
 import frc.robot.commands.KickerCommand;
 import frc.robot.commands.ShooterCommand;
-import frc.robot.commands.ShooterYeetCommandPart2ElectricBoogaloo;
+import frc.robot.commands.ShooterYeetCommandPart3ElectricBoogaloo;
+import frc.robot.commands.ShooterYeetCommandPart3ElectricBoogaloo;
 import common.math.Rotation2;
 import common.robot.input.Axis;
 import common.robot.input.XboxController;
@@ -56,8 +60,12 @@ public class RobotContainer {
 
   private double intakeArmPosition=0;
 
+  private JoystickTriggerPressed driverLeftTrigger;
   private JoystickTriggerPressed operatorLeftTrigger;
   private JoystickTriggerPressed operatorRightTrigger;
+  private JoystickAxisUp operatorLeftAxisUp;
+  private JoystickAxisDown operatorLeftAxisDown;
+  public  double autoAimAngle = 0;
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -76,7 +84,7 @@ public class RobotContainer {
     }
 
     CommandScheduler.getInstance().registerSubsystem(m_drivetrainSubsystem);
-    CommandScheduler.getInstance().setDefaultCommand(m_drivetrainSubsystem, new DriveCommand(m_drivetrainSubsystem, getDriveForwardAxis(), getDriveStrafeAxis(), getDriveRotationAxis()));
+    CommandScheduler.getInstance().setDefaultCommand(m_drivetrainSubsystem, new DriveCommand(m_drivetrainSubsystem, getDriveForwardAxis(), getDriveStrafeAxis(), getDriveRotationAxis(), this));
 
     autonomousChooser = new AutonomousChooser(autonomousTrajectories);
 
@@ -125,6 +133,44 @@ private class JoystickTriggerPressed extends Trigger {
   }
 }
 
+private class JoystickAxisUp extends Trigger {
+  private Axis m_axis;
+  public JoystickAxisUp( Axis axis )
+  {
+    m_axis = axis;
+  }
+  @Override
+  public boolean get() {
+    if( m_axis.get() <= 0.5 )
+    {
+      return true;
+    }
+    else
+    {
+      return false;
+    }
+  }
+}
+
+private class JoystickAxisDown extends Trigger {
+  private Axis m_axis;
+  public JoystickAxisDown( Axis axis )
+  {
+    m_axis = axis;
+  }
+  @Override
+  public boolean get() {
+    if( m_axis.get() >= 0.5 )
+    {
+      return true;
+    }
+    else
+    {
+      return false;
+    }
+  }
+}
+
 
 /**
    * Use this method to define your button->command mappings. Buttons can be created by
@@ -138,8 +184,13 @@ private class JoystickTriggerPressed extends Trigger {
     m_controller.getBackButton().whenPressed(
       () -> m_drivetrainSubsystem.resetGyroAngle(Rotation2.ZERO) );
 
-    // Start button records a macro
-    m_controller.getStartButton().whenPressed( new AutonMacroRecord( "/home/lvuser/autonpath.csv", m_drivetrainSubsystem) );
+    // Driver left trigger records a macro
+    driverLeftTrigger = new JoystickTriggerPressed( m_controller.getLeftTriggerAxis() );
+    driverLeftTrigger
+      .whenActive( new AutonMacroRecord( "/home/lvuser/autonpath.csv", m_drivetrainSubsystem) );
+
+    m_controller.getLeftBumperButton()
+      .whileActiveOnce( new AutoAimCommand( this ) );
 
     // Climb6 manual retract
     operatorLeftTrigger = new JoystickTriggerPressed( m_operatorController.getLeftTriggerAxis() );
@@ -176,7 +227,7 @@ private class JoystickTriggerPressed extends Trigger {
     //Autoclimb6 Start
     m_controller.getStartButton()
       .and(m_controller.getYButton())
-      .whileActiveOnce(new Autoclimb6StartCommand(m_climbSubsystem));
+      .whileActiveOnce(new Autoclimb6StartCommand(m_climbSubsystem, m_intakeSubsystem));
 
     //Autoclimb6
     m_operatorController.getStartButton()
@@ -200,16 +251,16 @@ private class JoystickTriggerPressed extends Trigger {
 
     //Shooter controls on operator controller
     m_operatorController.getDPadButton(Direction.UP)
-      .whileActiveOnce( new ShooterYeetCommandPart2ElectricBoogaloo( m_shooterSubsystem, 3200) );
+      .whileActiveOnce( new ShooterYeetCommandPart3ElectricBoogaloo( m_shooterSubsystem, 3200) );
 
     m_operatorController.getDPadButton(Direction.LEFT)
-      .whileActiveOnce( new ShooterYeetCommandPart2ElectricBoogaloo( m_shooterSubsystem, 2250) );
+      .whileActiveOnce( new ShooterYeetCommandPart3ElectricBoogaloo( m_shooterSubsystem, 2250) );
 
     m_operatorController.getDPadButton(Direction.RIGHT)
-      .whileActiveOnce( new ShooterYeetCommandPart2ElectricBoogaloo( m_shooterSubsystem, 3800) );
+      .whileActiveOnce( new ShooterYeetCommandPart3ElectricBoogaloo( m_shooterSubsystem, 3800) );
 
     m_operatorController.getDPadButton(Direction.DOWN)
-      .whileActiveOnce( new ShooterYeetCommandPart2ElectricBoogaloo( m_shooterSubsystem, 4500) );
+      .whileActiveOnce( new ShooterYeetCommandPart3ElectricBoogaloo( m_shooterSubsystem, 4500) );
 
     //Kicker controls on drive controller
     m_controller.getDPadButton(Direction.UP)
@@ -220,7 +271,30 @@ private class JoystickTriggerPressed extends Trigger {
 
     m_controller.getAButton()
       .whileActiveOnce( new KickerMultipleCommand( m_shooterSubsystem, -0.6 ) );
-}
+
+    operatorLeftTrigger = new JoystickTriggerPressed( m_operatorController.getLeftTriggerAxis() );
+    m_operatorController.getBackButton() 
+      .and( operatorLeftTrigger )
+        .whileActiveOnce( new Climb6ManualCommand(m_climbSubsystem, -0.4) );
+
+    operatorLeftAxisUp = new JoystickAxisUp( m_operatorController.getLeftYAxis() );
+    operatorLeftAxisUp
+      .whileActiveOnce( new IntakePositionCommand( m_intakeSubsystem, Constants.INTAKE_ARM_POSITION_IN ) );
+
+    operatorLeftAxisDown = new JoystickAxisDown( m_operatorController.getLeftYAxis() );
+    operatorLeftAxisDown.whileActiveOnce(  new IntakeRetractCommand( m_intakeSubsystem ) );
+
+    if( m_operatorController.getLeftYAxis().get() > 0.5 )
+    {
+      intakeArmPosition = Constants.INTAKE_ARM_POSITION_OUT;
+    }
+    else if( m_operatorController.getLeftYAxis().get() < -0.5 ) 
+    {
+      intakeArmPosition = Constants.INTAKE_ARM_POSITION_IN;
+    }
+    m_intakeSubsystem.setIntakeArmPosition(intakeArmPosition);
+  
+  }
 
   public void checkBumper()
   {
@@ -232,18 +306,7 @@ private class JoystickTriggerPressed extends Trigger {
   }
 
   public void controlIntake(){
-
     m_intakeSubsystem.setIntakeSpeed(m_operatorController.getRightYAxis().get() );
-
-    if( m_operatorController.getLeftYAxis().get() > 0.5 )
-    {
-      intakeArmPosition = Constants.INTAKE_ARM_POSITION_OUT;
-    }
-    else if( m_operatorController.getLeftYAxis().get() < -0.5 ) 
-    {
-      intakeArmPosition = Constants.INTAKE_ARM_POSITION_IN;
-    }
-    m_intakeSubsystem.setIntakeArmPosition(intakeArmPosition);
   }
 
 
