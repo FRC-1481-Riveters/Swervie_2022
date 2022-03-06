@@ -4,7 +4,6 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.Constants;
-import frc.robot.commands.IntakePositionCommand;
 
 public class IntakeRetractCommand extends SequentialCommandGroup {
 
@@ -12,13 +11,16 @@ public class IntakeRetractCommand extends SequentialCommandGroup {
 
   public IntakeRetractCommand( IntakeSubsystem subsystem )
   {
+    m_intakeSubsystem = subsystem;
+
+    addRequirements(m_intakeSubsystem);
+
     addCommands(
         new IntakePositionCommand( m_intakeSubsystem, Constants.INTAKE_ARM_POSITION_IN ),
         new WaitCommand( 2.0 ),
-        new IntakePositionCommand( m_intakeSubsystem, Constants.INTAKE_ARM_POSITION_IN_FULL )
+        new IntakePositionCommand( m_intakeSubsystem, Constants.INTAKE_ARM_POSITION_IN_FULL ),
+        new WaitCommand( 10.0 )
     );
-
-    m_intakeSubsystem = subsystem;
 
   }
 
@@ -26,6 +28,11 @@ public class IntakeRetractCommand extends SequentialCommandGroup {
   @Override
   public boolean isFinished() {
     return false;
+  }
+
+  @Override
+  public void end(boolean interrupted) {
+    super.end( interrupted );
   }
 
 }

@@ -141,7 +141,7 @@ private class JoystickAxisUp extends Trigger {
   }
   @Override
   public boolean get() {
-    if( m_axis.get() <= 0.5 )
+    if( m_axis.get() >= 0.5 )
     {
       return true;
     }
@@ -160,7 +160,7 @@ private class JoystickAxisDown extends Trigger {
   }
   @Override
   public boolean get() {
-    if( m_axis.get() >= 0.5 )
+    if( m_axis.get() <= -0.5 )
     {
       return true;
     }
@@ -279,10 +279,11 @@ private class JoystickAxisDown extends Trigger {
 
     operatorLeftAxisUp = new JoystickAxisUp( m_operatorController.getLeftYAxis() );
     operatorLeftAxisUp
-      .whileActiveOnce( new IntakePositionCommand( m_intakeSubsystem, Constants.INTAKE_ARM_POSITION_IN ) );
+      .whileActiveOnce( new IntakePositionCommand( m_intakeSubsystem, Constants.INTAKE_ARM_POSITION_OUT ) );
 
     operatorLeftAxisDown = new JoystickAxisDown( m_operatorController.getLeftYAxis() );
-    operatorLeftAxisDown.whileActiveOnce(  new IntakeRetractCommand( m_intakeSubsystem ) );
+    operatorLeftAxisDown
+      .whileActiveOnce(  new IntakeRetractCommand( m_intakeSubsystem ) );
 
     if( m_operatorController.getLeftYAxis().get() > 0.5 )
     {
