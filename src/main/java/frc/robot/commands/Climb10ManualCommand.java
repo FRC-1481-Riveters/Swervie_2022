@@ -36,7 +36,6 @@ public class Climb10ManualCommand extends CommandBase {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_climbSubsystem.setClimb10Speed(0);
     super.end(interrupted);
   }
 }
