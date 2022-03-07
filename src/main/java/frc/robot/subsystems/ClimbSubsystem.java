@@ -53,7 +53,7 @@ public class ClimbSubsystem extends SubsystemBase {
         m_climb6Motor.configPeakCurrentLimit(35, Constants.TALON_TIMEOUT_MS);
         m_climb6Motor.configPeakCurrentDuration(200, Constants.TALON_TIMEOUT_MS);
         m_climb6Motor.configContinuousCurrentLimit(30, Constants.TALON_TIMEOUT_MS);
-        m_climb6Motor.enableCurrentLimit(false);
+        m_climb6Motor.enableCurrentLimit(true);
         // Set Motion Magic gains in slot0
         m_climb6Motor.selectProfileSlot(0, 0);
         m_climb6Motor.config_kF(0, Constants.CLIMB6_MOTOR_KF, Constants.TALON_TIMEOUT_MS);
@@ -84,7 +84,7 @@ public class ClimbSubsystem extends SubsystemBase {
         m_climb10Motor.configPeakCurrentLimit(35, Constants.TALON_TIMEOUT_MS);
         m_climb10Motor.configPeakCurrentDuration(200, Constants.TALON_TIMEOUT_MS);
         m_climb10Motor.configContinuousCurrentLimit(30, Constants.TALON_TIMEOUT_MS);
-        m_climb10Motor.enableCurrentLimit(false);
+        m_climb10Motor.enableCurrentLimit(true);
         // Set Motion Magic gains in slot0
         m_climb10Motor.selectProfileSlot(0, 0);
         m_climb10Motor.config_kF(0, Constants.CLIMB6_MOTOR_KF, Constants.TALON_TIMEOUT_MS);
@@ -115,7 +115,7 @@ public class ClimbSubsystem extends SubsystemBase {
         m_climb15Motor.configPeakCurrentLimit(35, Constants.TALON_TIMEOUT_MS);
         m_climb15Motor.configPeakCurrentDuration(200, Constants.TALON_TIMEOUT_MS);
         m_climb15Motor.configContinuousCurrentLimit(30, Constants.TALON_TIMEOUT_MS);
-        m_climb15Motor.enableCurrentLimit(false);
+        m_climb15Motor.enableCurrentLimit(true);
         // Set Motion Magic gains in slot0
         m_climb15Motor.selectProfileSlot(0, 0);
         m_climb15Motor.config_kF(0, Constants.CLIMB6_MOTOR_KF, Constants.TALON_TIMEOUT_MS);
@@ -134,7 +134,7 @@ public class ClimbSubsystem extends SubsystemBase {
         {
             m_climb6Motor.configPeakCurrentLimit(35);
             m_climb6Motor.configContinuousCurrentLimit(30);
-            m_climb6Motor.enableCurrentLimit(false);    
+            m_climb6Motor.enableCurrentLimit(true);
         }
         else
         {
@@ -150,7 +150,7 @@ public class ClimbSubsystem extends SubsystemBase {
         {
             m_climb10Motor.configPeakCurrentLimit(35);
             m_climb10Motor.configContinuousCurrentLimit(30);
-            m_climb10Motor.enableCurrentLimit(false);    
+            m_climb10Motor.enableCurrentLimit(true);
         }
         else
         {
@@ -166,7 +166,7 @@ public class ClimbSubsystem extends SubsystemBase {
         {
             m_climb15Motor.configPeakCurrentLimit(35);
             m_climb15Motor.configContinuousCurrentLimit(30);
-            m_climb15Motor.enableCurrentLimit(false);    
+            m_climb15Motor.enableCurrentLimit(true);    
         }
         else
         {
