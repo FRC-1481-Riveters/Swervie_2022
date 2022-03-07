@@ -1,5 +1,7 @@
 package frc.robot.subsystems;
 
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -25,6 +27,11 @@ public class ClimbSubsystem extends SubsystemBase {
 
     private ShuffleboardTab tab;
     private NetworkTableEntry kP, kI, kD, kCruise, kAcceleration;
+    private NetworkTableEntry widgetClimb6Position, widgetClimb6Setpoint, widgetClimb6Current, widgetClimb6Output;
+    private NetworkTableEntry widgetClimb10Position, widgetClimb10Setpoint, widgetClimb10Current, widgetClimb10Output;
+    private NetworkTableEntry widgetClimb15Position, widgetClimb15Setpoint, widgetClimb15Current, widgetClimb15Output;
+    private NetworkTableEntry widgetBatteryVoltage;
+
 
     public void ClimbSubsystemInit() {
 
@@ -34,6 +41,19 @@ public class ClimbSubsystem extends SubsystemBase {
         kD = tab.add("kD",CLIMB6_MOTOR_KD).getEntry();
         kCruise = tab.add("kCruise",CLIMB6_MOTOR_CRUISE).getEntry();
         kAcceleration = tab.add("kAcceleration",CLIMB6_MOTOR_ACCELERATION).getEntry();
+        widgetClimb6Position  = tab.add("C6Pos",0).withWidget("Graph").getEntry();
+        widgetClimb6Setpoint  = tab.add("C6Set",0).withWidget("Graph").getEntry();
+        widgetClimb6Current   = tab.add("C6Cur",0).withWidget("Graph").getEntry();
+        widgetClimb6Output    = tab.add("C6Out",0).withWidget("Graph").getEntry();
+        widgetClimb10Position = tab.add("C10Pos",0).withWidget("Graph").getEntry();
+        widgetClimb10Setpoint = tab.add("C10Set",0).withWidget("Graph").getEntry();
+        widgetClimb10Current  = tab.add("C10Cur",0).withWidget("Graph").getEntry();
+        widgetClimb10Output   = tab.add("C10Out",0).withWidget("Graph").getEntry();
+        widgetClimb15Position = tab.add("C15Pos",0).withWidget("Graph").getEntry();
+        widgetClimb15Setpoint = tab.add("C15Set",0).withWidget("Graph").getEntry();
+        widgetClimb15Current  = tab.add("C15Cur",0).withWidget("Graph").getEntry();
+        widgetClimb15Output   = tab.add("C15Out",0).withWidget("Graph").getEntry();
+        widgetBatteryVoltage = tab.add("Battery",0).withWidget("Graph").getEntry();
     
         m_climb6Motor.configFactoryDefault();
         m_climb6Motor.configSelectedFeedbackSensor( FeedbackDevice.CTRE_MagEncoder_Relative, 0, Constants.TALON_TIMEOUT_MS);
@@ -129,6 +149,24 @@ public class ClimbSubsystem extends SubsystemBase {
         m_climb15Motor.setSelectedSensorPosition(CLIMB6_POSITION_IN, 0, Constants.TALON_TIMEOUT_MS);
     }
     
+    @Override
+    public void periodic() {
+      // This method will be called once per scheduler run
+      widgetClimb6Position.setNumber( m_climb6Motor.getSelectedSensorPosition(0));
+      widgetClimb6Setpoint.setNumber( m_climb6Motor.getClosedLoopTarget());
+      widgetClimb6Current .setNumber( m_climb6Motor.getSupplyCurrent());
+      widgetClimb6Output  .setNumber( m_climb6Motor.getMotorOutputVoltage());
+      widgetClimb10Position.setNumber( m_climb6Motor.getSelectedSensorPosition(0));
+      widgetClimb10Setpoint.setNumber( m_climb6Motor.getClosedLoopTarget());
+      widgetClimb10Current .setNumber( m_climb6Motor.getSupplyCurrent());
+      widgetClimb10Output  .setNumber( m_climb6Motor.getMotorOutputVoltage());
+      widgetClimb15Position.setNumber( m_climb6Motor.getSelectedSensorPosition(0));
+      widgetClimb15Setpoint.setNumber( m_climb6Motor.getClosedLoopTarget());
+      widgetClimb15Current .setNumber( m_climb6Motor.getSupplyCurrent());
+      widgetClimb15Output  .setNumber( m_climb6Motor.getMotorOutputVoltage());
+      widgetBatteryVoltage.setNumber( RobotController.getBatteryVoltage() );
+    }
+
     public void setClimb6Speed(double value){
         if( value == 0.0 )
         {
