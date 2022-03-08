@@ -286,17 +286,6 @@ private class JoystickAxisDown extends Trigger {
     operatorLeftAxisDown = new JoystickAxisDown( m_operatorController.getLeftYAxis() );
     operatorLeftAxisDown
       .whileActiveOnce(  new IntakeRetractCommand( m_intakeSubsystem ) );
-
-    if( m_operatorController.getLeftYAxis().get() > 0.5 )
-    {
-      intakeArmPosition = Constants.INTAKE_ARM_POSITION_OUT;
-    }
-    else if( m_operatorController.getLeftYAxis().get() < -0.5 ) 
-    {
-      intakeArmPosition = Constants.INTAKE_ARM_POSITION_IN;
-    }
-    m_intakeSubsystem.setIntakeArmPosition(intakeArmPosition);
-  
   }
 
   public void checkBumper()
