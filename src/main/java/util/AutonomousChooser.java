@@ -1,6 +1,7 @@
 package util;
 
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
@@ -19,11 +20,11 @@ public class AutonomousChooser {
     public AutonomousChooser(AutonomousTrajectories trajectories) {
         this.trajectories = trajectories;
 
-        autonomousModeChooser.setDefaultOption("PlaybackSomething", AutonomousMode.PLAYBACK_SOMETHING);
-        autonomousModeChooser.addOption("6 Ball Auto", AutonomousMode.EIGHT_BALL);
-        autonomousModeChooser.addOption("6 Ball Compatible", AutonomousMode.EIGHT_BALL_COMPATIBLE);
-        autonomousModeChooser.addOption("Simple Shoot Three", AutonomousMode.SIMPLE_SHOOT_THREE);
-        autonomousModeChooser.addOption("Simple Shoot Three", AutonomousMode.SIMPLE_SHOOT_THREE);
+        autonomousModeChooser.setDefaultOption("PlaybackSomething", AutonomousMode.AUTONOMOUS_NOTHING);
+        autonomousModeChooser.addOption("PlaybackSomething", AutonomousMode.PLAYBACK_SOMETHING);
+    
+        // Put the chooser on the dashboard
+        SmartDashboard.putData( autonomousModeChooser );
     }
 
     public SendableChooser<AutonomousMode> getAutonomousModeChooser() {
@@ -39,83 +40,10 @@ public class AutonomousChooser {
         return command;
     }
 
-    private SequentialCommandGroup get10BallAutoCommand(RobotContainer container) {
+    public Command AutonomousNothing(RobotContainer container) {
         SequentialCommandGroup command = new SequentialCommandGroup();
 
-        resetRobotPose(command, container, trajectories.getTenBallAutoPartOne());
-        followAndIntake(command, container, trajectories.getTenBallAutoPartOne());
-        shootAtTarget(command, container);
-        //command.addCommands(new FollowTrajectoryCommand(drivetrainSubsystem, trajectories.getTenBallAutoPartTwo()));
-        //command.addCommands(new TargetWithShooterCommand(shooterSubsystem, visionSubsystem, xboxController));
-
-        return command;
-    }
-
-    private Command get8BallAutoCommand(RobotContainer container) {
-        SequentialCommandGroup command = new SequentialCommandGroup();
-
-        //reset robot pose
-        resetRobotPose(command, container, trajectories.getEightBallAutoPartOne());
-//        command.addCommands(new HomeHoodMotorCommand(container.getShooterSubsystem()));
-        //follow first trajectory and shoot
-        follow(command, container, trajectories.getEightBallAutoPartOne());
-//        follow(command, container, trajectories.getEightBallAutoPartTwo());
-//        shootAtTarget(command, container, 1.5);
-        //follow second trajectory and shoot
-//        followAndIntake(command, container, trajectories.getEightBallAutoPartTwo());
-
-//        follow(command, container, trajectories.getEightBallAutoPartThree());
-//        shootAtTarget(command, container, 1.5);
-//        follow(command, container, trajectories.getEightBallAutoPartFour());
-
-        return command;
-    }
-
-    private Command get8BallCompatibleCommand(RobotContainer container) {
-        SequentialCommandGroup command = new SequentialCommandGroup();
-
-        //reset robot pose
-        resetRobotPose(command, container, trajectories.getEightBallCompatiblePartOne());
-//      command.addCommands(new HomeHoodMotorCommand(container.getShooterSubsystem()));
-        //follow first trajectory and shoot
-        follow(command, container, trajectories.getEightBallCompatiblePartOne());
-//        shootAtTarget(command, container, 1.5);
-        //follow second trajectory and shoot
-//        followAndIntake(command, container, trajectories.getEightBallCompatiblePartTwo());
-
-        follow(command, container, trajectories.getEightBallCompatiblePartThree());
-//        shootAtTarget(command, container, 1.5);
-        follow(command, container, trajectories.getEightBallCompatiblePartFour());
-
-        return command;
-    }
-
-    public Command getCircuit10BallAutoCommand(RobotContainer container) {
-        SequentialCommandGroup command = new SequentialCommandGroup();
-
-        // Reset the robot pose
-        resetRobotPose(command, container, trajectories.getCircuitTenBallAutoPartOne());
-        // Pickup the first balls and shoot
-//        followAndIntake(command, container, trajectories.getCircuitTenBallAutoPartOne());
-//        followAndIntake(command, container, trajectories.getCircuitTenBallAutoPartTwo());
-//        shootAtTarget(command, container);
-
-        // Grab from trench
-//        followAndIntake(command, container, trajectories.getEightBallAutoPartTwo());
-//        followAndIntake(command, container, trajectories.getEightBallAutoPartThree());
-        shootAtTarget(command, container);
-
-        return command;
-    }
-
-    public Command getSimpleShootThreeAutoCommand(RobotContainer container) {
-        SequentialCommandGroup command = new SequentialCommandGroup();
-
-        resetRobotPose(command, container, trajectories.getSimpleShootThree());
-//      command.addCommands(new HomeHoodMotorCommand(container.getShooterSubsystem()));
-
-//        shootAtTarget(command, container);
-        follow(command, container, trajectories.getSimpleShootThree());
+        command.addCommands(new WaitCommand(1.0) );
 
         return command;
     }
@@ -124,71 +52,19 @@ public class AutonomousChooser {
         switch (autonomousModeChooser.getSelected()) {
             case PLAYBACK_SOMETHING:
                 return getPlaybackSomethingCommand(container);
-            case EIGHT_BALL:
-                return get8BallAutoCommand(container);
-            case EIGHT_BALL_COMPATIBLE:
-                return get8BallCompatibleCommand(container);
-            case TEN_BALL:
-                return get10BallAutoCommand(container);
-            case TEN_BALL_CIRCUIT:
-                return getCircuit10BallAutoCommand(container);
-            case SIMPLE_SHOOT_THREE:
-                return getSimpleShootThreeAutoCommand(container);
         }
 
-        return get10BallAutoCommand(container);
+        return getPlaybackSomethingCommand(container);
     }
-
-    private void shootAtTarget(SequentialCommandGroup command, RobotContainer container) {
-//        shootAtTarget(command, container, 2.5);
-    }
-
-    private void shootAtTarget(SequentialCommandGroup command, RobotContainer container, double timeToWait) {
-/*
-        command.addCommands(
-                new TargetWithShooterCommand(container.getShooterSubsystem(), container.getVisionSubsystem(), container.getPrimaryController())
-                        .alongWith(new VisionRotateToTargetCommand(container.getDrivetrainSubsystem(), container.getVisionSubsystem(), () -> 0.0, () -> 0.0))
-                        .alongWith(
-                                new WaitCommand(0.1).andThen(new AutonomousFeedCommand(container.getShooterSubsystem(), container.getFeederSubsystem(), container.getVisionSubsystem())))
-                        .withTimeout(timeToWait));
-*/
-    }
-
-    private void follow(SequentialCommandGroup command, RobotContainer container, Trajectory trajectory) {
-        command.addCommands(new FollowTrajectoryCommand(container.getDrivetrainSubsystem(), trajectory)
- //               .deadlineWith(new TargetWithShooterCommand(container.getShooterSubsystem(), container.getVisionSubsystem(), container.getPrimaryController()))
-//                .alongWith(new PrepareBallsToShootCommand(container.getFeederSubsystem(), 1.0))
-                );
-    }
-
-    private void followAndIntake(SequentialCommandGroup command, RobotContainer container, Trajectory trajectory) {
-/*
-        command.addCommands(new InstantCommand(() -> container.getIntakeSubsystem().setTopExtended(true)));
-        command.addCommands(
-                new FollowTrajectoryCommand(container.getDrivetrainSubsystem(), trajectory)
-                        .deadlineWith(
-                                new IntakeCommand(container.getIntakeSubsystem(), container.getFeederSubsystem(), -1.0).withTimeout(0.25)
-                                        .andThen(
-                                                new IntakeCommand(container.getIntakeSubsystem(), container.getFeederSubsystem(), 1.0)
-                                                        .alongWith(
-                                                                new FeederIntakeWhenNotFullCommand(container.getFeederSubsystem(), 1.0)
-                                                        ))));
-        command.addCommands(new InstantCommand(() -> container.getIntakeSubsystem().setTopExtended(false)));
-    */
-}
 
     private void resetRobotPose(SequentialCommandGroup command, RobotContainer container, Trajectory trajectory) {
         command.addCommands(new InstantCommand(() -> container.getDrivetrainSubsystem().resetGyroAngle(Rotation2.ZERO)));
         command.addCommands(new InstantCommand(() -> container.getDrivetrainSubsystem().resetPose(
                 new RigidTransform2(trajectory.calculate(0.0).getPathState().getPosition(), Rotation2.ZERO))));
      }
-
+     
     private enum AutonomousMode {
-        EIGHT_BALL,
-        EIGHT_BALL_COMPATIBLE,
-        TEN_BALL,
-        TEN_BALL_CIRCUIT,
-        SIMPLE_SHOOT_THREE,
+        AUTONOMOUS_NOTHING,
         PLAYBACK_SOMETHING
     }
 }
