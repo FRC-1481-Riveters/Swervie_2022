@@ -20,7 +20,7 @@ public class AutonomousChooser {
     public AutonomousChooser(AutonomousTrajectories trajectories) {
         this.trajectories = trajectories;
 
-        autonomousModeChooser.setDefaultOption("PlaybackSomething", AutonomousMode.AUTONOMOUS_NOTHING);
+        autonomousModeChooser.setDefaultOption("Auton nothing", AutonomousMode.AUTONOMOUS_NOTHING);
         autonomousModeChooser.addOption("PlaybackSomething", AutonomousMode.PLAYBACK_SOMETHING);
     
         // Put the chooser on the dashboard
