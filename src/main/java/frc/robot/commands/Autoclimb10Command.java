@@ -27,10 +27,12 @@ public class Autoclimb10Command extends SequentialCommandGroup {
             new Climb6PositionCommand( m_climbSubsystem, -3300 ),
             new WaitCommand(2.0),
             new Climb10PositionCommand(m_climbSubsystem, 43500 ),
-            new Climb6PositionCommand(m_climbSubsystem, 15672 ),
-            new Climb10PositionCommand(m_climbSubsystem, 22500 )
+            new Climb6PositionCommand(m_climbSubsystem, 19000 ),
+            new Climb10PositionCommand(m_climbSubsystem, 22500 ),
+//            new WaitCommand( 1.0 ), //catch on maximum rock towards 4 point bar
+            new Autoclimb15Command( m_climbSubsystem )
           )
-          .withTimeout( 10.0 )
+          .withTimeout( 20.0 )
         );
 
         /*

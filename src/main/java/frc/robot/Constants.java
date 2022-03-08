@@ -80,7 +80,7 @@ public final class Constants {
 
     public static final double CLIMB6_MOTOR_KF = 0.00;
     public static final double CLIMB6_MOTOR_KP = 5.4;
-    public static final double CLIMB6_MOTOR_KI = 0.0055;
+    public static final double CLIMB6_MOTOR_KI = 0.0150;
     public static final double CLIMB6_MOTOR_KD = 0.0135;
     public static final double CLIMB6_MOTOR_CRUISE = 4000;
     public static final double CLIMB6_MOTOR_ACCELERATION = 8000;

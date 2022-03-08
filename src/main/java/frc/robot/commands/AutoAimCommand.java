@@ -18,8 +18,8 @@ public class AutoAimCommand extends CommandBase {
   public void execute() {
     double angle;
     angle = NetworkTableInstance.getDefault().getTable("limelight").getEntry("tx").getDouble(0); // get target angle
-    angle = angle * 0.01;
-    if( Math.abs(angle) < 3.0 ) angle = 0;
+    angle = angle * 0.1;
+    if( Math.abs(angle) < 1.0 ) angle = 0;
     m_robotContainer.autoAimAngle = angle;
   }
 
