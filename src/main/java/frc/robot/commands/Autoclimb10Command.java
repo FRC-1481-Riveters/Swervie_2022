@@ -20,15 +20,15 @@ public class Autoclimb10Command extends SequentialCommandGroup {
             parallel(
               new Climb6PositionCommand( m_climbSubsystem, 12000 ),
               sequence(
-                new Climb10PositionCommand( m_climbSubsystem, 6666 ), //-3500 ),  // unlatch climb10
-                new Climb10PositionCommand( m_climbSubsystem, 6666 )  //51000 )
+                new Climb10PositionCommand( m_climbSubsystem, -3500 ),  // unlatch climb10
+                new Climb10PositionCommand( m_climbSubsystem, 51000 )
               )
             ),
             new Climb6PositionCommand( m_climbSubsystem, -3300 ),
             new WaitCommand(2.0),
-            new Climb10PositionCommand(m_climbSubsystem, 6666 ), //43500 ),
+            new Climb10PositionCommand(m_climbSubsystem, 43500 ),
             new Climb6PositionCommand(m_climbSubsystem, 15672 ),
-            new Climb10PositionCommand(m_climbSubsystem, 6666 ) //22500 )
+            new Climb10PositionCommand(m_climbSubsystem, 22500 )
           )
           .withTimeout( 10.0 )
         );

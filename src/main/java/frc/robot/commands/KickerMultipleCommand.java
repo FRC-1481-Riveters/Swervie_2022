@@ -19,7 +19,7 @@ public class KickerMultipleCommand extends SequentialCommandGroup {
       addCommands(
           new ShooterWait( m_shooterSubsystem ),
           new KickerCommand( m_shooterSubsystem, m_output, true ),
-          new WaitCommand( 0.2 ),
+          new WaitCommand( 0.15 ),
           new KickerCommand( m_shooterSubsystem, 0.0, true ),
           new WaitCommand( 0.5 ),
           new ShooterWait( m_shooterSubsystem ),

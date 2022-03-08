@@ -30,7 +30,7 @@ import frc.robot.commands.IntakeRetractCommand;
 import frc.robot.commands.KickerMultipleCommand;
 import frc.robot.commands.KickerCommand;
 import frc.robot.commands.ShooterCommand;
-import frc.robot.commands.ShooterYeetCommandPart3ElectricBoogaloo;
+import frc.robot.commands.ShooterYeetCommandPart2ElectricBoogaloo;
 import frc.robot.commands.ShooterYeetCommandPart3ElectricBoogaloo;
 import common.math.Rotation2;
 import common.robot.input.Axis;
@@ -38,6 +38,8 @@ import common.robot.input.XboxController;
 import common.robot.input.DPadButton.Direction;
 
 import java.io.IOException;
+
+import javax.lang.model.util.ElementScanner6;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -251,16 +253,16 @@ private class JoystickAxisDown extends Trigger {
 
     //Shooter controls on operator controller
     m_operatorController.getDPadButton(Direction.UP)
-      .whileActiveOnce( new ShooterYeetCommandPart3ElectricBoogaloo( m_shooterSubsystem, 3200) );
+      .whileActiveOnce( new ShooterYeetCommandPart2ElectricBoogaloo( m_shooterSubsystem, 3200) );
 
     m_operatorController.getDPadButton(Direction.LEFT)
-      .whileActiveOnce( new ShooterYeetCommandPart3ElectricBoogaloo( m_shooterSubsystem, 2250) );
+      .whileActiveOnce( new ShooterYeetCommandPart2ElectricBoogaloo( m_shooterSubsystem, 2350) );
 
     m_operatorController.getDPadButton(Direction.RIGHT)
-      .whileActiveOnce( new ShooterYeetCommandPart3ElectricBoogaloo( m_shooterSubsystem, 3800) );
+      .whileActiveOnce( new ShooterYeetCommandPart2ElectricBoogaloo( m_shooterSubsystem, 3800) );
 
     m_operatorController.getDPadButton(Direction.DOWN)
-      .whileActiveOnce( new ShooterYeetCommandPart3ElectricBoogaloo( m_shooterSubsystem, 4500) );
+      .whileActiveOnce( new ShooterYeetCommandPart2ElectricBoogaloo( m_shooterSubsystem, 4400) );
 
     //Kicker controls on drive controller
     m_controller.getDPadButton(Direction.UP)
@@ -270,7 +272,7 @@ private class JoystickAxisDown extends Trigger {
       .whileActiveOnce(new KickerCommand(m_shooterSubsystem, -0.6, false));
 
     m_controller.getAButton()
-      .whileActiveOnce( new KickerMultipleCommand( m_shooterSubsystem, -0.6 ) );
+      .whileActiveOnce( new KickerMultipleCommand( m_shooterSubsystem, -0.5 ) );
 
     operatorLeftTrigger = new JoystickTriggerPressed( m_operatorController.getLeftTriggerAxis() );
     m_operatorController.getBackButton() 

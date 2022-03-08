@@ -152,18 +152,27 @@ public class ClimbSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
       // This method will be called once per scheduler run
-      widgetClimb6Position.setNumber( m_climb6Motor.getSelectedSensorPosition(0));
-      widgetClimb6Setpoint.setNumber( m_climb6Motor.getClosedLoopTarget());
-      widgetClimb6Current .setNumber( m_climb6Motor.getSupplyCurrent());
-      widgetClimb6Output  .setNumber( m_climb6Motor.getMotorOutputVoltage());
-      widgetClimb10Position.setNumber( m_climb10Motor.getSelectedSensorPosition(0));
-      widgetClimb10Setpoint.setNumber( m_climb10Motor.getClosedLoopTarget());
-      widgetClimb10Current .setNumber( m_climb10Motor.getSupplyCurrent());
-      widgetClimb10Output  .setNumber( m_climb10Motor.getMotorOutputVoltage());
-      widgetClimb15Position.setNumber( m_climb15Motor.getSelectedSensorPosition(0));
-      widgetClimb15Setpoint.setNumber( m_climb15Motor.getClosedLoopTarget());
-      widgetClimb15Current .setNumber( m_climb15Motor.getSupplyCurrent());
-      widgetClimb15Output  .setNumber( m_climb15Motor.getMotorOutputVoltage());
+      if( m_climb6Motor.getControlMode() == ControlMode.MotionMagic )
+      {
+        widgetClimb6Position.setNumber( m_climb6Motor.getSelectedSensorPosition(0));
+        widgetClimb6Setpoint.setNumber( m_climb6Motor.getClosedLoopTarget());
+        widgetClimb6Current .setNumber( m_climb6Motor.getSupplyCurrent());
+        widgetClimb6Output  .setNumber( m_climb6Motor.getMotorOutputVoltage());
+      }
+      if( m_climb10Motor.getControlMode() == ControlMode.MotionMagic )
+      {
+        widgetClimb10Position.setNumber( m_climb10Motor.getSelectedSensorPosition(0));
+        widgetClimb10Setpoint.setNumber( m_climb10Motor.getClosedLoopTarget());
+        widgetClimb10Current .setNumber( m_climb10Motor.getSupplyCurrent());
+        widgetClimb10Output  .setNumber( m_climb10Motor.getMotorOutputVoltage());
+      }
+      if( m_climb15Motor.getControlMode() == ControlMode.MotionMagic )
+      {
+        widgetClimb15Position.setNumber( m_climb15Motor.getSelectedSensorPosition(0));
+        widgetClimb15Setpoint.setNumber( m_climb15Motor.getClosedLoopTarget());
+        widgetClimb15Current .setNumber( m_climb15Motor.getSupplyCurrent());
+        widgetClimb15Output  .setNumber( m_climb15Motor.getMotorOutputVoltage());
+      }
       widgetBatteryVoltage.setNumber( RobotController.getBatteryVoltage() );
     }
 

@@ -47,7 +47,7 @@ public class IntakeSubsystem extends SubsystemBase {
         m_intakeArmMotor.configMotionAcceleration(1000, Constants.TALON_TIMEOUT_MS);
         //  Zero the sensor once on robot startup
         m_intakeArmMotor.setSelectedSensorPosition(0, 0, Constants.TALON_TIMEOUT_MS);
-        m_intakeArmMotor.set(ControlMode.MotionMagic, INTAKE_ARM_POSITION_IN);
+        m_intakeArmMotor.set( ControlMode.MotionMagic, INTAKE_ARM_POSITION_IN_FULL );
     }
     public void setIntakeSpeed(double value){
         m_intakeMotor.set(ControlMode.PercentOutput, value);

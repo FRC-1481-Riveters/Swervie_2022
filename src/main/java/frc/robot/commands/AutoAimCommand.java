@@ -16,7 +16,11 @@ public class AutoAimCommand extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_robotContainer.autoAimAngle = NetworkTableInstance.getDefault().getTable("limelight").getEntry("ta").getDouble(0); // get target angle
+    double angle;
+    angle = NetworkTableInstance.getDefault().getTable("limelight").getEntry("tx").getDouble(0); // get target angle
+    angle = angle * 0.01;
+    if( Math.abs(angle) < 3.0 ) angle = 0;
+    m_robotContainer.autoAimAngle = angle;
   }
 
   // Returns true when the command should end.

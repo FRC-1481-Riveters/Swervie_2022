@@ -17,8 +17,8 @@ public class ShooterYeetCommandPart2ElectricBoogaloo extends SequentialCommandGr
       shooterIntendedSpeed = speed;
 
       addCommands(
-          new KickerCommand( m_shooterSubsystem, -0.4, true ),
-          new WaitCommand( 0.1 ),
+          new KickerCommand( m_shooterSubsystem, 0.4, true ),
+          new WaitCommand( 0.2 ),
           new KickerCommand( m_shooterSubsystem, 0, true ),
           new ShooterYeetCommandPart3ElectricBoogaloo(m_shooterSubsystem, shooterIntendedSpeed)
       );
@@ -29,6 +29,7 @@ public class ShooterYeetCommandPart2ElectricBoogaloo extends SequentialCommandGr
   @Override
   public void end(boolean interrupted) {
     m_shooterSubsystem.setKickerSpeed(0.0);
+    m_shooterSubsystem.setYeetSpeed(0.0);
   }
     
 }
