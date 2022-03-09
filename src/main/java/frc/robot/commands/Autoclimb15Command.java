@@ -26,8 +26,8 @@ public class Autoclimb15Command extends SequentialCommandGroup {
               new Climb10PositionCommand( m_climbSubsystem, -3500 ),
               new Climb15PositionCommand( m_climbSubsystem, 26000 )
             ),
-            new WaitCommand( 1.0 ),
-            new Climb15PositionCommand( m_climbSubsystem, 46800 ),
+            new WaitCommand( 0.85 ),
+            new Climb15PositionCommand( m_climbSubsystem, 44000 ),
             parallel(
               new Climb10PositionCommand( m_climbSubsystem, 48500 ),
               new Climb15PositionCommand( m_climbSubsystem, 21000 )
