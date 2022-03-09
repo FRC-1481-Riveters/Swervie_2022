@@ -109,6 +109,11 @@ public class RobotContainer {
     return m_intakeSubsystem;
   }
 
+  public ShooterSubsystem getShooterSubsystem()
+  {
+    return m_shooterSubsystem;
+  }
+
 private Axis getDriveForwardAxis() {
     return m_controller.getLeftYAxis();
 }
