@@ -7,7 +7,8 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.RobotContainer;
-import frc.robot.commands.*;
+import frc.robot.commands.AutonMacroPlayback;
+import frc.robot.commands.AutonPathA;
 import common.control.Trajectory;
 import common.math.RigidTransform2;
 import common.math.Rotation2;
@@ -31,11 +32,20 @@ public class AutonomousChooser {
         return autonomousModeChooser;
     }
 
-    public Command getPlaybackSomethingCommand(RobotContainer container) {
+    public Command getPlaybackSomethingCommand(RobotContainer robotContainer) {
         SequentialCommandGroup command = new SequentialCommandGroup();
 
-        resetRobotPose(command, container, trajectories.getAutonPlaybackTrajectory());
-        command.addCommands(new AutonMacroPlayback( "/home/lvuser/autonpath.csv", container.getDrivetrainSubsystem() ) );
+        resetRobotPose(command, robotContainer, trajectories.getAutonPlaybackTrajectory());
+        command.addCommands(new AutonMacroPlayback( "/home/lvuser/autonpath.csv", robotContainer.getDrivetrainSubsystem() ) );
+
+        return command;
+    }
+
+    public Command getPathACommand(RobotContainer robotContainer) {
+        SequentialCommandGroup command = new SequentialCommandGroup();
+
+        resetRobotPose(command, robotContainer, trajectories.getAutonPlaybackTrajectory());
+        command.addCommands(new AutonPathA( robotContainer, "/home/lvuser/patha.csv" ) );
 
         return command;
     }
@@ -48,13 +58,23 @@ public class AutonomousChooser {
         return command;
     }
 
-    public Command getCommand(RobotContainer container) {
-        switch (autonomousModeChooser.getSelected()) {
-            case PLAYBACK_SOMETHING:
-                return getPlaybackSomethingCommand(container);
-        }
+    public Command getCommand(RobotContainer robotContainer) {
+        Command command;
 
-        return getPlaybackSomethingCommand(container);
+        switch (autonomousModeChooser.getSelected()) {
+            case AUTON_PATH_A:
+                command = getPathACommand( robotContainer );
+                break;
+
+            case PLAYBACK_SOMETHING:
+                command = getPlaybackSomethingCommand( robotContainer );
+                break;
+
+            default:
+                command = new WaitCommand( 1.0 );
+                break;
+        }
+        return command;
     }
 
     private void resetRobotPose(SequentialCommandGroup command, RobotContainer container, Trajectory trajectory) {
@@ -65,6 +85,7 @@ public class AutonomousChooser {
      
     private enum AutonomousMode {
         AUTONOMOUS_NOTHING,
-        PLAYBACK_SOMETHING
+        AUTON_PATH_A,
+        PLAYBACK_SOMETHING,
     }
 }
