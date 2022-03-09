@@ -17,7 +17,7 @@ public class IntakeSubsystem extends SubsystemBase {
     TalonSRX m_intakeMotor = new TalonSRX(INTAKE_MOTOR); 
 
     public void IntakeSubsystemInit() {
-        m_intakeArmMotor.configFactoryDefault();
+        //m_intakeArmMotor.configFactoryDefault();
         m_intakeArmMotor.configSelectedFeedbackSensor( FeedbackDevice.CTRE_MagEncoder_Relative, 0, Constants.TALON_TIMEOUT_MS);
         m_intakeArmMotor.configNeutralDeadband(0.10, Constants.TALON_TIMEOUT_MS);
         // Configure Talon  SRX output and sensor direction
