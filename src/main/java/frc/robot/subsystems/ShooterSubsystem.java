@@ -31,7 +31,7 @@ public class ShooterSubsystem extends SubsystemBase{
     private NetworkTableEntry shooterKf;
     
     public ShooterSubsystem(){
-      //m_yeetMotor.restoreFactoryDefaults();
+      m_yeetMotor.restoreFactoryDefaults();
       m_yeetMotor.setInverted(true);
       m_pidController.setP(0.0001);
       m_pidController.setI(0.000000005);

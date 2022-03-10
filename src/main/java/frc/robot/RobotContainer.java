@@ -282,7 +282,7 @@ private class JoystickAxisDown extends Trigger {
       .whileActiveOnce(new KickerCommand(m_shooterSubsystem, -0.6, false));
 
     m_controller.getAButton()
-      .whileActiveOnce( new KickerMultipleCommand( m_shooterSubsystem, -0.5 ) );
+      .whileActiveOnce( new KickerMultipleCommand( m_shooterSubsystem, -0.4 ) );
 
     operatorLeftTrigger = new JoystickTriggerPressed( m_operatorController.getLeftTriggerAxis() );
     m_operatorController.getBackButton() 
@@ -308,7 +308,7 @@ private class JoystickAxisDown extends Trigger {
   }
 
   public void controlIntake(){
-    m_intakeSubsystem.setIntakeSpeed(m_operatorController.getRightYAxis().get() );
+    m_intakeSubsystem.setIntakeSpeed(m_operatorController.getRightYAxis().get() / 1.5 );
   }
 
 

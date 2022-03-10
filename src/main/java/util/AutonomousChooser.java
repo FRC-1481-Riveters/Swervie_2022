@@ -22,6 +22,9 @@ public class AutonomousChooser {
         this.trajectories = trajectories;
 
         autonomousModeChooser.setDefaultOption("Auton nothing", AutonomousMode.AUTONOMOUS_NOTHING);
+        autonomousModeChooser.addOption("Path A", AutonomousMode.AUTON_PATH_A);
+        autonomousModeChooser.addOption("Path B", AutonomousMode.AUTON_PATH_B);
+        autonomousModeChooser.addOption("Path C", AutonomousMode.AUTON_PATH_C);
         autonomousModeChooser.addOption("PlaybackSomething", AutonomousMode.PLAYBACK_SOMETHING);
     
         // Put the chooser on the dashboard
@@ -50,6 +53,24 @@ public class AutonomousChooser {
         return command;
     }
 
+    public Command getPathBCommand(RobotContainer robotContainer) {
+        SequentialCommandGroup command = new SequentialCommandGroup();
+
+        resetRobotPose(command, robotContainer, trajectories.getAutonPlaybackTrajectory());
+        command.addCommands(new AutonPathA( robotContainer, "/home/lvuser/pathb.csv" ) );
+
+        return command;
+    }
+
+    public Command getPathCCommand(RobotContainer robotContainer) {
+        SequentialCommandGroup command = new SequentialCommandGroup();
+
+        resetRobotPose(command, robotContainer, trajectories.getAutonPlaybackTrajectory());
+        command.addCommands(new AutonPathA( robotContainer, "/home/lvuser/pathc.csv" ) );
+
+        return command;
+    }
+
     public Command AutonomousNothing(RobotContainer container) {
         SequentialCommandGroup command = new SequentialCommandGroup();
 
@@ -64,6 +85,14 @@ public class AutonomousChooser {
         switch (autonomousModeChooser.getSelected()) {
             case AUTON_PATH_A:
                 command = getPathACommand( robotContainer );
+                break;
+
+            case AUTON_PATH_B:
+                command = getPathBCommand( robotContainer );
+                break;
+
+            case AUTON_PATH_C:
+                command = getPathCCommand( robotContainer );
                 break;
 
             case PLAYBACK_SOMETHING:
@@ -86,6 +115,8 @@ public class AutonomousChooser {
     private enum AutonomousMode {
         AUTONOMOUS_NOTHING,
         AUTON_PATH_A,
+        AUTON_PATH_B,
+        AUTON_PATH_C,
         PLAYBACK_SOMETHING,
     }
 }
