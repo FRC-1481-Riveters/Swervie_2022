@@ -84,27 +84,16 @@ public class MacroPlayback {
 		//end play, there are no more values to find
 		else
 		{
-			this.end();
 			if (scanner != null) 
 			{
 				scanner.close();
 				scanner = null;
+                m_finished = true;
 			}
 		}
 		
 	}
 	
-	//stop motors and end playing the recorded file
-	public void end()
-	{
-        if (scanner != null)
-		{
-			scanner.close();
-		}
-
-        m_finished = true;
-    }
-    
     public boolean isFinished()
     {
         return m_finished;
