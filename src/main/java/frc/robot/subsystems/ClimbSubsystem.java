@@ -55,12 +55,12 @@ public class ClimbSubsystem extends SubsystemBase {
         widgetClimb15Output   = tab.add("C15Out",0).withWidget("Graph").getEntry();
         widgetBatteryVoltage = tab.add("Battery",0).withWidget("Graph").getEntry();
     
-        //m_climb6Motor.configFactoryDefault();
+        m_climb6Motor.configFactoryDefault();
         m_climb6Motor.configSelectedFeedbackSensor( FeedbackDevice.CTRE_MagEncoder_Relative, 0, Constants.TALON_TIMEOUT_MS);
         m_climb6Motor.configNeutralDeadband(0.10, Constants.TALON_TIMEOUT_MS);
         // Configure Talon  SRX output and sensor direction
         m_climb6Motor.setSensorPhase(true);
-        m_climb6Motor.setInverted(true);
+        m_climb6Motor.setInverted(false);
         // Set relevant frame periods to be at least twice as fast as periodic rate
         m_climb6Motor.setStatusFramePeriod(StatusFrameEnhanced.Status_13_Base_PIDF0, 10, Constants.TALON_TIMEOUT_MS);
         m_climb6Motor.setStatusFramePeriod(StatusFrameEnhanced.Status_10_MotionMagic, 10, Constants.TALON_TIMEOUT_MS);
@@ -86,7 +86,7 @@ public class ClimbSubsystem extends SubsystemBase {
         //  Zero the sensor once on robot startup
         m_climb6Motor.setSelectedSensorPosition(CLIMB6_POSITION_IN, 0, Constants.TALON_TIMEOUT_MS);
 
-        //m_climb10Motor.configFactoryDefault();
+        m_climb10Motor.configFactoryDefault();
         m_climb10Motor.configSelectedFeedbackSensor( FeedbackDevice.CTRE_MagEncoder_Relative, 0, Constants.TALON_TIMEOUT_MS);
         m_climb10Motor.configNeutralDeadband(0.10, Constants.TALON_TIMEOUT_MS);
         // Configure Talon  SRX output and sensor direction
@@ -117,7 +117,7 @@ public class ClimbSubsystem extends SubsystemBase {
         //  Zero the sensor once on robot startup
         m_climb10Motor.setSelectedSensorPosition(CLIMB6_POSITION_IN, 0, Constants.TALON_TIMEOUT_MS);
 
-        //m_climb15Motor.configFactoryDefault();
+        m_climb15Motor.configFactoryDefault();
         m_climb15Motor.configSelectedFeedbackSensor( FeedbackDevice.CTRE_MagEncoder_Relative, 0, Constants.TALON_TIMEOUT_MS);
         m_climb15Motor.configNeutralDeadband(0.10, Constants.TALON_TIMEOUT_MS);
         // Configure Talon  SRX output and sensor direction
