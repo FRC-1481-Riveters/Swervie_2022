@@ -9,7 +9,7 @@ import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.ClimbSubsystem;
 
-public class AutonPathA extends SequentialCommandGroup {
+public class AutonPathShootBackup extends SequentialCommandGroup {
 
     private DrivetrainSubsystem m_drivetrainSubsystem;
     private IntakeSubsystem m_intakeSubsystem;
@@ -17,7 +17,7 @@ public class AutonPathA extends SequentialCommandGroup {
     private String m_autonPath;
     private ClimbSubsystem m_climbSubsystem;
 
-    public AutonPathA( RobotContainer container, String autonpath )
+    public AutonPathShootBackup( RobotContainer container, String autonpath )
     {
       m_drivetrainSubsystem = container.getDrivetrainSubsystem();
       m_intakeSubsystem = container.getIntakeSubsystem();
@@ -31,28 +31,18 @@ public class AutonPathA extends SequentialCommandGroup {
           new Climb10PositionCommand(m_climbSubsystem, 600),
           new Climb15PositionCommand(m_climbSubsystem, 600)
         ),
-        parallel(
-          new AutonMacroPlayback( m_autonPath, m_drivetrainSubsystem ),
-          sequence(
-            parallel(
-              new IntakePositionCommand(m_intakeSubsystem, Constants.INTAKE_ARM_POSITION_OUT),
-              new IntakeArmRollerCommand(m_intakeSubsystem, 0.75)
-              .withTimeout(5.0)
-            ),
-            new IntakePositionCommand(m_intakeSubsystem, Constants.INTAKE_ARM_POSITION_IN),
-            new WaitCommand(3.5),
-            parallel(
-              new ShooterYeetCommandPart2ElectricBoogaloo(m_shooterSubsystem, 3800),
+        sequence(
+          parallel(
+            new ShooterYeetCommandPart2ElectricBoogaloo(m_shooterSubsystem, 3800),
               sequence(
                 new WaitCommand(2.0),
                 new KickerMultipleCommand( m_shooterSubsystem, -0.5 )
-              )
             )
-            .withTimeout(5.0)
+          )
+          .withTimeout(5.0),
+          new AutonMacroPlayback( m_autonPath, m_drivetrainSubsystem )
           )
           .withTimeout(15.0)
-        )
-      );
-
+        );
     }
 }

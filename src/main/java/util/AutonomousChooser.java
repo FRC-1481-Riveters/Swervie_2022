@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.RobotContainer;
 import frc.robot.commands.AutonMacroPlayback;
 import frc.robot.commands.AutonPathA;
+import frc.robot.commands.AutonPathShootBackup;
 import common.control.Trajectory;
 import common.math.RigidTransform2;
 import common.math.Rotation2;
@@ -25,6 +26,7 @@ public class AutonomousChooser {
         autonomousModeChooser.addOption("Path A", AutonomousMode.AUTON_PATH_A);
         autonomousModeChooser.addOption("Path B", AutonomousMode.AUTON_PATH_B);
         autonomousModeChooser.addOption("Path C", AutonomousMode.AUTON_PATH_C);
+        autonomousModeChooser.addOption("Shoot and Backup", AutonomousMode.AUTON_PATH_SHOOT_BACKUP);
         autonomousModeChooser.addOption("PlaybackSomething", AutonomousMode.PLAYBACK_SOMETHING);
     
         // Put the chooser on the dashboard
@@ -71,6 +73,15 @@ public class AutonomousChooser {
         return command;
     }
 
+    public Command getPathBackupCommand(RobotContainer robotContainer){
+        SequentialCommandGroup command = new SequentialCommandGroup();
+
+        resetRobotPose(command, robotContainer, trajectories.getAutonPlaybackTrajectory());
+        command.addCommands(new AutonPathShootBackup( robotContainer, "/home/lvuser/backup10foot.csv" ) );
+
+        return command;
+    }
+
     public Command AutonomousNothing(RobotContainer container) {
         SequentialCommandGroup command = new SequentialCommandGroup();
 
@@ -95,6 +106,10 @@ public class AutonomousChooser {
                 command = getPathCCommand( robotContainer );
                 break;
 
+            case AUTON_PATH_SHOOT_BACKUP:
+                command = getPathBackupCommand(robotContainer);
+                break;
+
             case PLAYBACK_SOMETHING:
                 command = getPlaybackSomethingCommand( robotContainer );
                 break;
@@ -117,6 +132,7 @@ public class AutonomousChooser {
         AUTON_PATH_A,
         AUTON_PATH_B,
         AUTON_PATH_C,
+        AUTON_PATH_SHOOT_BACKUP,
         PLAYBACK_SOMETHING,
     }
 }

@@ -114,6 +114,10 @@ public class RobotContainer {
     return m_shooterSubsystem;
   }
 
+  public ClimbSubsystem getClimbSubsystem(){
+    return m_climbSubsystem;
+  }
+
 private Axis getDriveForwardAxis() {
     return m_controller.getLeftYAxis();
 }
