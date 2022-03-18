@@ -4,9 +4,6 @@
 
 package frc.robot.subsystems;
 
-import com.kauailabs.navx.frc.*;
-import edu.wpi.first.wpilibj.SPI;
-//import com.ctre.phoenix.sensors.PigeonIMU;
 import com.swervedrivespecialties.swervelib.Mk3SwerveModuleHelper;
 import com.swervedrivespecialties.swervelib.SwerveModule;
 import edu.wpi.first.wpilibj.RobotController;
@@ -20,7 +17,8 @@ import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj.Timer;
 
 import common.control.*;
-import common.robot.drivers.NavX;
+import common.drivers.Gyroscope;
+import common.robot.drivers.Pigeon;
 import common.kinematics.ChassisVelocity;
 import common.kinematics.SwerveKinematics;
 import common.kinematics.SwerveOdometry;
@@ -90,7 +88,7 @@ public class DrivetrainSubsystem implements Subsystem, UpdateManager.Updatable {
   // By default we use a Pigeon for our gyroscope. But if you use another gyroscope, like a NavX, you can change this.
   // The important thing about how you configure your gyroscope is that rotating the robot counter-clockwise should
   // cause the angle reading to increase until it wraps back over to zero.
-  private final NavX gyroscope = new NavX(SPI.Port.kMXP, (byte) 200); // NavX connected over MXP
+  private final Gyroscope gyroscope = new Pigeon( 60 );
 
   private final Object kinematicsLock = new Object();
   //@GuardedBy("kinematicsLock")

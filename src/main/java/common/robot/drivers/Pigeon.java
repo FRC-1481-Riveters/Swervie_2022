@@ -1,24 +1,19 @@
 package common.robot.drivers;
 
-import com.kauailabs.navx.frc.AHRS;
-import edu.wpi.first.wpilibj.SPI;
+import com.ctre.phoenix.sensors.PigeonIMU;
 import common.drivers.Gyroscope;
 import common.math.Rotation2;
 
-public final class NavX extends Gyroscope {
-    private final AHRS navX;
+public class Pigeon extends Gyroscope {
+    private final PigeonIMU pigeon;
 
-    public NavX(SPI.Port port) {
-        this(port, (byte) 200);
-    }
-
-    public NavX(SPI.Port port, byte updateRate) {
-        navX = new AHRS(port, updateRate);
+    public Pigeon(int canId) {
+        pigeon = new PigeonIMU(canId);
     }
 
     @Override
     public void calibrate() {
-        navX.reset();
+        pigeon.setFusedHeading(0);
     }
 
     @Override
@@ -28,17 +23,19 @@ public final class NavX extends Gyroscope {
 
     @Override
     public double getUnadjustedRate() {
-        return Math.toRadians(navX.getRate());
+        return 0; // TODO
     }
 
     public double getAxis(Axis axis) {
+        double[] ypr = new double[3];
+        pigeon.getYawPitchRoll(ypr);
         switch (axis) {
             case PITCH:
-                return Math.toRadians(navX.getPitch());
+                return Math.toRadians(ypr[1]);
             case ROLL:
-                return Math.toRadians(navX.getRoll());
+                return Math.toRadians(ypr[2]);
             case YAW:
-                return Math.toRadians(navX.getYaw());
+                return Math.toRadians(ypr[0]);
             default:
                 return 0.0;
         }
