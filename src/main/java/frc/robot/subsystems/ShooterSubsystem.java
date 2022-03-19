@@ -6,6 +6,9 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.smartdashboard.*;
+import edu.wpi.first.wpilibj.AnalogInput;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.*;
@@ -29,8 +32,13 @@ public class ShooterSubsystem extends SubsystemBase{
     private NetworkTableEntry shooterKi;
     private NetworkTableEntry shooterKd;
     private NetworkTableEntry shooterKf;
+    AnalogInput m_shooterBeamBreak = new AnalogInput(0);
+    private ShuffleboardTab tab;
+    private NetworkTableEntry lightSensor;
     
     public ShooterSubsystem(){
+      m_kickerMotor.configFactoryDefault();
+      m_kickerMotor.setInverted(true);
       m_yeetMotor.restoreFactoryDefaults();
       m_yeetMotor.setInverted(true);
       m_pidController.setP(0.0001);
@@ -49,6 +57,18 @@ public class ShooterSubsystem extends SubsystemBase{
       shooterKd.setDouble(m_pidController.getD());
       shooterKf.setDouble(m_pidController.getFF());
 
+      tab = Shuffleboard.getTab("SmartDashboard");
+      lightSensor = tab.add("Light Sensor",0).getEntry();
+
+    }
+    @Override
+    public void periodic() {
+      // This method will be called once per scheduler run
+      if( getLightCurtain() == true )
+        lightSensor.setNumber( 1 );
+      else {
+        lightSensor.setNumber(0);
+      }
     }
 
     public void setYeetSpeed (double RPM){
@@ -75,6 +95,15 @@ public class ShooterSubsystem extends SubsystemBase{
           return true;
         } else {
           return false;
+        }
+      }
+      
+      public boolean getLightCurtain(){
+        if (m_shooterBeamBreak.getVoltage() < 1.7){
+          return false;
+        }
+        else{
+          return true;
         }
       }
     

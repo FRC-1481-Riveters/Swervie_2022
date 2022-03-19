@@ -7,13 +7,15 @@ public class KickerCommand extends CommandBase {
 
     private ShooterSubsystem m_shooterSubsystem;
     private double m_output;
-    private boolean m_oneShot;
+    private boolean m_useSensor;
+    private boolean m_sensorActive;
 
-    public KickerCommand( ShooterSubsystem subsystem, double value, boolean bOneShot )
+    public KickerCommand( ShooterSubsystem subsystem, double value, boolean useSensor, boolean sensorActive)
     {
         m_shooterSubsystem = subsystem;
         m_output = value;
-        m_oneShot = bOneShot;
+        m_useSensor = useSensor;
+        m_sensorActive = sensorActive;
     }
     
   // Called when the command is initially scheduled.
@@ -32,8 +34,11 @@ public class KickerCommand extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if( m_oneShot == true )
+    if( m_useSensor == false )
     {
+      return false;
+    }
+    else if(m_sensorActive == m_shooterSubsystem.getLightCurtain() ){
       return true;
     }
     else
@@ -45,10 +50,7 @@ public class KickerCommand extends CommandBase {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    if( m_oneShot == false )
-    {
-      m_shooterSubsystem.setKickerSpeed(0);
-    }
+    m_shooterSubsystem.setKickerSpeed(0);
     super.end(interrupted);
   }
 }

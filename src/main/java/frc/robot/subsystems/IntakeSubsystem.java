@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
@@ -15,13 +16,14 @@ import static frc.robot.Constants.*;
 public class IntakeSubsystem extends SubsystemBase {
     TalonSRX m_intakeArmMotor = new TalonSRX(INTAKE_ARM_MOTOR); 
     TalonSRX m_intakeMotor = new TalonSRX(INTAKE_MOTOR); 
+    
 
     public void IntakeSubsystemInit() {
-        //m_intakeArmMotor.configFactoryDefault();
+        m_intakeArmMotor.configFactoryDefault();
         m_intakeArmMotor.configSelectedFeedbackSensor( FeedbackDevice.CTRE_MagEncoder_Relative, 0, Constants.TALON_TIMEOUT_MS);
         m_intakeArmMotor.configNeutralDeadband(0.10, Constants.TALON_TIMEOUT_MS);
         // Configure Talon  SRX output and sensor direction
-        m_intakeArmMotor.setSensorPhase(true);
+        m_intakeArmMotor.setSensorPhase(false);
         m_intakeArmMotor.setInverted(false);
         // Set relevant frame periods to be at least twice as fast as periodic rate
         m_intakeArmMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_13_Base_PIDF0, 10, Constants.TALON_TIMEOUT_MS);

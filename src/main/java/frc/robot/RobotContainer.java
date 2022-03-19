@@ -266,24 +266,27 @@ private class JoystickAxisDown extends Trigger {
       .whileActiveOnce(new ClimbZeroPosition(m_climbSubsystem));
 
     //Shooter controls on operator controller
+    // center to back bumper  12' 1" = 2500 rpm   limelight ty 0 degrees
+    // center to back bumper: 13' 3" = 2500 rpm   limelight ty 4.00 degrees
+    // center to back bumper: 15' 1" = 2900 rpm
     m_operatorController.getDPadButton(Direction.UP)
-      .whileActiveOnce( new ShooterYeetCommandPart2ElectricBoogaloo( m_shooterSubsystem, 3200) );
+      .whileActiveOnce( new ShooterYeetCommandPart2ElectricBoogaloo( m_shooterSubsystem, 2500) );
 
     m_operatorController.getDPadButton(Direction.LEFT)
-      .whileActiveOnce( new ShooterYeetCommandPart2ElectricBoogaloo( m_shooterSubsystem, 2350) );
+      .whileActiveOnce( new ShooterYeetCommandPart2ElectricBoogaloo( m_shooterSubsystem, 2400) );
 
     m_operatorController.getDPadButton(Direction.RIGHT)
-      .whileActiveOnce( new ShooterYeetCommandPart2ElectricBoogaloo( m_shooterSubsystem, 3800) );
+      .whileActiveOnce( new ShooterYeetCommandPart2ElectricBoogaloo( m_shooterSubsystem, 2900) );
 
     m_operatorController.getDPadButton(Direction.DOWN)
-      .whileActiveOnce( new ShooterYeetCommandPart2ElectricBoogaloo( m_shooterSubsystem, 4400) );
+      .whileActiveOnce( new ShooterYeetCommandPart2ElectricBoogaloo( m_shooterSubsystem, 3400) );
 
     //Kicker controls on drive controller
     m_controller.getDPadButton(Direction.UP)
-      .whileActiveOnce( new KickerCommand( m_shooterSubsystem, 0.6, false ) );
+      .whileActiveOnce( new KickerCommand( m_shooterSubsystem, 0.6, false, false ) );
 
     m_controller.getDPadButton(Direction.DOWN)
-      .whileActiveOnce(new KickerCommand(m_shooterSubsystem, -0.6, false));
+      .whileActiveOnce(new KickerCommand(m_shooterSubsystem, -0.6, false, false));
 
     m_controller.getAButton()
       .whileActiveOnce( new KickerMultipleCommand( m_shooterSubsystem, -0.4 ) );
@@ -305,9 +308,9 @@ private class JoystickAxisDown extends Trigger {
   public void checkBumper()
   {
     if(m_controller.getRightBumperButton().get()==true){
-      m_drivetrainSubsystem.joystickDivider = 1.0;
-    }else{
       m_drivetrainSubsystem.joystickDivider = 1.5;
+    }else{
+      m_drivetrainSubsystem.joystickDivider = 1.0;
     }
   }
 
