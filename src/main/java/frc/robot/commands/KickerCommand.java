@@ -8,14 +8,14 @@ public class KickerCommand extends CommandBase {
     private ShooterSubsystem m_shooterSubsystem;
     private double m_output;
     private boolean m_useSensor;
-    private boolean m_sensorActive;
+    private boolean m_sensorBlocked;
 
-    public KickerCommand( ShooterSubsystem subsystem, double value, boolean useSensor, boolean sensorActive)
+    public KickerCommand( ShooterSubsystem subsystem, double value, boolean useSensor, boolean sensorBlocked)
     {
         m_shooterSubsystem = subsystem;
         m_output = value;
         m_useSensor = useSensor;
-        m_sensorActive = sensorActive;
+        m_sensorBlocked = sensorBlocked;
     }
     
   // Called when the command is initially scheduled.
@@ -38,7 +38,7 @@ public class KickerCommand extends CommandBase {
     {
       return false;
     }
-    else if(m_sensorActive == m_shooterSubsystem.getLightCurtain() ){
+    else if(m_sensorBlocked == m_shooterSubsystem.isLightCurtainBlocked() ){
       return true;
     }
     else
