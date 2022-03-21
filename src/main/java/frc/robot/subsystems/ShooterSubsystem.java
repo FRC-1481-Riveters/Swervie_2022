@@ -6,7 +6,7 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.smartdashboard.*;
-import edu.wpi.first.wpilibj.AnalogInput;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 
@@ -32,7 +32,7 @@ public class ShooterSubsystem extends SubsystemBase{
     private NetworkTableEntry shooterKi;
     private NetworkTableEntry shooterKd;
     private NetworkTableEntry shooterKf;
-    AnalogInput m_shooterBeamBreak = new AnalogInput(0);
+    AnalogInput m_shooterBeamBreak = new DigitalInput(0);
     private ShuffleboardTab tab;
     private NetworkTableEntry lightSensor;
     
@@ -64,7 +64,7 @@ public class ShooterSubsystem extends SubsystemBase{
     @Override
     public void periodic() {
       // This method will be called once per scheduler run
-      if( getLightCurtain() == true )
+      if( isLightCurtainBlocked() == true )
         lightSensor.setNumber( 1 );
       else {
         lightSensor.setNumber(0);
@@ -98,8 +98,8 @@ public class ShooterSubsystem extends SubsystemBase{
         }
       }
       
-      public boolean getLightCurtain(){
-        if (m_shooterBeamBreak.getVoltage() < 1.7){
+      public boolean isLightCurtainBlocked(){
+        if (m_shooterBeamBreak.get() == true){
           return false;
         }
         else{
