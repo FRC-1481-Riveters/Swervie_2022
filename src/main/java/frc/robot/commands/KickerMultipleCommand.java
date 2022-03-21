@@ -27,7 +27,7 @@ public class KickerMultipleCommand extends SequentialCommandGroup {
           new ShooterWait( m_shooterSubsystem ),
 
           // run the kicker forwards until the light curtain is not blocked (ball is gone)
-          new KickerCommand( m_shooterSubsystem, -m_output), true, false ).withTimeout(2.0),
+          new KickerCommand( m_shooterSubsystem, -m_output, true, false ).withTimeout(2.0),
 
           // slight delay to let ball #2 settle
           new WaitCommand( 0.2 ),
