@@ -36,7 +36,7 @@ public class AutonPathShootBackup extends SequentialCommandGroup {
             new ShooterYeetCommandPart2ElectricBoogaloo(m_shooterSubsystem, 3800),
               sequence(
                 new WaitCommand(2.0),
-                new KickerMultipleCommand( m_shooterSubsystem, -0.5 )
+                new KickerMultipleCommand( m_shooterSubsystem, 0.4 )
             )
           )
           .withTimeout(5.0),

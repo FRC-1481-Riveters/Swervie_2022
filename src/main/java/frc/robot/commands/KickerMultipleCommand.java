@@ -18,28 +18,28 @@ public class KickerMultipleCommand extends SequentialCommandGroup {
 
       addCommands(
           // run the kicker backwards until the light curtain is not blocked
-          new KickerCommand( m_shooterSubsystem, m_output, true, false ).withTimeout(2.0),
+          new KickerCommand( m_shooterSubsystem, -m_output, true, false ).withTimeout(2.0),
 
           // run the kicker forwards until the light curtain is blocked
-          new KickerCommand( m_shooterSubsystem, -(m_output - 0.1), true, true ).withTimeout(1.0),
+          new KickerCommand( m_shooterSubsystem, m_output, true, true ).withTimeout(1.0),
 
           // wait for the shooter wheel to be at the right speed
           new ShooterWait( m_shooterSubsystem ),
 
           // run the kicker forwards until the light curtain is not blocked (ball is gone)
-          new KickerCommand( m_shooterSubsystem, -(m_output - 0.1), true, false ).withTimeout(2.0),
+          new KickerCommand( m_shooterSubsystem, -m_output), true, false ).withTimeout(2.0),
 
           // slight delay to let ball #2 settle
           new WaitCommand( 0.2 ),
 
           // run the kicker forwards until the light curtain is blocked
-          new KickerCommand( m_shooterSubsystem, -(m_output - 0.1), true, true ).withTimeout(1.0),
+          new KickerCommand( m_shooterSubsystem, m_output, true, true ).withTimeout(1.0),
 
           // wait for the shooter wheel to be at the right speed
           new ShooterWait( m_shooterSubsystem ),
 
           // run the kicker forwards until the light curtain is not blocked (ball is gone)
-          new KickerCommand( m_shooterSubsystem, -(m_output - 0.1), true, false ).withTimeout(2.0)
+          new KickerCommand( m_shooterSubsystem, m_output, true, false ).withTimeout(2.0)
       );
   
   }

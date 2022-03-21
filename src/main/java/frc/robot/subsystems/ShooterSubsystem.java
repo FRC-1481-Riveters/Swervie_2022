@@ -38,7 +38,7 @@ public class ShooterSubsystem extends SubsystemBase{
     
     public ShooterSubsystem(){
       m_kickerMotor.configFactoryDefault();
-      m_kickerMotor.setInverted(true);
+      m_kickerMotor.setInverted(false);
       m_yeetMotor.restoreFactoryDefaults();
       m_yeetMotor.setInverted(true);
       m_pidController.setP(0.0001);
