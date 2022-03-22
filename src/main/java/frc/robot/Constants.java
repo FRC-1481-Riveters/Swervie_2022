@@ -71,11 +71,11 @@ public final class Constants {
     public static final int TALON_TIMEOUT_MS = 500;
 
     public static final double INTAKE_ARM_MOTOR_KF = 0.07;
-    public static final double INTAKE_ARM_MOTOR_KP = 1.0;
+    public static final double INTAKE_ARM_MOTOR_KP = 1.3;
     public static final double INTAKE_ARM_MOTOR_KI = 0.000;
     public static final double INTAKE_ARM_MOTOR_KD = 0.00;
     public static final int INTAKE_ARM_POSITION_IN_FULL = 0;
-    public static final int INTAKE_ARM_POSITION_IN = 160;
+    public static final int INTAKE_ARM_POSITION_IN = 220;
     public static final int INTAKE_ARM_POSITION_OUT = 650;
 
     public static final double CLIMB6_MOTOR_KF = 0.00;

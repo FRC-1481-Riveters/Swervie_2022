@@ -9,18 +9,22 @@ public class KickerCommand extends CommandBase {
     private double m_output;
     private boolean m_useSensor;
     private boolean m_sensorBlocked;
+    private long m_startTime;
+    private long m_minTime;
 
-    public KickerCommand( ShooterSubsystem subsystem, double value, boolean useSensor, boolean sensorBlocked)
+    public KickerCommand( ShooterSubsystem subsystem, double value, boolean useSensor, boolean sensorBlocked, long minTime)
     {
         m_shooterSubsystem = subsystem;
         m_output = value;
         m_useSensor = useSensor;
         m_sensorBlocked = sensorBlocked;
+        m_minTime = minTime;
     }
     
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    m_startTime = System.currentTimeMillis();
     m_shooterSubsystem.setKickerSpeed(m_output);
     super.initialize();
   }
@@ -38,8 +42,16 @@ public class KickerCommand extends CommandBase {
     {
       return false;
     }
-    else if(m_sensorBlocked == m_shooterSubsystem.isLightCurtainBlocked() ){
-      return true;
+    else if( (m_minTime == 0) || ((System.currentTimeMillis() - m_startTime) > m_minTime) )
+    {
+      if( m_sensorBlocked == m_shooterSubsystem.isLightCurtainBlocked() )
+      {
+        return true;
+      }
+      else
+      {
+        return false;
+      }
     }
     else
     {
@@ -50,6 +62,7 @@ public class KickerCommand extends CommandBase {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    System.out.println(System.currentTimeMillis() + " kicker end");
     m_shooterSubsystem.setKickerSpeed(0);
     super.end(interrupted);
   }

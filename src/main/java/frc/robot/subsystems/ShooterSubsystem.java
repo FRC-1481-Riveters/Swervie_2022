@@ -18,6 +18,7 @@ import com.revrobotics.SparkMaxPIDController;
 import com.revrobotics.SparkMaxRelativeEncoder;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
 import static frc.robot.Constants.*;
@@ -38,11 +39,12 @@ public class ShooterSubsystem extends SubsystemBase{
     
     public ShooterSubsystem(){
       m_kickerMotor.configFactoryDefault();
-      m_kickerMotor.setInverted(false);
+      m_kickerMotor.setInverted(true);
+      m_kickerMotor.setNeutralMode(NeutralMode.Brake);
       m_yeetMotor.restoreFactoryDefaults();
       m_yeetMotor.setInverted(true);
-      m_pidController.setP(0.0001);
-      m_pidController.setI(0.000000005);
+      m_pidController.setP(0.0008);
+      m_pidController.setI(0.000000040);
       m_pidController.setD(0.0001);
       m_pidController.setFF(0.00018);
       setYeetSpeed(0.0);

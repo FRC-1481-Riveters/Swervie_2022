@@ -1,19 +1,20 @@
 package common.robot.drivers;
 
-import com.ctre.phoenix.sensors.PigeonIMU;
+import com.ctre.phoenix.sensors.Pigeon2;
 import common.drivers.Gyroscope;
 import common.math.Rotation2;
 
 public class Pigeon extends Gyroscope {
-    private final PigeonIMU pigeon;
+    private final Pigeon2 pigeon;
 
     public Pigeon(int canId) {
-        pigeon = new PigeonIMU(canId);
+        pigeon = new Pigeon2(canId);
     }
 
     @Override
     public void calibrate() {
-        pigeon.setFusedHeading(0);
+        pigeon.setAccumZAngle(0); //.setFusedHeading(0);
+        pigeon.setYaw(0);
     }
 
     @Override

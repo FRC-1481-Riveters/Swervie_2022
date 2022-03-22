@@ -283,13 +283,13 @@ private class JoystickAxisDown extends Trigger {
 
     //Kicker controls on drive controller
     m_controller.getDPadButton(Direction.UP)
-      .whileActiveOnce( new KickerCommand( m_shooterSubsystem, 1.0, false, false ) );
+      .whileActiveOnce( new KickerCommand( m_shooterSubsystem, 1.0, false, false, 0 ) );
 
     m_controller.getDPadButton(Direction.DOWN)
-      .whileActiveOnce(new KickerCommand(m_shooterSubsystem, -1.0, false, false));
+      .whileActiveOnce(new KickerCommand(m_shooterSubsystem, -1.0, false, false, 0));
 
     m_controller.getAButton()
-      .whileActiveOnce( new KickerMultipleCommand( m_shooterSubsystem, 0.4 ) );
+      .whileActiveOnce( new KickerMultipleCommand( m_shooterSubsystem, 0.7, m_intakeSubsystem ) );
 
     operatorLeftTrigger = new JoystickTriggerPressed( m_operatorController.getLeftTriggerAxis() );
     m_operatorController.getBackButton() 

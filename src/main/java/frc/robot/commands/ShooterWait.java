@@ -13,11 +13,22 @@ public class ShooterWait extends CommandBase {
     {
         m_shooterSubsystem = subsystem;
     }
+
+    @Override
+  public void initialize() {
+    System.out.println(System.currentTimeMillis() + " shooter wait");
+    super.initialize();
+  }
     
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
+      if (m_shooterSubsystem.isAtSpeed()){
+          System.out.println(System.currentTimeMillis() + " at speed");
+
+      }
       return m_shooterSubsystem.isAtSpeed();
+      
   }
 }
