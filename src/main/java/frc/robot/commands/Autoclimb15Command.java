@@ -14,8 +14,8 @@ public class Autoclimb15Command extends SequentialCommandGroup {
       m_climbSubsystem = subsystem;
       addRequirements(m_climbSubsystem);
 
-      // climb15 46882 fully extended
-      // 51500 = climb10 fully extended
+      // climb15 45700 fully extended (not including overtravel slop)
+      // 50500 = climb10 fully extended (including overtravel slop)
       addCommands( 
           sequence( 
             parallel(
@@ -24,13 +24,13 @@ public class Autoclimb15Command extends SequentialCommandGroup {
               new WaitCommand(0.2)
             ),
             parallel(
-              new Climb10PositionCommand( m_climbSubsystem, -3500 ),
+              new Climb10PositionCommand( m_climbSubsystem, -4000 ),
               new Climb15PositionCommand( m_climbSubsystem, 26000 )
             ),
             new WaitCommand( 0.65 ),
-            new Climb15PositionCommand( m_climbSubsystem, 44000 ),
+            new Climb15PositionCommand( m_climbSubsystem, 45700 ),
             parallel(
-              new Climb10PositionCommand( m_climbSubsystem, 48500 ),
+              new Climb10PositionCommand( m_climbSubsystem, 50500 ),
               new Climb15PositionCommand( m_climbSubsystem, 21000 )
             ),
             new Climb15PositionCommand( m_climbSubsystem, 47300 )

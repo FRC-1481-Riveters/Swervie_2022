@@ -125,7 +125,7 @@ public class DrivetrainSubsystem implements Subsystem, UpdateManager.Updatable {
 
   public DrivetrainSubsystem() {
         synchronized (sensorLock) {
-                gyroscope.setInverted(false);
+                gyroscope.setInverted(true);
             }
         ShuffleboardTab shuffleboardTab = Shuffleboard.getTab("Drivetrain");
 

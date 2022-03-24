@@ -21,10 +21,10 @@ public class Autoclimb6StartCommand extends SequentialCommandGroup {
 
       addCommands(
         new IntakePositionCommand( m_intakeSubsystem, Constants.INTAKE_ARM_POSITION_IN_FULL ),
-        // 51000 = full travel
-        new Climb6PositionCommand(m_climbSubsystem, -3800)
+        // 51400 = full travel
+        new Climb6PositionCommand(m_climbSubsystem, -3400)
         .withTimeout(2.0),
-        new Climb6PositionCommand(m_climbSubsystem, 51000)
+        new Climb6PositionCommand(m_climbSubsystem, 51400)
         .withTimeout(5.0)
       );
 

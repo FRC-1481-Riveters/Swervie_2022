@@ -270,16 +270,16 @@ private class JoystickAxisDown extends Trigger {
     // center to back bumper: 13' 3" = 2500 rpm   limelight ty 4.00 degrees
     // center to back bumper: 15' 1" = 2900 rpm
     m_operatorController.getDPadButton(Direction.UP)
-      .whileActiveOnce( new ShooterYeetCommandPart2ElectricBoogaloo( m_shooterSubsystem, 2500) );
+      .whileActiveOnce( new ShooterYeetCommandPart2ElectricBoogaloo( m_shooterSubsystem, 2200) );
 
     m_operatorController.getDPadButton(Direction.LEFT)
-      .whileActiveOnce( new ShooterYeetCommandPart2ElectricBoogaloo( m_shooterSubsystem, 2400) );
+      .whileActiveOnce( new ShooterYeetCommandPart2ElectricBoogaloo( m_shooterSubsystem, 1300) );
 
     m_operatorController.getDPadButton(Direction.RIGHT)
-      .whileActiveOnce( new ShooterYeetCommandPart2ElectricBoogaloo( m_shooterSubsystem, 2900) );
+      .whileActiveOnce( new ShooterYeetCommandPart2ElectricBoogaloo( m_shooterSubsystem, 2400) );
 
     m_operatorController.getDPadButton(Direction.DOWN)
-      .whileActiveOnce( new ShooterYeetCommandPart2ElectricBoogaloo( m_shooterSubsystem, 3400) );
+      .whileActiveOnce( new ShooterYeetCommandPart2ElectricBoogaloo( m_shooterSubsystem, 2600) );
 
     //Kicker controls on drive controller
     m_controller.getDPadButton(Direction.UP)

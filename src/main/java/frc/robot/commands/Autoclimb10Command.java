@@ -18,15 +18,23 @@ public class Autoclimb10Command extends SequentialCommandGroup {
       addCommands( 
           sequence( 
             parallel(
-              new Climb6PositionCommand( m_climbSubsystem, 12000 ),
               sequence(
-                new Climb10PositionCommand( m_climbSubsystem, -3500 ),  // unlatch climb10
-                new Climb10PositionCommand( m_climbSubsystem, 51000 )   // 10 extend full
+                new Climb6PositionCommand( m_climbSubsystem, 30000 ),
+                new WaitCommand(0.2),
+                new Climb6PositionCommand( m_climbSubsystem, 27000 ),
+                new WaitCommand(0.2),
+                new Climb6PositionCommand( m_climbSubsystem, 24000 ),
+                new WaitCommand(0.2),
+                new Climb6PositionCommand( m_climbSubsystem, 12000 )
+              ),
+              sequence(
+                new Climb10PositionCommand( m_climbSubsystem, -4000 ),  // unlatch climb10
+                new Climb10PositionCommand( m_climbSubsystem, 50500 )   // 10 extend full
               )
             ),
-            new Climb6PositionCommand( m_climbSubsystem, -3300 ), // 6 retract full
-            new WaitCommand(2.0),
-            new Climb10PositionCommand(m_climbSubsystem, 43500 ), // 10 cinched
+            new Climb6PositionCommand( m_climbSubsystem, -3400 ), // 6 retract full
+            new WaitCommand(1.0),
+            new Climb10PositionCommand(m_climbSubsystem, 40500 ), // 10 cinched
             new Climb6PositionCommand(m_climbSubsystem, 21000 ),
             new Climb10PositionCommand(m_climbSubsystem, 22500 ),
 //            new WaitCommand( 1.0 ), //catch on maximum rock towards 4 point bar

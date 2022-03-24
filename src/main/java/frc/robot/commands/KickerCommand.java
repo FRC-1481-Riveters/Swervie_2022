@@ -62,7 +62,7 @@ public class KickerCommand extends CommandBase {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    System.out.println(System.currentTimeMillis() + " kicker end");
+    //System.out.println(System.currentTimeMillis() + " kicker end");
     m_shooterSubsystem.setKickerSpeed(0);
     super.end(interrupted);
   }
