@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.sensors.Pigeon2;
 import com.swervedrivespecialties.swervelib.Mk3SwerveModuleHelper;
 import com.swervedrivespecialties.swervelib.SwerveModule;
 import edu.wpi.first.wpilibj.RobotController;
@@ -19,6 +20,7 @@ import edu.wpi.first.wpilibj.Timer;
 import common.control.*;
 import common.drivers.Gyroscope;
 import common.robot.drivers.Pigeon;
+import common.robot.drivers.Pigeon.Axis;
 import common.kinematics.ChassisVelocity;
 import common.kinematics.SwerveKinematics;
 import common.kinematics.SwerveOdometry;
@@ -88,7 +90,7 @@ public class DrivetrainSubsystem implements Subsystem, UpdateManager.Updatable {
   // By default we use a Pigeon for our gyroscope. But if you use another gyroscope, like a NavX, you can change this.
   // The important thing about how you configure your gyroscope is that rotating the robot counter-clockwise should
   // cause the angle reading to increase until it wraps back over to zero.
-  private final Gyroscope gyroscope = new Pigeon( 60 );
+  private final Pigeon gyroscope = new Pigeon( 60 );
 
   private final Object kinematicsLock = new Object();
   //@GuardedBy("kinematicsLock")
@@ -389,4 +391,8 @@ public RigidTransform2 getPose() {
         return follower;
     }
 
+    public double gyroGetRoll()
+    {
+        return gyroscope.getAxis(Axis.ROLL);
+    }
 }

@@ -4,13 +4,16 @@ import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.subsystems.ClimbSubsystem;
+import frc.robot.subsystems.DrivetrainSubsystem;
 
 public class Autoclimb15Command extends SequentialCommandGroup {
 
     private ClimbSubsystem m_climbSubsystem;
+    private DrivetrainSubsystem m_driveSubsystem;
 
-    public Autoclimb15Command( ClimbSubsystem subsystem )
+    public Autoclimb15Command( ClimbSubsystem subsystem, DrivetrainSubsystem drivetrainSubsystem )
     {
+      m_driveSubsystem = drivetrainSubsystem;
       m_climbSubsystem = subsystem;
       addRequirements(m_climbSubsystem);
 
@@ -19,7 +22,7 @@ public class Autoclimb15Command extends SequentialCommandGroup {
       addCommands( 
           sequence( 
             parallel(
-              new Climb6PositionCommand( m_climbSubsystem, 0 ), 
+              new Climb6PositionCommand( m_climbSubsystem, 51400 ), 
               new Climb15PositionCommand( m_climbSubsystem, -4400 ),
               new WaitCommand(0.2)
             ),
@@ -27,11 +30,11 @@ public class Autoclimb15Command extends SequentialCommandGroup {
               new Climb10PositionCommand( m_climbSubsystem, -4000 ),
               new Climb15PositionCommand( m_climbSubsystem, 26000 )
             ),
-            new WaitCommand( 0.65 ),
+            new GyroRollTransitionCommand( m_driveSubsystem ),
             new Climb15PositionCommand( m_climbSubsystem, 45700 ),
             parallel(
-              new Climb10PositionCommand( m_climbSubsystem, 50500 ),
-              new Climb15PositionCommand( m_climbSubsystem, 21000 )
+              new Climb6PositionCommand( m_climbSubsystem, -3400 ), 
+              new Climb10PositionCommand( m_climbSubsystem, 50500 )
             ),
             new Climb15PositionCommand( m_climbSubsystem, 47300 )
             //!*!*!* TODO: MAKE JOYSTICK RUMBLE WHEN DONE

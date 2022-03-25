@@ -4,14 +4,18 @@ import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.subsystems.ClimbSubsystem;
+import frc.robot.subsystems.DrivetrainSubsystem;
 
 public class Autoclimb10Command extends SequentialCommandGroup {
 
     private ClimbSubsystem m_climbSubsystem;
+    private DrivetrainSubsystem m_driveSubsystem;
 
-    public Autoclimb10Command( ClimbSubsystem subsystem )
+    public Autoclimb10Command( ClimbSubsystem subsystem, DrivetrainSubsystem drivetrainSubsystem )
     {
       m_climbSubsystem = subsystem;
+      m_driveSubsystem = drivetrainSubsystem;
+
       addRequirements(m_climbSubsystem);
 
       // 48500 = climb10 fully extended
@@ -34,11 +38,13 @@ public class Autoclimb10Command extends SequentialCommandGroup {
             ),
             new Climb6PositionCommand( m_climbSubsystem, -3400 ), // 6 retract full
             new WaitCommand(1.0),
-            new Climb10PositionCommand(m_climbSubsystem, 40500 ), // 10 cinched
-            new Climb6PositionCommand(m_climbSubsystem, 21000 ),
-            new Climb10PositionCommand(m_climbSubsystem, 22500 ),
-//            new WaitCommand( 1.0 ), //catch on maximum rock towards 4 point bar
-            new Autoclimb15Command( m_climbSubsystem )
+            new Climb10PositionCommand(m_climbSubsystem, 44500 ), // 10 cinched
+            new Climb6PositionCommand(m_climbSubsystem, 23000 ),
+            parallel(
+              new Climb10PositionCommand(m_climbSubsystem, 22500 ),
+              new Climb6PositionCommand(m_climbSubsystem, 51400 )
+            ),
+            new Autoclimb15Command( m_climbSubsystem, m_driveSubsystem )
           )
           .withTimeout( 20.0 )
         );

@@ -253,12 +253,12 @@ private class JoystickAxisDown extends Trigger {
     // Autoclimb10
     m_operatorController.getStartButton()
       .and( m_operatorController.getYButton() )
-      .whileActiveOnce( new Autoclimb10Command(m_climbSubsystem) );
+      .whileActiveOnce( new Autoclimb10Command(m_climbSubsystem, m_drivetrainSubsystem) );
 
     // Autoclimb15
     m_operatorController.getStartButton()
       .and( m_operatorController.getBButton() )
-      .whileActiveOnce( new Autoclimb15Command(m_climbSubsystem) );
+      .whileActiveOnce( new Autoclimb15Command(m_climbSubsystem, m_drivetrainSubsystem) );
 
     //Zero climb positions
     m_operatorController.getStartButton()
