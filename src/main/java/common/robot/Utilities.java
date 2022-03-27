@@ -7,16 +7,12 @@ public class Utilities {
 
 	public static double deadband(double input, double buffer) {
 		double result=0;
-		if( input >= 0 )
+		if( input > buffer )
 		{
-			if( input > buffer )
-			{
-				input = input - buffer;
-				result = input *  (1 - buffer);
-			}
+			input = input - buffer;
+			result = input *  (1 - buffer);
 		}
-		else
-		if( input < -buffer )
+		else if( input < -buffer )
 		{
 			input = input + buffer;
 			result = input *  (1 - buffer);
