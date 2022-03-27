@@ -66,9 +66,9 @@ public final class Constants {
     public static final int YEET_SPEED_B = 0;
     public static final int YEET_SPEED_C = 0;
     public static final int YEET_SPEED_D = 0;
-    public static final double YEET_SPEED_TOLERANCE = 0.01;
+    public static final double YEET_SPEED_TOLERANCE = 0.015;
 
-    public static final int TALON_TIMEOUT_MS = 500;
+    public static final int TALON_TIMEOUT_MS = 5000;
 
     public static final double INTAKE_ARM_MOTOR_KF = 0.07;
     public static final double INTAKE_ARM_MOTOR_KP = 1.3;

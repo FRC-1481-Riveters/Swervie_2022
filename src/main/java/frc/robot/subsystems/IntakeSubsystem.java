@@ -19,20 +19,17 @@ public class IntakeSubsystem extends SubsystemBase {
     
 
     public void IntakeSubsystemInit() {
+        // Set peak current
+        m_intakeMotor.configPeakCurrentLimit(12, Constants.TALON_TIMEOUT_MS);
+        m_intakeMotor.configPeakCurrentDuration(200, Constants.TALON_TIMEOUT_MS);
+        m_intakeMotor.configContinuousCurrentLimit(10, Constants.TALON_TIMEOUT_MS);
+        m_intakeMotor.enableCurrentLimit(true);
+
         m_intakeArmMotor.configFactoryDefault();
         m_intakeArmMotor.configSelectedFeedbackSensor( FeedbackDevice.CTRE_MagEncoder_Relative, 0, Constants.TALON_TIMEOUT_MS);
         m_intakeArmMotor.configNeutralDeadband(0.10, Constants.TALON_TIMEOUT_MS);
         // Configure Talon  SRX output and sensor direction
         m_intakeArmMotor.setSensorPhase(false);
-        m_intakeArmMotor.setInverted(false);
-        // Set relevant frame periods to be at least twice as fast as periodic rate
-        m_intakeArmMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_13_Base_PIDF0, 10, Constants.TALON_TIMEOUT_MS);
-        m_intakeArmMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_10_MotionMagic, 10, Constants.TALON_TIMEOUT_MS);
-        // Set the peak and nominal outputs
-        m_intakeArmMotor.configNominalOutputForward(0, Constants.TALON_TIMEOUT_MS);
-        m_intakeArmMotor.configNominalOutputReverse(0, Constants.TALON_TIMEOUT_MS);
-        m_intakeArmMotor.configPeakOutputForward(1, Constants.TALON_TIMEOUT_MS);
-        m_intakeArmMotor.configPeakOutputReverse(-1, Constants.TALON_TIMEOUT_MS);
         // Set peak current
         m_intakeArmMotor.configPeakCurrentLimit(6, Constants.TALON_TIMEOUT_MS);
         m_intakeArmMotor.configPeakCurrentDuration(200, Constants.TALON_TIMEOUT_MS);

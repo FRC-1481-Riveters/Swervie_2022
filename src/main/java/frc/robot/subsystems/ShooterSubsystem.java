@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.*;
 import com.revrobotics.CANSparkMax.ControlType;
+import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.SparkMaxPIDController;
 import com.revrobotics.SparkMaxRelativeEncoder;
@@ -33,6 +34,9 @@ public class ShooterSubsystem extends SubsystemBase{
     private NetworkTableEntry shooterKi;
     private NetworkTableEntry shooterKd;
     private NetworkTableEntry shooterKf;
+    private NetworkTableEntry shooterOutputEntry;
+    private NetworkTableEntry shooterSpeedEntry;
+    private NetworkTableEntry shooterSetpointEntry;
     DigitalInput m_shooterBeamBreak = new DigitalInput(0);
     private ShuffleboardTab tab;
     private NetworkTableEntry lightSensor;
@@ -41,28 +45,42 @@ public class ShooterSubsystem extends SubsystemBase{
       m_kickerMotor.configFactoryDefault();
       m_kickerMotor.setInverted(true);
       m_kickerMotor.setNeutralMode(NeutralMode.Brake);
+      m_kickerMotor.configPeakCurrentLimit(20, 5000);
+      m_kickerMotor.configPeakCurrentDuration(200, 5000);
+      m_kickerMotor.configContinuousCurrentLimit(15, 5000);
+      m_kickerMotor.enableCurrentLimit(true);
       m_yeetMotor.restoreFactoryDefaults();
       m_yeetMotor.setInverted(true);
+      m_yeetMotor.setSmartCurrentLimit(50, 50);
+      m_yeetMotor.setIdleMode(IdleMode.kCoast);
       m_pidController.setP(0.0008);
       m_pidController.setI(0.000000040);
       m_pidController.setD(0.0001);
       m_pidController.setFF(0.00018);
-      setYeetSpeed(0.0);
 
       shooterKp = NetworkTableInstance.getDefault().getTable("SmartDashboard").getEntry("Shooter kP");
       shooterKi = NetworkTableInstance.getDefault().getTable("SmartDashboard").getEntry("Shooter kI");
       shooterKd = NetworkTableInstance.getDefault().getTable("SmartDashboard").getEntry("Shooter kD");
       shooterKf = NetworkTableInstance.getDefault().getTable("SmartDashboard").getEntry("Shooter kF");
+      shooterOutputEntry = NetworkTableInstance.getDefault().getTable("SmartDashboard").getEntry("Shooter Output");
+      shooterSpeedEntry = NetworkTableInstance.getDefault().getTable("SmartDashboard").getEntry("Shooter Speed");
+      shooterSetpointEntry = NetworkTableInstance.getDefault().getTable("SmartDashboard").getEntry("Shooter Setpoint");
 
       shooterKp.setDouble(m_pidController.getP());
       shooterKi.setDouble(m_pidController.getI());
       shooterKd.setDouble(m_pidController.getD());
       shooterKf.setDouble(m_pidController.getFF());
 
+      shooterOutputEntry.setDouble(0);
+      shooterSpeedEntry.setDouble(0);
+      shooterSetpointEntry.setDouble(0);
+
+      setYeetSpeed(0.0);
+
       tab = Shuffleboard.getTab("SmartDashboard");
       lightSensor = tab.add("Light Sensor",0).getEntry();
-
     }
+
     @Override
     public void periodic() {
       // This method will be called once per scheduler run
@@ -71,16 +89,19 @@ public class ShooterSubsystem extends SubsystemBase{
       else {
         lightSensor.setNumber(0);
       }
+      shooterOutputEntry.setDouble( m_yeetMotor.getBusVoltage() );
+      shooterSpeedEntry.setDouble( getSpeed() );
     }
 
     public void setYeetSpeed (double RPM){
         m_yeetMotor.set(RPM);
         m_shooterIntendedSpeed = RPM;
+        shooterSetpointEntry.setDouble(m_shooterIntendedSpeed);
         if (m_shooterIntendedSpeed > 10.0) {
-            m_pidController.setReference(RPM, ControlType.kVelocity);
-          } else {
-            m_yeetMotor.set(0.0);
-          }
+          m_pidController.setReference(RPM, ControlType.kVelocity);
+        } else {
+          m_yeetMotor.set(0.0);
+        }
         
     }
 
@@ -89,24 +110,23 @@ public class ShooterSubsystem extends SubsystemBase{
     }
     public double getSpeed() {
         return m_encoder.getVelocity();
-      }
+    }
     
-      public boolean isAtSpeed() {
-        if (Math.abs(
-            (getSpeed() - m_shooterIntendedSpeed) / m_shooterIntendedSpeed) <= YEET_SPEED_TOLERANCE) {
-          return true;
-        } else {
-          return false;
-        }
+    public boolean isAtSpeed() {
+      if (Math.abs(
+          (getSpeed() - m_shooterIntendedSpeed) / m_shooterIntendedSpeed) <= YEET_SPEED_TOLERANCE) {
+        return true;
+      } else {
+        return false;
       }
-      
-      public boolean isLightCurtainBlocked(){
-        if (m_shooterBeamBreak.get() == true){
-          return false;
-        }
-        else{
-          return true;
-        }
-      }
+    }
     
+    public boolean isLightCurtainBlocked(){
+      if (m_shooterBeamBreak.get() == true){
+        return false;
+      }
+      else{
+        return true;
+      }
+    }    
 }

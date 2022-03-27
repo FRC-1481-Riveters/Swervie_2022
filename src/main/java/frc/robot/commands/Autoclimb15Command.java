@@ -28,10 +28,11 @@ public class Autoclimb15Command extends SequentialCommandGroup {
             ),
             parallel(
               new Climb10PositionCommand( m_climbSubsystem, -4000 ),
-              new Climb15PositionCommand( m_climbSubsystem, 26000 )
+              new Climb15PositionCommand( m_climbSubsystem, 24500 )
             ),
             new GyroRollTransitionCommand( m_driveSubsystem ),
             new Climb15PositionCommand( m_climbSubsystem, 45700 ),
+            new WaitCommand(0.5),
             parallel(
               new Climb6PositionCommand( m_climbSubsystem, -3400 ), 
               new Climb10PositionCommand( m_climbSubsystem, 50500 )
@@ -39,9 +40,8 @@ public class Autoclimb15Command extends SequentialCommandGroup {
             new Climb15PositionCommand( m_climbSubsystem, 47300 )
             //!*!*!* TODO: MAKE JOYSTICK RUMBLE WHEN DONE
           )
-          .withTimeout( 10.0 )
+          .withTimeout( 15.0 )
         );
-
         /*
         Autoclimb 15 -  button 2 (while held): 
         0) (serial) retract Climb15 to 0" from full bottom (release 15 point hook from hook catc21

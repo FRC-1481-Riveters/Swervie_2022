@@ -288,6 +288,12 @@ private class JoystickAxisDown extends Trigger {
     m_controller.getDPadButton(Direction.DOWN)
       .whileActiveOnce(new KickerCommand(m_shooterSubsystem, -1.0, false, false, 0));
 
+    m_controller.getDPadButton(Direction.LEFT)
+      .whileActiveOnce(new ShooterYeetCommandPart3ElectricBoogaloo( m_shooterSubsystem, -500));
+
+    m_controller.getDPadButton(Direction.RIGHT)
+      .whileActiveOnce(new ShooterYeetCommandPart3ElectricBoogaloo( m_shooterSubsystem, 500));
+
     m_controller.getAButton()
       .whileActiveOnce( new KickerMultipleCommand( m_shooterSubsystem, 0.7, m_intakeSubsystem ) );
 
@@ -315,7 +321,18 @@ private class JoystickAxisDown extends Trigger {
   }
 
   public void controlIntake(){
-    m_intakeSubsystem.setIntakeSpeed(m_operatorController.getRightYAxis().get() / 1.5 );
+    double yAxis;
+    double setSpeed = 0;
+    yAxis = m_operatorController.getRightYAxis().get();
+    if( yAxis < -0.1 )
+    {
+      setSpeed = -0.4 + (yAxis / 3);
+    }
+    else if( yAxis > 0.1 )
+    {
+      setSpeed = 0.4 + (yAxis / 3);
+    }
+    m_intakeSubsystem.setIntakeSpeed( setSpeed );
   }
 
 

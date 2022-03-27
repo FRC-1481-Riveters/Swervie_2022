@@ -108,10 +108,13 @@ public class DrivetrainSubsystem implements Subsystem, UpdateManager.Updatable {
   //@GuardedBy("stateLock")
   private HolonomicDriveSignal driveSignal = null;
 
+  private double rollAngle;
+
   // Logging
   private final NetworkTableEntry odometryXEntry;
   private final NetworkTableEntry odometryYEntry;
   private final NetworkTableEntry odometryAngleEntry;
+  private final NetworkTableEntry rollAngleEntry;
 
   // These are our modules. We initialize them in the constructor.
   public final SwerveModule frontLeftModule;
@@ -189,6 +192,7 @@ public class DrivetrainSubsystem implements Subsystem, UpdateManager.Updatable {
                 .withPosition(0, 2)
                 .withSize(1, 1)
                 .getEntry();
+        rollAngleEntry = shuffleboardTab.add("Roll Angle", 0.0).getEntry();
         shuffleboardTab.addNumber("Trajectory X", () -> {
                 if (follower.getLastState() == null) {
                         return 0.0;
@@ -381,6 +385,8 @@ public RigidTransform2 getPose() {
         odometryXEntry.setDouble(pose.translation.x);
         odometryYEntry.setDouble(pose.translation.y);
         odometryAngleEntry.setDouble(getPose().rotation.toDegrees());
+        rollAngle = Math.toDegrees( gyroscope.getAxis(Axis.ROLL) );
+        rollAngleEntry.setDouble( rollAngle );
         final double timestamp = Timer.getFPGATimestamp();
         final double dt = timestamp - lastTimestamp;
         lastTimestamp = timestamp;
@@ -393,6 +399,6 @@ public RigidTransform2 getPose() {
 
     public double gyroGetRoll()
     {
-        return gyroscope.getAxis(Axis.ROLL);
+        return rollAngle;
     }
 }

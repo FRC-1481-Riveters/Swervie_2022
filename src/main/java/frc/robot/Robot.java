@@ -70,10 +70,10 @@ public class Robot extends TimedRobot {
     NetworkTableInstance.getDefault().getTable("limelight").getEntry("ledMode").setNumber(0); // force light off
 
     double[] crop = new double[4];
-    crop[0] = -1.0; // use full x -1...1
-    crop[1] = 1.0;
-    crop[2] = -0.5; // crop out upper/lower Y -0.5...0.5
-    crop[3] = 0.5;
+    crop[0] = -1.0; // x0 use full x -1...1
+    crop[1] =  1.0; // x1
+    crop[2] = -0.5; // y0 crop out upper/lower Y -0.5...0.5
+    crop[3] =  0.5; // y1
     NetworkTableInstance.getDefault().getTable("limelight").getEntry("crop").setDoubleArray(crop);
 
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
