@@ -67,7 +67,6 @@ public class RobotContainer {
   private JoystickTriggerPressed operatorRightTrigger;
   private JoystickAxisUp operatorLeftAxisUp;
   private JoystickAxisDown operatorLeftAxisDown;
-  public  double autoAimAngle = 0;
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -86,7 +85,7 @@ public class RobotContainer {
     }
 
     CommandScheduler.getInstance().registerSubsystem(m_drivetrainSubsystem);
-    CommandScheduler.getInstance().setDefaultCommand(m_drivetrainSubsystem, new DriveCommand(m_drivetrainSubsystem, getDriveForwardAxis(), getDriveStrafeAxis(), getDriveRotationAxis(), this));
+    CommandScheduler.getInstance().setDefaultCommand(m_drivetrainSubsystem, new DriveCommand(m_drivetrainSubsystem, getDriveForwardAxis(), getDriveStrafeAxis(), getDriveRotationAxis()));
 
     autonomousChooser = new AutonomousChooser(autonomousTrajectories);
 
@@ -206,7 +205,7 @@ private class JoystickAxisDown extends Trigger {
       .whenActive( new AutonMacroRecord( "/home/lvuser/autonpath.csv", m_drivetrainSubsystem) );
 
     m_controller.getLeftBumperButton()
-      .whileActiveOnce( new AutoAimCommand( this ) );
+      .whileActiveOnce( new AutoAimCommand( m_drivetrainSubsystem ) );
 
     // Climb6 manual retract
     operatorLeftTrigger = new JoystickTriggerPressed( m_operatorController.getLeftTriggerAxis() );
@@ -273,10 +272,10 @@ private class JoystickAxisDown extends Trigger {
       .whileActiveOnce( new ShooterYeetCommandPart2ElectricBoogaloo( m_shooterSubsystem, 2200) );
 
     m_operatorController.getDPadButton(Direction.LEFT)
-      .whileActiveOnce( new ShooterYeetCommandPart2ElectricBoogaloo( m_shooterSubsystem, 1300) );
+      .whileActiveOnce( new ShooterYeetCommandPart2ElectricBoogaloo( m_shooterSubsystem, Constants.YEET_SPEED_LOW) );
 
     m_operatorController.getDPadButton(Direction.RIGHT)
-      .whileActiveOnce( new ShooterYeetCommandPart2ElectricBoogaloo( m_shooterSubsystem, 2400) );
+      .whileActiveOnce( new ShooterYeetCommandPart2ElectricBoogaloo( m_shooterSubsystem, Constants.YEET_SPEED_HIGH) );
 
     m_operatorController.getDPadButton(Direction.DOWN)
       .whileActiveOnce( new ShooterYeetCommandPart2ElectricBoogaloo( m_shooterSubsystem, 2600) );

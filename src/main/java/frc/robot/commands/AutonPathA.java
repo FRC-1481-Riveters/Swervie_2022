@@ -37,15 +37,19 @@ public class AutonPathA extends SequentialCommandGroup {
             parallel(
               new IntakePositionCommand(m_intakeSubsystem, Constants.INTAKE_ARM_POSITION_OUT),
               new IntakeArmRollerCommand(m_intakeSubsystem, 0.75)
-              .withTimeout(5.0)
+              .withTimeout(3.0)
             ),
             new IntakePositionCommand(m_intakeSubsystem, Constants.INTAKE_ARM_POSITION_IN),
-            new WaitCommand(3.5),
+            //TODO !*!*!* need a path to turn around!
+            new AutonMacroPlayback( "/home/lvuser/turn180.csv", m_drivetrainSubsystem ),
             parallel(
-              new ShooterYeetCommandPart2ElectricBoogaloo(m_shooterSubsystem, 3800),
+              new AutoAimCommand( m_drivetrainSubsystem),
+              new AutoDriveCommand( m_drivetrainSubsystem, 0.0, 0.0, 0.0 )
+            ).withTimeout(2.0),
+            parallel(
+              new ShooterYeetCommandPart2ElectricBoogaloo(m_shooterSubsystem, Constants.YEET_SPEED_HIGH),
               sequence(
-                new WaitCommand(2.0)
-               //TODO: new KickerMultipleCommand( m_shooterSubsystem, 0.4 )
+                new KickerMultipleCommand( m_shooterSubsystem, 0.7, m_intakeSubsystem )
               )
             )
             .withTimeout(5.0)

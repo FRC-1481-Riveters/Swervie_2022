@@ -5,13 +5,13 @@ import frc.robot.subsystems.DrivetrainSubsystem;
 import common.math.Vector2;
 import common.robot.input.Axis;
 
-public class DriveCommand extends CommandBase {
+public class AutoDriveCommand extends CommandBase {
     private DrivetrainSubsystem m_drivetrainSubsystem;
-    private Axis forward;
-    private Axis strafe;
-    private Axis rotation;
+    private double forward;
+    private double strafe;
+    private double rotation;
 
-    public DriveCommand(DrivetrainSubsystem drivetrain, Axis forward, Axis strafe, Axis rotation ) {
+    public AutoDriveCommand(DrivetrainSubsystem drivetrain, double forward, double strafe, double rotation ) {
         this.forward = forward;
         this.strafe = strafe;
         this.rotation = rotation;
@@ -31,13 +31,9 @@ public class DriveCommand extends CommandBase {
         }
         else
         {
-            // !*!*!* FIXME: not sure why we have to divide rotate by 10 here...  maybe it should be radians instead of -1..1
-            driveRotation = rotation.get(true) / 10.0;
+            driveRotation = rotation;
         }
-        m_drivetrainSubsystem.drive(new Vector2(forward.get(true)/m_drivetrainSubsystem.joystickDivider,
-                                              strafe.get(true)/m_drivetrainSubsystem.joystickDivider),
-                                      driveRotation, 
-                                      true);
+        m_drivetrainSubsystem.drive(new Vector2( forward, strafe ), driveRotation, true);
     }
 
     @Override

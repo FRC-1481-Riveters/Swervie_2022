@@ -2,17 +2,17 @@ package frc.robot.commands;
 
 import edu.wpi.first.math.filter.MedianFilter;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.RobotContainer;
+import frc.robot.subsystems.DrivetrainSubsystem;
 import edu.wpi.first.networktables.NetworkTableInstance;
 
 public class AutoAimCommand extends CommandBase {
 
-    private RobotContainer m_robotContainer;
     private MedianFilter m_angleFilter;
+    private DrivetrainSubsystem m_drivetrainSubsystem;
 
-    public AutoAimCommand( RobotContainer rc )
+    public AutoAimCommand( DrivetrainSubsystem drivetrainSubsystem )
     {
-        m_robotContainer = rc;
+        m_drivetrainSubsystem = drivetrainSubsystem;
         m_angleFilter = new MedianFilter(5);
     }
 
@@ -24,7 +24,7 @@ public class AutoAimCommand extends CommandBase {
     angle = angle * -0.1;
     if( Math.abs(angle) < 0.2 ) angle = 0;
     angle = m_angleFilter.calculate(angle);
-    m_robotContainer.autoAimAngle = angle * 0.2;
+    m_drivetrainSubsystem.autoAimAngle = angle * 0.2;
   }
 
   // Returns true when the command should end.
@@ -36,7 +36,7 @@ public class AutoAimCommand extends CommandBase {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_robotContainer.autoAimAngle = 0;
+    m_drivetrainSubsystem.autoAimAngle = 0;
     super.end( interrupted );
   }
 

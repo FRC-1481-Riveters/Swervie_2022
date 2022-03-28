@@ -108,6 +108,7 @@ public class DrivetrainSubsystem implements Subsystem, UpdateManager.Updatable {
   //@GuardedBy("stateLock")
   private HolonomicDriveSignal driveSignal = null;
 
+  public  double autoAimAngle = 0;
   private double rollAngle;
 
   // Logging
