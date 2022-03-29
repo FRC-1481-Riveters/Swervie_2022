@@ -4,6 +4,8 @@ import frc.robot.subsystems.DrivetrainSubsystem;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.MacroPlayback;
 import java.io.IOException;
+import common.math.Rotation2;
+
 
 public class AutonMacroPlayback extends CommandBase {
 
@@ -25,6 +27,7 @@ public class AutonMacroPlayback extends CommandBase {
     super.initialize();
     try 
     {
+        m_drivetrain.resetGyroAngle( Rotation2.ZERO );
         m_playback = new MacroPlayback( m_filename, m_drivetrain );
     }
     catch( IOException e )
