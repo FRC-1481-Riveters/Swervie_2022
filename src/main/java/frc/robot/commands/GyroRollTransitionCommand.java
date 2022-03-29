@@ -11,27 +11,37 @@ public class GyroRollTransitionCommand extends CommandBase {
   double m_previousRoll;
   private MedianFilter m_rollFilter;
   private DrivetrainSubsystem m_driveSubsystem;
+  private double m_transition;
+  private boolean m_direction;  // FALSE for negative (towards 6), TRUE for positive (toward 15)
 
-  public GyroRollTransitionCommand( DrivetrainSubsystem driveSubsystem )
+  public GyroRollTransitionCommand( DrivetrainSubsystem driveSubsystem, double transition, boolean direction )
   {
     m_previousRoll = 0;
     m_driveSubsystem = driveSubsystem;
     m_rollFilter = new MedianFilter(5);
+    m_transition = transition;
+    m_direction = direction;
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
+    boolean bFinished = false;
     double gyroRoll;
     gyroRoll = m_driveSubsystem.gyroGetRoll();
     gyroRoll = m_rollFilter.calculate(gyroRoll);
-    if( (m_previousRoll < -85.0) && (gyroRoll > -85.0) )
-        return true;
+    if( m_direction == true )
+    {
+      if( (m_previousRoll <= m_transition) && (gyroRoll > m_transition) )
+        bFinished = true;
+    }
     else
     {
-        m_previousRoll = gyroRoll;
-        return false;
+      if( (m_previousRoll >= m_transition) && (gyroRoll < m_transition) )
+        bFinished = true;
     }
+    m_previousRoll = gyroRoll;
+    return bFinished;
   }
 
   // Called once the command ends or is interrupted.

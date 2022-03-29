@@ -30,9 +30,9 @@ public class Autoclimb15Command extends SequentialCommandGroup {
               new Climb10PositionCommand( m_climbSubsystem, -4000 ),
               new Climb15PositionCommand( m_climbSubsystem, 24500 )
             ),
-            new GyroRollTransitionCommand( m_driveSubsystem ),
+            new GyroRollTransitionCommand( m_driveSubsystem, 10.0, true ),
             new Climb15PositionCommand( m_climbSubsystem, 45700 ),
-            new WaitCommand(0.5),
+            new GyroRollTransitionCommand( m_driveSubsystem, 0.0, false ),
             parallel(
               new Climb6PositionCommand( m_climbSubsystem, -3400 ), 
               new Climb10PositionCommand( m_climbSubsystem, 50500 )

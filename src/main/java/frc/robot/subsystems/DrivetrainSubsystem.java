@@ -387,7 +387,11 @@ public RigidTransform2 getPose() {
         odometryYEntry.setDouble(pose.translation.y);
         odometryAngleEntry.setDouble(getPose().rotation.toDegrees());
         rollAngle = Math.toDegrees( gyroscope.getAxis(Axis.ROLL) );
-        rollAngleEntry.setDouble( rollAngle );
+        if( rollAngle < 0 )
+            rollAngle = rollAngle + 90;
+        else
+            rollAngle = rollAngle - 90;
+          rollAngleEntry.setDouble( rollAngle );
         final double timestamp = Timer.getFPGATimestamp();
         final double dt = timestamp - lastTimestamp;
         lastTimestamp = timestamp;
