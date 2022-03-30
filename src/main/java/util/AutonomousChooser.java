@@ -8,7 +8,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.RobotContainer;
 import frc.robot.commands.AutonMacroPlayback;
-import frc.robot.commands.AutonPathA;
+import frc.robot.commands.AutonPathDriveTurnShoot;
 import frc.robot.commands.AutonPathShootBackup;
 import common.control.Trajectory;
 import common.math.RigidTransform2;
@@ -50,7 +50,7 @@ public class AutonomousChooser {
         SequentialCommandGroup command = new SequentialCommandGroup();
 
         resetRobotPose(command, robotContainer, trajectories.getAutonPlaybackTrajectory());
-        command.addCommands(new AutonPathA( robotContainer, "/home/lvuser/patha.csv" ) );
+        command.addCommands(new AutonPathDriveTurnShoot( robotContainer, "/home/lvuser/driveforward40.csv" ) );
 
         return command;
     }
@@ -59,7 +59,7 @@ public class AutonomousChooser {
         SequentialCommandGroup command = new SequentialCommandGroup();
 
         resetRobotPose(command, robotContainer, trajectories.getAutonPlaybackTrajectory());
-        command.addCommands(new AutonPathA( robotContainer, "/home/lvuser/pathb.csv" ) );
+        command.addCommands(new AutonPathDriveTurnShoot( robotContainer, "/home/lvuser/driveforward50.csv" ) );
 
         return command;
     }
@@ -68,7 +68,7 @@ public class AutonomousChooser {
         SequentialCommandGroup command = new SequentialCommandGroup();
 
         resetRobotPose(command, robotContainer, trajectories.getAutonPlaybackTrajectory());
-        command.addCommands(new AutonPathA( robotContainer, "/home/lvuser/pathc.csv" ) );
+        command.addCommands(new AutonPathDriveTurnShoot( robotContainer, "/home/lvuser/pathc.csv" ) );
 
         return command;
     }
