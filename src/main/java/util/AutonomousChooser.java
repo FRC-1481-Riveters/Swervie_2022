@@ -9,7 +9,7 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.RobotContainer;
 import frc.robot.commands.AutonMacroPlayback;
 import frc.robot.commands.AutonPathDriveTurnShoot;
-import frc.robot.commands.AutonPathShootBackup;
+import frc.robot.commands.AutonPathDriveShoot;
 import common.control.Trajectory;
 import common.math.RigidTransform2;
 import common.math.Rotation2;
@@ -23,11 +23,10 @@ public class AutonomousChooser {
         this.trajectories = trajectories;
 
         autonomousModeChooser.setDefaultOption("Auton nothing", AutonomousMode.AUTONOMOUS_NOTHING);
-        autonomousModeChooser.addOption("Path A", AutonomousMode.AUTON_PATH_A);
-        autonomousModeChooser.addOption("Path B", AutonomousMode.AUTON_PATH_B);
-        autonomousModeChooser.addOption("Path C", AutonomousMode.AUTON_PATH_C);
-        autonomousModeChooser.addOption("Shoot and Backup", AutonomousMode.AUTON_PATH_SHOOT_BACKUP);
-        autonomousModeChooser.addOption("PlaybackSomething", AutonomousMode.PLAYBACK_SOMETHING);
+        autonomousModeChooser.addOption("Auton Wall", AutonomousMode.AUTON_PATH_WALL);
+        autonomousModeChooser.addOption("Auton Middle", AutonomousMode.AUTON_PATH_MIDDLE);
+        autonomousModeChooser.addOption("Auton 3Ball", AutonomousMode.AUTON_PATH_3BALL);
+        autonomousModeChooser.addOption("Auton Playback", AutonomousMode.PLAYBACK_SOMETHING);
     
         // Put the chooser on the dashboard
         SmartDashboard.putData( autonomousModeChooser );
@@ -46,7 +45,7 @@ public class AutonomousChooser {
         return command;
     }
 
-    public Command getPathACommand(RobotContainer robotContainer) {
+    public Command getWallCommand(RobotContainer robotContainer) {
         SequentialCommandGroup command = new SequentialCommandGroup();
 
         resetRobotPose(command, robotContainer, trajectories.getAutonPlaybackTrajectory());
@@ -55,7 +54,7 @@ public class AutonomousChooser {
         return command;
     }
 
-    public Command getPathBCommand(RobotContainer robotContainer) {
+    public Command getMiddleCommand(RobotContainer robotContainer) {
         SequentialCommandGroup command = new SequentialCommandGroup();
 
         resetRobotPose(command, robotContainer, trajectories.getAutonPlaybackTrajectory());
@@ -64,20 +63,12 @@ public class AutonomousChooser {
         return command;
     }
 
-    public Command getPathCCommand(RobotContainer robotContainer) {
+    public Command get3BallCommand(RobotContainer robotContainer) {
         SequentialCommandGroup command = new SequentialCommandGroup();
 
         resetRobotPose(command, robotContainer, trajectories.getAutonPlaybackTrajectory());
-        command.addCommands(new AutonPathDriveTurnShoot( robotContainer, "/home/lvuser/pathc.csv" ) );
-
-        return command;
-    }
-
-    public Command getPathBackupCommand(RobotContainer robotContainer){
-        SequentialCommandGroup command = new SequentialCommandGroup();
-
-        resetRobotPose(command, robotContainer, trajectories.getAutonPlaybackTrajectory());
-        command.addCommands(new AutonPathShootBackup( robotContainer, "/home/lvuser/backup10foot.csv" ) );
+        command.addCommands(new AutonPathDriveTurnShoot( robotContainer, "/home/lvuser/driveforward40.csv" ) );
+        command.addCommands(new AutonPathDriveShoot( robotContainer, "/home/lvuser/ball3.csv" ) );
 
         return command;
     }
@@ -94,20 +85,16 @@ public class AutonomousChooser {
         Command command;
 
         switch (autonomousModeChooser.getSelected()) {
-            case AUTON_PATH_A:
-                command = getPathACommand( robotContainer );
+            case AUTON_PATH_WALL:
+                command = getWallCommand( robotContainer );
                 break;
 
-            case AUTON_PATH_B:
-                command = getPathBCommand( robotContainer );
+            case AUTON_PATH_MIDDLE:
+                command = getMiddleCommand( robotContainer );
                 break;
 
-            case AUTON_PATH_C:
-                command = getPathCCommand( robotContainer );
-                break;
-
-            case AUTON_PATH_SHOOT_BACKUP:
-                command = getPathBackupCommand(robotContainer);
+            case AUTON_PATH_3BALL:
+                command = get3BallCommand( robotContainer );
                 break;
 
             case PLAYBACK_SOMETHING:
@@ -129,10 +116,9 @@ public class AutonomousChooser {
      
     private enum AutonomousMode {
         AUTONOMOUS_NOTHING,
-        AUTON_PATH_A,
-        AUTON_PATH_B,
-        AUTON_PATH_C,
-        AUTON_PATH_SHOOT_BACKUP,
+        AUTON_PATH_WALL,
+        AUTON_PATH_MIDDLE,
+        AUTON_PATH_3BALL,
         PLAYBACK_SOMETHING,
     }
 }

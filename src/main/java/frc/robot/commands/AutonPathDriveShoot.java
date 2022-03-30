@@ -9,7 +9,7 @@ import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.ClimbSubsystem;
 
-public class AutonPathDriveTurnShoot extends SequentialCommandGroup {
+public class AutonPathDriveShoot extends SequentialCommandGroup {
 
     private DrivetrainSubsystem m_drivetrainSubsystem;
     private IntakeSubsystem m_intakeSubsystem;
@@ -17,7 +17,7 @@ public class AutonPathDriveTurnShoot extends SequentialCommandGroup {
     private String m_autonPath;
     private ClimbSubsystem m_climbSubsystem;
 
-    public AutonPathDriveTurnShoot( RobotContainer container, String autonpath )
+    public AutonPathDriveShoot( RobotContainer container, String autonpath )
     {
       m_drivetrainSubsystem = container.getDrivetrainSubsystem();
       m_intakeSubsystem = container.getIntakeSubsystem();
@@ -27,29 +27,22 @@ public class AutonPathDriveTurnShoot extends SequentialCommandGroup {
 
       addCommands(
         parallel(
-          new Climb6PositionCommand(m_climbSubsystem, 600),
-          new Climb10PositionCommand(m_climbSubsystem, 600),
-          new Climb15PositionCommand(m_climbSubsystem, 600),
           new AutonMacroPlayback( m_autonPath, m_drivetrainSubsystem ),
           sequence(
             parallel(
               new IntakePositionCommand(m_intakeSubsystem, Constants.INTAKE_ARM_POSITION_OUT),
               new IntakeArmRollerCommand(m_intakeSubsystem, 0.55)
-            ).withTimeout(1.5),
-            new WaitCommand(0.2),
+            ).withTimeout(5.3),
             new IntakePositionCommand(m_intakeSubsystem, Constants.INTAKE_ARM_POSITION_IN)
           )
         ),
-        new AutonMacroPlayback( "/home/lvuser/turn180.csv", m_drivetrainSubsystem ),
         parallel(
-          new AutoAimCommand( m_drivetrainSubsystem).withTimeout(1.5),
-          new AutoDriveCommand( m_drivetrainSubsystem, 0.0, 0.0, 0.0 ).withTimeout(1.5),
-          new KickerCommand( m_shooterSubsystem, -0.5, true, false, 0 ).withTimeout(0.5),
+          new AutoAimCommand( m_drivetrainSubsystem),
+          new AutoDriveCommand( m_drivetrainSubsystem, 0.0, 0.0, 0.0 )
+        ).withTimeout(1.0),
+        parallel(
           new ShooterYeetCommandPart3ElectricBoogaloo(m_shooterSubsystem, Constants.YEET_SPEED_HIGH),
-          sequence( 
-            new WaitCommand(1.5),
-            new KickerMultipleCommand( m_shooterSubsystem, 0.7, m_intakeSubsystem )
-          )
+          new KickerMultipleCommand( m_shooterSubsystem, 0.7, m_intakeSubsystem )
         ).withTimeout(5.0)
       );
     }

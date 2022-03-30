@@ -27,7 +27,6 @@ public class AutonMacroPlayback extends CommandBase {
     super.initialize();
     try 
     {
-        m_drivetrain.resetGyroAngle( Rotation2.ZERO );
         m_playback = new MacroPlayback( m_filename, m_drivetrain );
     }
     catch( IOException e )
