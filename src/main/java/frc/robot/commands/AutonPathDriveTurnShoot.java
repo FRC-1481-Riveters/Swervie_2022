@@ -40,13 +40,18 @@ public class AutonPathDriveTurnShoot extends SequentialCommandGroup {
             new IntakePositionCommand(m_intakeSubsystem, Constants.INTAKE_ARM_POSITION_IN)
           )
         ),
-        new AutonMacroPlayback( "/home/lvuser/turn180.csv", m_drivetrainSubsystem ),
+        parallel(
+          new AutonMacroPlayback( "/home/lvuser/turn180.csv", m_drivetrainSubsystem ),
+          sequence(
+            new WaitCommand(0.5),
+            new KickerCommand( m_shooterSubsystem, -0.5, true, false, 0 ).withTimeout(0.5)
+          )
+        ),
         parallel(
           new AutoAimCommand( m_drivetrainSubsystem).withTimeout(1.5),
           new AutoDriveCommand( m_drivetrainSubsystem, 0.0, 0.0, 0.0 ).withTimeout(1.5),
-          new KickerCommand( m_shooterSubsystem, -0.5, true, false, 0 ).withTimeout(0.5),
           new ShooterYeetCommandPart3ElectricBoogaloo(m_shooterSubsystem, Constants.YEET_SPEED_HIGH),
-          sequence( 
+          sequence(
             new WaitCommand(1.5),
             new KickerMultipleCommand( m_shooterSubsystem, 0.7, m_intakeSubsystem )
           )
