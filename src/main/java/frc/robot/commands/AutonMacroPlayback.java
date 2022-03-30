@@ -1,6 +1,7 @@
 package frc.robot.commands;
 
 import frc.robot.subsystems.DrivetrainSubsystem;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.MacroPlayback;
 import java.io.IOException;
@@ -25,6 +26,7 @@ public class AutonMacroPlayback extends CommandBase {
   @Override
   public void initialize() {
     super.initialize();
+    System.out.format( " %.3f AutonMacroPlayback initialize " + m_filename + "%n", Timer.getMatchTime() );
     try 
     {
         m_playback = new MacroPlayback( m_filename, m_drivetrain );
@@ -51,6 +53,7 @@ public class AutonMacroPlayback extends CommandBase {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    System.out.format( " %.3f AutonMacroPlayback end%n", Timer.getMatchTime() );
     super.end( interrupted );
   }
 

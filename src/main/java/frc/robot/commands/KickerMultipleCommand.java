@@ -1,12 +1,10 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
+import edu.wpi.first.wpilibj.Timer;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.Constants;
 import frc.robot.subsystems.IntakeSubsystem;
-import frc.robot.commands.KickerCommand;
-import frc.robot.commands.ShooterWait;
 
 public class KickerMultipleCommand extends SequentialCommandGroup {
 
@@ -48,9 +46,17 @@ public class KickerMultipleCommand extends SequentialCommandGroup {
   
   }
 
+  // Called when the command is initially scheduled.
+  @Override
+  public void initialize() {
+    super.initialize();
+    System.out.format( " %.3f KickerMultipleCommand initialize%n", Timer.getMatchTime() );
+  }
+  
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    System.out.format( " %.3f KickerMultipleCommand end%n", Timer.getMatchTime() );
     m_shooterSubsystem.setKickerSpeed(0.0);
   }
     
