@@ -31,18 +31,19 @@ public class AutonPathDriveShoot extends SequentialCommandGroup {
           sequence(
             parallel(
               new IntakePositionCommand(m_intakeSubsystem, Constants.INTAKE_ARM_POSITION_OUT),
-              new IntakeArmRollerCommand(m_intakeSubsystem, 0.55)
+              new IntakeArmRollerCommand(m_intakeSubsystem, 0.65)
             ).withTimeout(5.3),
             new IntakePositionCommand(m_intakeSubsystem, Constants.INTAKE_ARM_POSITION_IN)
           )
         ),
         parallel(
-          new AutoAimCommand( m_drivetrainSubsystem),
-          new AutoDriveCommand( m_drivetrainSubsystem, 0.0, 0.0, 0.0 )
-        ).withTimeout(1.0),
-        parallel(
+          new AutoAimCommand( m_drivetrainSubsystem).withTimeout(1.5),
+          new AutoDriveCommand( m_drivetrainSubsystem, 0.0, 0.0, 0.0 ).withTimeout(1.5),
           new ShooterYeetCommandPart3ElectricBoogaloo(m_shooterSubsystem, Constants.YEET_SPEED_HIGH),
-          new KickerMultipleCommand( m_shooterSubsystem, 0.7, m_intakeSubsystem )
+          sequence(
+            new WaitCommand(1.5),
+            new KickerMultipleCommand( m_shooterSubsystem, 0.7, m_intakeSubsystem )
+          )
         ).withTimeout(5.0)
       );
     }

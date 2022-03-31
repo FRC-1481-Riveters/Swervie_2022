@@ -49,7 +49,7 @@ public class AutonomousChooser {
         SequentialCommandGroup command = new SequentialCommandGroup();
 
         resetRobotPose(command, robotContainer, trajectories.getAutonPlaybackTrajectory());
-        command.addCommands(new AutonPathDriveTurnShoot( robotContainer, "/home/lvuser/driveforward40.csv" ) );
+        command.addCommands(new AutonPathDriveTurnShoot( robotContainer, "/home/lvuser/deploy/driveforward40.csv" ) );
 
         return command;
     }
@@ -58,7 +58,7 @@ public class AutonomousChooser {
         SequentialCommandGroup command = new SequentialCommandGroup();
 
         resetRobotPose(command, robotContainer, trajectories.getAutonPlaybackTrajectory());
-        command.addCommands(new AutonPathDriveTurnShoot( robotContainer, "/home/lvuser/driveforward50.csv" ) );
+        command.addCommands(new AutonPathDriveTurnShoot( robotContainer, "/home/lvuser/deploy/driveforward50.csv" ) );
 
         return command;
     }
@@ -67,8 +67,8 @@ public class AutonomousChooser {
         SequentialCommandGroup command = new SequentialCommandGroup();
 
         resetRobotPose(command, robotContainer, trajectories.getAutonPlaybackTrajectory());
-        command.addCommands(new AutonPathDriveTurnShoot( robotContainer, "/home/lvuser/driveforward40.csv" ) );
-        command.addCommands(new AutonPathDriveShoot( robotContainer, "/home/lvuser/ball3.csv" ) );
+        command.addCommands(new AutonPathDriveTurnShoot( robotContainer, "/home/lvuser/deploy/driveforward40.csv" ) );
+        command.addCommands(new AutonPathDriveShoot( robotContainer, "/home/lvuser/deploy/ball3.csv" ) );
 
         return command;
     }

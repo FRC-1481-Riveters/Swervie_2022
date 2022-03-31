@@ -1,6 +1,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj.Timer;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.Constants;
@@ -39,6 +40,7 @@ public class KickerMultipleCommand extends SequentialCommandGroup {
 
           // wait for the shooter wheel to be at the right speed
           new ShooterWait( m_shooterSubsystem ),
+          new WaitCommand(0.1),
 
           // run the kicker forwards until the light curtain is not blocked (ball is gone)
           new KickerCommand( m_shooterSubsystem, m_output, true, false, 200 ).withTimeout(2.0)

@@ -19,20 +19,20 @@ import common.math.Vector2;
 
 
 public class MacroPlayback {
-	Scanner scanner;
-	long startTime;
-    DrivetrainSubsystem m_drivetrain;
-	boolean onTime = true;
-    double nextDouble;
-    double current_time;
-    double current_forward;
-    double current_strafe;
-    double current_rotation;
-    double next_time;
-    double next_forward;
-    double next_strafe;
-    double next_rotation;
-    boolean m_finished;
+	private Scanner scanner;
+	private long startTime;
+    private DrivetrainSubsystem m_drivetrain;
+	private boolean onTime = true;
+    private double nextDouble;
+    private double current_time;
+    private double current_forward;
+    private double current_strafe;
+    private double current_rotation;
+    private double next_time;
+    private double next_forward;
+    private double next_strafe;
+    private double next_rotation;
+    private boolean m_finished;
 
 	public MacroPlayback( String filename, DrivetrainSubsystem drivetrain ) throws FileNotFoundException
 	{

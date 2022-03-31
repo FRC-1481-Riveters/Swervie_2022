@@ -62,7 +62,7 @@ public final class Constants {
     public static final int KICKER_ENCODER = 42;
 
     public static final int YEET_MOTOR = 40;
-    public static final int YEET_SPEED_HIGH = 2400;
+    public static final int YEET_SPEED_HIGH = 2350;
     public static final int YEET_SPEED_LOW = 1300;
     public static final double YEET_SPEED_TOLERANCE = 0.015;
 

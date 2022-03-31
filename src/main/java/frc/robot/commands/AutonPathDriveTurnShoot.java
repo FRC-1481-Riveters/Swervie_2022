@@ -26,36 +26,38 @@ public class AutonPathDriveTurnShoot extends SequentialCommandGroup {
       m_autonPath = autonpath;
 
       addCommands(
-        parallel(
-          new Climb6PositionCommand(m_climbSubsystem, 600),
-          new Climb10PositionCommand(m_climbSubsystem, 600),
-          new Climb15PositionCommand(m_climbSubsystem, 600),
-          new AutonMacroPlayback( m_autonPath, m_drivetrainSubsystem ),
-          sequence(
-            parallel(
-              new IntakePositionCommand(m_intakeSubsystem, Constants.INTAKE_ARM_POSITION_OUT),
-              new IntakeArmRollerCommand(m_intakeSubsystem, 0.55)
-            ).withTimeout(1.5),
-            new WaitCommand(0.2),
-            new IntakePositionCommand(m_intakeSubsystem, Constants.INTAKE_ARM_POSITION_IN)
-          )
-        ),
-        parallel(
-          new AutonMacroPlayback( "/home/lvuser/turn180.csv", m_drivetrainSubsystem ),
-          sequence(
-            new WaitCommand(0.5),
-            new KickerCommand( m_shooterSubsystem, -0.5, true, false, 0 ).withTimeout(0.5)
-          )
-        ),
-        parallel(
-          new AutoAimCommand( m_drivetrainSubsystem).withTimeout(1.5),
-          new AutoDriveCommand( m_drivetrainSubsystem, 0.0, 0.0, 0.0 ).withTimeout(1.5),
-          new ShooterYeetCommandPart3ElectricBoogaloo(m_shooterSubsystem, Constants.YEET_SPEED_HIGH),
-          sequence(
-            new WaitCommand(1.5),
-            new KickerMultipleCommand( m_shooterSubsystem, 0.7, m_intakeSubsystem )
-          )
-        ).withTimeout(5.0)
+        sequence(
+          parallel(
+            new Climb6PositionCommand(m_climbSubsystem, 600),
+            new Climb10PositionCommand(m_climbSubsystem, 600),
+            new Climb15PositionCommand(m_climbSubsystem, 600),
+            new AutonMacroPlayback( m_autonPath, m_drivetrainSubsystem ),
+            sequence(
+              parallel(
+                new IntakePositionCommand(m_intakeSubsystem, Constants.INTAKE_ARM_POSITION_OUT),
+                new IntakeArmRollerCommand(m_intakeSubsystem, 0.60)
+              ).withTimeout(1.7),
+              new WaitCommand(0.2),
+              new IntakePositionCommand(m_intakeSubsystem, Constants.INTAKE_ARM_POSITION_IN)
+            )
+          ),
+          parallel(
+            new AutonMacroPlayback( "/home/lvuser/deploy/turn180.csv", m_drivetrainSubsystem ),
+            sequence(
+              new WaitCommand(0.5),
+              new KickerCommand( m_shooterSubsystem, -0.5, true, false, 0 ).withTimeout(0.5)
+            )
+          ),
+          parallel(
+            new AutoAimCommand( m_drivetrainSubsystem).withTimeout(1.5),
+            new AutoDriveCommand( m_drivetrainSubsystem, 0.0, 0.0, 0.0 ).withTimeout(1.5),
+            new ShooterYeetCommandPart3ElectricBoogaloo(m_shooterSubsystem, Constants.YEET_SPEED_HIGH),
+            sequence(
+              new WaitCommand(1.5),
+              new KickerMultipleCommand( m_shooterSubsystem, 0.7, m_intakeSubsystem )
+            )
+          ).withTimeout(5.0)
+        ).withTimeout(15.0)
       );
     }
   }
