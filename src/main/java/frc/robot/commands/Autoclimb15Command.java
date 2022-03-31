@@ -1,6 +1,5 @@
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.subsystems.ClimbSubsystem;
@@ -22,36 +21,36 @@ public class Autoclimb15Command extends SequentialCommandGroup {
       addCommands( 
           sequence( 
             parallel(
+              // Fully extend climb6
               new Climb6PositionCommand( m_climbSubsystem, 51400 ), 
+              // Unlatch Climb15
               new Climb15PositionCommand( m_climbSubsystem, -4400 ),
+              // Small delay to allow Climb15 hooks to swing out
               new WaitCommand(0.2)
             ),
             parallel(
+              // Fully retract Climb10
               new Climb10PositionCommand( m_climbSubsystem, -4000 ),
+              // Move Climb15 just short of 15 point bar
               new Climb15PositionCommand( m_climbSubsystem, 24500 )
             ),
+            // Wait until robot is swinging up towards 15 point bar
             new GyroRollTransitionCommand( m_driveSubsystem, 10.0, true ),
+            // Fully extend Climb15
             new Climb15PositionCommand( m_climbSubsystem, 45700 ),
+            // Wait until robot is flat, swinging towards 6 point bar
             new GyroRollTransitionCommand( m_driveSubsystem, 0.0, false ),
             parallel(
+              // Fully retract Climb6 (just to keep it out of the way)
               new Climb6PositionCommand( m_climbSubsystem, -3400 ), 
+              // Fully extend Climb10 (settle Climb15 hooks on 15 point bar)
               new Climb10PositionCommand( m_climbSubsystem, 50500 )
             ),
+            // Fully extend Climb15 (swing onto 15 point bar)
             new Climb15PositionCommand( m_climbSubsystem, 47300 )
-            //!*!*!* TODO: MAKE JOYSTICK RUMBLE WHEN DONE
           )
           .withTimeout( 15.0 )
         );
-        /*
-        Autoclimb 15 -  button 2 (while held): 
-        0) (serial) retract Climb15 to 0" from full bottom (release 15 point hook from hook catc21
-        1) (parallel) retract Climb10 to 0" from full bottom 
-        2) (parallel) extend Climb15 to 21" from full down (end of travel)
-        3) (serial) retract Climb15 to 19" from full down (seat hook15)
-        4) (parallel) extend Climb10 to 21" from full down (disengage from the 10 point hook from bar)
-        5) (parallel) retract Climb15 to 9" from full down 
-        6) (serial) extend Climb15 to 21" from full down (hanging position)
-        */
     }
     
 
