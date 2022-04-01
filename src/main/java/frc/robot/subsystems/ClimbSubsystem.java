@@ -107,6 +107,9 @@ public class ClimbSubsystem extends SubsystemBase {
         m_climb15Motor.configMotionAcceleration(6000, Constants.TALON_TIMEOUT_MS);
         //  Zero the sensor once on robot startup
         m_climb15Motor.setSelectedSensorPosition(CLIMB6_POSITION_IN, 0, Constants.TALON_TIMEOUT_MS);
+
+        //FIXME: ugh why doesn't this work sometimes
+        m_climb10Motor.setInverted(true);
     }
 
     @Override

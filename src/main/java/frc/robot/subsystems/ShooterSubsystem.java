@@ -79,6 +79,10 @@ public class ShooterSubsystem extends SubsystemBase{
 
       tab = Shuffleboard.getTab("SmartDashboard");
       lightSensor = tab.add("Light Sensor",0).getEntry();
+
+      //FIXME: ugh why doesn't this work sometimes
+      m_kickerMotor.setInverted(true);
+      m_yeetMotor.setInverted(true);
     }
 
     @Override
