@@ -31,9 +31,8 @@ public class IntakeSubsystem extends SubsystemBase {
         // Configure Talon  SRX output and sensor direction
         m_intakeArmMotor.setSensorPhase(false);
         // Set peak current
-        m_intakeArmMotor.configPeakCurrentLimit(6, Constants.TALON_TIMEOUT_MS);
-        m_intakeArmMotor.configPeakCurrentDuration(200, Constants.TALON_TIMEOUT_MS);
-        m_intakeArmMotor.configContinuousCurrentLimit(4, Constants.TALON_TIMEOUT_MS);
+        m_intakeArmMotor.configContinuousCurrentLimit(6, Constants.TALON_TIMEOUT_MS);
+        m_intakeArmMotor.configPeakCurrentLimit(0, Constants.TALON_TIMEOUT_MS);
         m_intakeArmMotor.enableCurrentLimit(true);
         // Set Motion Magic gains in slot0
         m_intakeArmMotor.selectProfileSlot(0, 0);

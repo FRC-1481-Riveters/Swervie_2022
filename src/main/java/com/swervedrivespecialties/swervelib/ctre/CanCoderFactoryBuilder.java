@@ -25,7 +25,7 @@ public class CanCoderFactoryBuilder {
             config.sensorDirection = direction == Direction.CLOCKWISE;
             config.initializationStrategy = SensorInitializationStrategy.BootToAbsolutePosition;
 
-            CANCoder encoder = new CANCoder(configuration.getId());
+            CANCoder encoder = new CANCoder(configuration.getId(), "CANivore");
             CtreUtils.checkCtreError(encoder.configAllSettings(config, 250), "Failed to configure CANCoder");
 
             CtreUtils.checkCtreError(encoder.setStatusFramePeriod(CANCoderStatusFrame.SensorData, periodMilliseconds, 250), "Failed to configure CANCoder update rate");

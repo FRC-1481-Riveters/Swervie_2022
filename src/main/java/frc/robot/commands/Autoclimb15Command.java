@@ -32,14 +32,14 @@ public class Autoclimb15Command extends SequentialCommandGroup {
               // Fully retract Climb10
               new Climb10PositionCommand( m_climbSubsystem, -4000 ),
               // Move Climb15 just short of 15 point bar
-              new Climb15PositionCommand( m_climbSubsystem, 24500 )
+              new Climb15PositionCommand( m_climbSubsystem, 22500 )
             ),
             // Wait until robot is swinging up towards 15 point bar
-            new GyroRollTransitionCommand( m_driveSubsystem, 10.0, true ),
+            new GyroRollTransitionCommand( m_driveSubsystem, 12.0, true ),
             // Fully extend Climb15
             new Climb15PositionCommand( m_climbSubsystem, 45700 ),
-            // Wait until robot is flat, swinging towards 6 point bar
-            new GyroRollTransitionCommand( m_driveSubsystem, 0.0, false ),
+            // Wait until robot is swinging down towards 6 point bar
+            new GyroRollTransitionCommand( m_driveSubsystem, 2.0, false ),
             parallel(
               // Fully retract Climb6 (just to keep it out of the way)
               new Climb6PositionCommand( m_climbSubsystem, -3400 ), 

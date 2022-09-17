@@ -39,7 +39,8 @@ public class Autoclimb10Command extends SequentialCommandGroup {
             new Climb6PositionCommand( m_climbSubsystem, -3400 ), // 6 retract full
             new WaitCommand(1.0),
             new Climb10PositionCommand(m_climbSubsystem, 44500 ), // 10 cinched
-            new Climb6PositionCommand(m_climbSubsystem, 25000 ),
+            new WaitCommand(0.05),
+            new Climb6PositionCommand(m_climbSubsystem, 28000 ),
             parallel(
               new Climb10PositionCommand(m_climbSubsystem, 22500 ),
               new Climb6PositionCommand(m_climbSubsystem, 51400 )

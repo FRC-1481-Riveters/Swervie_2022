@@ -13,14 +13,12 @@ public class AutonMacroRecord extends CommandBase {
 
     public AutonMacroRecord( String filename, DrivetrainSubsystem drivetrain )
     {
-        super();
         m_filename = filename;
         m_drivetrain = drivetrain;
     }
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    super.initialize();
     try 
     {
         m_recorder = new MacroRecorder( m_filename, m_drivetrain );
@@ -42,19 +40,17 @@ public class AutonMacroRecord extends CommandBase {
     {
         e.printStackTrace();
     }
-    super.execute();
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return super.isFinished();
+    return false;
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    super.end( interrupted );
     try 
     {
         m_recorder.end();

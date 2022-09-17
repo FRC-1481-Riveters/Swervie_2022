@@ -12,12 +12,12 @@ public class ShooterWait extends CommandBase {
     public ShooterWait( ShooterSubsystem subsystem )
     {
         m_shooterSubsystem = subsystem;
+        addRequirements( m_shooterSubsystem );    
     }
 
     @Override
   public void initialize() {
    // System.out.println(System.currentTimeMillis() + " shooter wait");
-    super.initialize();
   }
     
 

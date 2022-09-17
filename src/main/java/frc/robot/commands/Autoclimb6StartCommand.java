@@ -33,7 +33,6 @@ public class Autoclimb6StartCommand extends SequentialCommandGroup {
     @Override
     public void initialize() {
       NetworkTableInstance.getDefault().getTable("limelight").getEntry("ledMode").setNumber(0); // force light off
-      super.initialize();
     }
 
   // Called once the command ends or is interrupted.

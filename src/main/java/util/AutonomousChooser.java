@@ -5,11 +5,29 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+
+import frc.robot.Constants;
 import frc.robot.RobotContainer;
 import frc.robot.commands.AutonMacroPlayback;
 import frc.robot.commands.AutonPathDriveTurnShoot;
 import frc.robot.commands.AutonPathDriveShoot;
+import frc.robot.commands.FollowTrajectoryCommand;
+import frc.robot.commands.Climb6PositionCommand;
+import frc.robot.commands.Climb10PositionCommand;
+import frc.robot.commands.Climb15PositionCommand;
+import frc.robot.commands.IntakeArmRollerCommand;
+import frc.robot.commands.IntakePositionCommand;
+import frc.robot.commands.KickerCommand;
+import frc.robot.commands.AutoAimCommand;
+import frc.robot.commands.AutoDriveCommand;
+import frc.robot.commands.ShooterYeetCommandPart3ElectricBoogaloo;
+
+import frc.robot.subsystems.DrivetrainSubsystem;
+import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.ClimbSubsystem;
+import frc.robot.subsystems.ShooterSubsystem;
 import common.control.Trajectory;
 import common.math.RigidTransform2;
 import common.math.Rotation2;
@@ -27,6 +45,7 @@ public class AutonomousChooser {
         autonomousModeChooser.addOption("Auton Middle", AutonomousMode.AUTON_PATH_MIDDLE);
         autonomousModeChooser.addOption("Auton 3Ball", AutonomousMode.AUTON_PATH_3BALL);
         autonomousModeChooser.addOption("Auton Playback", AutonomousMode.PLAYBACK_SOMETHING);
+        autonomousModeChooser.addOption("Pathfinder Test", AutonomousMode.PATHFINDER_TEST);
     
         // Put the chooser on the dashboard
         SmartDashboard.putData( autonomousModeChooser );
@@ -49,7 +68,7 @@ public class AutonomousChooser {
         SequentialCommandGroup command = new SequentialCommandGroup();
 
         resetRobotPose(command, robotContainer, trajectories.getAutonPlaybackTrajectory());
-        command.addCommands(new AutonPathDriveTurnShoot( robotContainer, "/home/lvuser/deploy/driveforward40.csv" ) );
+        command.addCommands( AutonPathDriveTurnShoot( robotContainer, "/home/lvuser/deploy/driveforward40.csv" ) );
 
         return command;
     }
@@ -58,7 +77,7 @@ public class AutonomousChooser {
         SequentialCommandGroup command = new SequentialCommandGroup();
 
         resetRobotPose(command, robotContainer, trajectories.getAutonPlaybackTrajectory());
-        command.addCommands(new AutonPathDriveTurnShoot( robotContainer, "/home/lvuser/deploy/driveforward50.csv" ) );
+        command.addCommands( AutonPathDriveTurnShoot( robotContainer, "/home/lvuser/deploy/driveforward50.csv" ) );
 
         return command;
     }
@@ -67,12 +86,30 @@ public class AutonomousChooser {
         SequentialCommandGroup command = new SequentialCommandGroup();
 
         resetRobotPose(command, robotContainer, trajectories.getAutonPlaybackTrajectory());
-        command.addCommands(new AutonPathDriveTurnShoot( robotContainer, "/home/lvuser/deploy/driveforward40.csv" ) );
-        command.addCommands(new AutonPathDriveShoot( robotContainer, "/home/lvuser/deploy/ball3.csv" ) );
+        command.addCommands( AutonPathDriveTurnShoot( robotContainer, "/home/lvuser/deploy/driveforward40.csv" ) );
+        command.addCommands( AutonPathDriveShoot( robotContainer, "/home/lvuser/deploy/ball3.csv" ) );
 
         return command;
     }
 
+    private Command getPathfinderTest(RobotContainer container) {
+        SequentialCommandGroup command = new SequentialCommandGroup();
+
+        //reset robot pose
+        resetRobotPose(command, container, trajectories.getPathfinderTestPartOne());
+//      command.addCommands(new HomeHoodMotorCommand(container.getShooterSubsystem()));
+        //follow first trajectory and shoot
+        follow(command, container, trajectories.getPathfinderTestPartOne());
+//        shootAtTarget(command, container, 1.5);
+        //follow second trajectory and shoot
+        follow(command, container, trajectories.getPathfinderTestPartTwo());
+
+//        follow(command, container, trajectories.getEightBallCompatiblePartThree());
+//        shootAtTarget(command, container, 1.5);
+//        follow(command, container, trajectories.getEightBallCompatiblePartFour());
+
+        return command;
+    }
     public Command AutonomousNothing(RobotContainer container) {
         SequentialCommandGroup command = new SequentialCommandGroup();
 
@@ -101,6 +138,10 @@ public class AutonomousChooser {
                 command = getPlaybackSomethingCommand( robotContainer );
                 break;
 
+            case PATHFINDER_TEST:
+                command = getPathfinderTest( robotContainer );
+                break;
+
             default:
                 command = new WaitCommand( 1.0 );
                 break;
@@ -120,5 +161,50 @@ public class AutonomousChooser {
         AUTON_PATH_MIDDLE,
         AUTON_PATH_3BALL,
         PLAYBACK_SOMETHING,
+        PATHFINDER_TEST
+    }
+
+    private void follow(SequentialCommandGroup command, RobotContainer container, Trajectory trajectory) {
+        command.addCommands(new FollowTrajectoryCommand(container.getDrivetrainSubsystem(), trajectory)
+//               .deadlineWith(new TargetWithShooterCommand(container.getShooterSubsystem(), container.getVisionSubsystem(), container.getPrimaryController()))
+//                .alongWith(new PrepareBallsToShootCommand(container.getFeederSubsystem(), 1.0))
+                );
+    }
+
+    public Command AutonPathDriveTurnShoot( RobotContainer container, String autonpath )
+    {
+        return 
+            new SequentialCommandGroup(
+                new ParallelCommandGroup(
+                    new Climb6PositionCommand( container.getClimbSubsystem(), 600),
+                    new Climb10PositionCommand(container.getClimbSubsystem(), 600),
+                    //new Climb15PositionCommand(m_climbSubsystem, 600),
+                    new AutonMacroPlayback( autonpath, container.getDrivetrainSubsystem() ),
+                    new SequentialCommandGroup(
+                        new ParallelCommandGroup(
+                            new IntakePositionCommand(container.getIntakeSubsystem(), Constants.INTAKE_ARM_POSITION_OUT),
+                            new IntakeArmRollerCommand(container.getIntakeSubsystem(), 0.60)
+                        ).withTimeout(1.7),
+                        new WaitCommand(0.2),
+                        new IntakePositionCommand(container.getIntakeSubsystem(), Constants.INTAKE_ARM_POSITION_IN_FULL)
+                    )
+                ),
+                new ParallelCommandGroup(
+                    new AutonMacroPlayback( "/home/lvuser/deploy/turn180.csv", container.getDrivetrainSubsystem() ),
+                    new SequentialCommandGroup(
+                    new WaitCommand(0.5),
+                    new KickerCommand( container.getShooterSubsystem(), -0.5, true, false, 0 ).withTimeout(0.5)
+                    )
+                ),
+                new ParallelCommandGroup(
+                    new AutoAimCommand( container.getDrivetrainSubsystem()).withTimeout(1.5),
+                    new AutoDriveCommand( container.getDrivetrainSubsystem(), 0.0, 0.0, 0.0 ).withTimeout(1.5),
+                    new ShooterYeetCommandPart3ElectricBoogaloo(container.getShooterSubsystem(), Constants.YEET_SPEED_HIGH),
+                    new SequentialCommandGroup(
+                        new WaitCommand(1.5),
+                        new container.KickerMultipleCommand( 0.7 )
+                    )
+                ).withTimeout(5.0)
+            ).withTimeout(15.0);
     }
 }

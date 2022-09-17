@@ -18,13 +18,11 @@ public class Climb6ManualCommand extends CommandBase {
   @Override
   public void initialize() {
     m_climbSubsystem.setClimb6Speed(m_output);
-    super.initialize();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    super.execute();
   }
 
   // Returns true when the command should end.
@@ -37,6 +35,5 @@ public class Climb6ManualCommand extends CommandBase {
   @Override
   public void end(boolean interrupted) {
     m_climbSubsystem.setClimb6Speed(0);
-    super.end(interrupted);
   }
 }

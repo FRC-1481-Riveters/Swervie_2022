@@ -10,7 +10,7 @@ import static com.swervedrivespecialties.swervelib.ctre.CtreUtils.checkCtreError
 
 public final class Falcon500SteerControllerFactoryBuilder {
     private static final int CAN_TIMEOUT_MS = 250;
-    private static final int STATUS_FRAME_GENERAL_PERIOD_MS = 250;
+    private static final int STATUS_FRAME_GENERAL_PERIOD_MS = 150;
 
     private static final double TICKS_PER_ROTATION = 2048.0;
 
@@ -115,7 +115,7 @@ public final class Falcon500SteerControllerFactoryBuilder {
                 motorConfiguration.supplyCurrLimit.enable = true;
             }
 
-            TalonFX motor = new TalonFX(steerConfiguration.getMotorPort());
+            TalonFX motor = new TalonFX(steerConfiguration.getMotorPort(), "CANivore");
             checkCtreError(motor.configAllSettings(motorConfiguration, CAN_TIMEOUT_MS), "Failed to configure Falcon 500 settings");
 
             if (hasVoltageCompensation()) {

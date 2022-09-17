@@ -17,13 +17,15 @@ public class AutonPathDriveShoot extends SequentialCommandGroup {
     private String m_autonPath;
     private ClimbSubsystem m_climbSubsystem;
 
-    public AutonPathDriveShoot( RobotContainer container, String autonpath )
+    public AutonPathDriveShootOld( RobotContainer container, String autonpath )
     {
       m_drivetrainSubsystem = container.getDrivetrainSubsystem();
       m_intakeSubsystem = container.getIntakeSubsystem();
       m_shooterSubsystem = container.getShooterSubsystem();
       m_climbSubsystem = container.getClimbSubsystem();
       m_autonPath = autonpath;
+
+      addRequirements(m_drivetrainSubsystem, m_intakeSubsystem, m_shooterSubsystem, m_climbSubsystem);
 
       addCommands(
         parallel(
@@ -33,7 +35,7 @@ public class AutonPathDriveShoot extends SequentialCommandGroup {
               new IntakePositionCommand(m_intakeSubsystem, Constants.INTAKE_ARM_POSITION_OUT),
               new IntakeArmRollerCommand(m_intakeSubsystem, 0.65)
             ).withTimeout(5.3),
-            new IntakePositionCommand(m_intakeSubsystem, Constants.INTAKE_ARM_POSITION_IN)
+            new IntakePositionCommand(m_intakeSubsystem, Constants.INTAKE_ARM_POSITION_IN_FULL)
           )
         ),
         parallel(
@@ -42,7 +44,7 @@ public class AutonPathDriveShoot extends SequentialCommandGroup {
           new ShooterYeetCommandPart3ElectricBoogaloo(m_shooterSubsystem, Constants.YEET_SPEED_HIGH),
           sequence(
             new WaitCommand(1.5),
-            new KickerMultipleCommand( m_shooterSubsystem, 0.7, m_intakeSubsystem )
+            new KickerMultipleCommandOld( m_shooterSubsystem, 0.7 )
           )
         ).withTimeout(5.0)
       );

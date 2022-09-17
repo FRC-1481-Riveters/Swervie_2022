@@ -9,7 +9,6 @@ import frc.robot.Constants;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.networktables.NetworkTableEntry;
 
-import com.ctre.phoenix.sensors.CANCoder;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
@@ -21,9 +20,6 @@ public class ClimbSubsystem extends SubsystemBase {
     TalonSRX m_climb6Motor = new TalonSRX(CLIMB_6_MOTOR); 
     TalonSRX m_climb10Motor = new TalonSRX(CLIMB_10_MOTOR); 
     TalonSRX m_climb15Motor = new TalonSRX(CLIMB_15_MOTOR); 
-    CANCoder m_climb6Encoder = new  CANCoder(CLIMB_6_ENCODER);
-    CANCoder m_climb10Encoder = new  CANCoder(CLIMB_10_ENCODER);
-    CANCoder m_climb15Encoder = new  CANCoder(CLIMB_15_ENCODER);
 
     private ShuffleboardTab tab;
     private NetworkTableEntry kP, kI, kD, kCruise, kAcceleration;
@@ -107,9 +103,6 @@ public class ClimbSubsystem extends SubsystemBase {
         m_climb15Motor.configMotionAcceleration(6000, Constants.TALON_TIMEOUT_MS);
         //  Zero the sensor once on robot startup
         m_climb15Motor.setSelectedSensorPosition(CLIMB6_POSITION_IN, 0, Constants.TALON_TIMEOUT_MS);
-
-        //FIXME: ugh why doesn't this work sometimes
-        m_climb10Motor.setInverted(true);
     }
 
     @Override
@@ -177,7 +170,7 @@ public class ClimbSubsystem extends SubsystemBase {
 
     public void setClimb15Position(double value){
         c15Position = value;
-        m_climb15Motor.set(ControlMode.MotionMagic, value);
+        //m_climb15Motor.set(ControlMode.MotionMagic, value);
     }
 
     public void zeroClimbSensors(){

@@ -17,7 +17,7 @@ public class AutonPathDriveTurnShoot extends SequentialCommandGroup {
     private String m_autonPath;
     private ClimbSubsystem m_climbSubsystem;
 
-    public AutonPathDriveTurnShoot( RobotContainer container, String autonpath )
+    public AutonPathDriveTurnShootOld( RobotContainer container, String autonpath )
     {
       m_drivetrainSubsystem = container.getDrivetrainSubsystem();
       m_intakeSubsystem = container.getIntakeSubsystem();
@@ -25,12 +25,14 @@ public class AutonPathDriveTurnShoot extends SequentialCommandGroup {
       m_climbSubsystem = container.getClimbSubsystem();
       m_autonPath = autonpath;
 
+      addRequirements(m_drivetrainSubsystem, m_intakeSubsystem, m_shooterSubsystem, m_climbSubsystem);
+
       addCommands(
         sequence(
           parallel(
             new Climb6PositionCommand(m_climbSubsystem, 600),
             new Climb10PositionCommand(m_climbSubsystem, 600),
-            new Climb15PositionCommand(m_climbSubsystem, 600),
+            //new Climb15PositionCommand(m_climbSubsystem, 600),
             new AutonMacroPlayback( m_autonPath, m_drivetrainSubsystem ),
             sequence(
               parallel(
@@ -38,7 +40,7 @@ public class AutonPathDriveTurnShoot extends SequentialCommandGroup {
                 new IntakeArmRollerCommand(m_intakeSubsystem, 0.60)
               ).withTimeout(1.7),
               new WaitCommand(0.2),
-              new IntakePositionCommand(m_intakeSubsystem, Constants.INTAKE_ARM_POSITION_IN)
+              new IntakePositionCommand(m_intakeSubsystem, Constants.INTAKE_ARM_POSITION_IN_FULL)
             )
           ),
           parallel(
@@ -54,7 +56,7 @@ public class AutonPathDriveTurnShoot extends SequentialCommandGroup {
             new ShooterYeetCommandPart3ElectricBoogaloo(m_shooterSubsystem, Constants.YEET_SPEED_HIGH),
             sequence(
               new WaitCommand(1.5),
-              new KickerMultipleCommand( m_shooterSubsystem, 0.7, m_intakeSubsystem )
+              new KickerMultipleCommandOld( m_shooterSubsystem, 0.7 )
             )
           ).withTimeout(5.0)
         ).withTimeout(15.0)

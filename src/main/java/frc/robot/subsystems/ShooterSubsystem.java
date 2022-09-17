@@ -54,7 +54,7 @@ public class ShooterSubsystem extends SubsystemBase{
       m_yeetMotor.setSmartCurrentLimit(50, 50);
       m_yeetMotor.setIdleMode(IdleMode.kCoast);
       m_pidController.setP(0.0008);
-      m_pidController.setI(0.000000040);
+      m_pidController.setI(0.000000060);
       m_pidController.setD(0.0001);
       m_pidController.setFF(0.00018);
 

@@ -6,7 +6,10 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 
 import frc.robot.commands.DriveCommand;
 import util.AutonomousChooser;
@@ -26,10 +29,9 @@ import frc.robot.commands.Climb10ManualCommand;
 import frc.robot.commands.Climb15ManualCommand;
 import frc.robot.commands.ClimbZeroPosition;
 import frc.robot.commands.IntakePositionCommand;
-import frc.robot.commands.IntakeRetractCommand;
-import frc.robot.commands.KickerMultipleCommand;
 import frc.robot.commands.KickerCommand;
 import frc.robot.commands.ShooterCommand;
+import frc.robot.commands.ShooterWait;
 import frc.robot.commands.ShooterYeetCommandPart2ElectricBoogaloo;
 import frc.robot.commands.ShooterYeetCommandPart3ElectricBoogaloo;
 import common.math.Rotation2;
@@ -84,6 +86,9 @@ public class RobotContainer {
         e.printStackTrace();
     }
 
+    CommandScheduler.getInstance().registerSubsystem(m_intakeSubsystem);
+    CommandScheduler.getInstance().registerSubsystem(m_shooterSubsystem);
+    CommandScheduler.getInstance().registerSubsystem(m_climbSubsystem);
     CommandScheduler.getInstance().registerSubsystem(m_drivetrainSubsystem);
     CommandScheduler.getInstance().setDefaultCommand(m_drivetrainSubsystem, new DriveCommand(m_drivetrainSubsystem, getDriveForwardAxis(), getDriveStrafeAxis(), getDriveRotationAxis()));
 
@@ -294,7 +299,7 @@ private class JoystickAxisDown extends Trigger {
       .whileActiveOnce(new ShooterYeetCommandPart3ElectricBoogaloo( m_shooterSubsystem, 500));
 
     m_controller.getAButton()
-      .whileActiveOnce( new KickerMultipleCommand( m_shooterSubsystem, 0.7, m_intakeSubsystem ) );
+      .whileActiveOnce( KickerMultipleCommand( 0.7 ) );
 
     operatorLeftTrigger = new JoystickTriggerPressed( m_operatorController.getLeftTriggerAxis() );
     m_operatorController.getBackButton() 
@@ -303,12 +308,50 @@ private class JoystickAxisDown extends Trigger {
 
     operatorLeftAxisUp = new JoystickAxisUp( m_operatorController.getLeftYAxis() );
     operatorLeftAxisUp
-      .whileActiveOnce( new IntakePositionCommand( m_intakeSubsystem, Constants.INTAKE_ARM_POSITION_OUT ) );
+      .whenActive( new IntakePositionCommand( m_intakeSubsystem, Constants.INTAKE_ARM_POSITION_OUT ) );
 
     operatorLeftAxisDown = new JoystickAxisDown( m_operatorController.getLeftYAxis() );
     operatorLeftAxisDown
-      .whileActiveOnce(  new IntakeRetractCommand( m_intakeSubsystem ) );
+      .whenActive( IntakeRetractCommand() );
   }
+
+     //We build generate this using a function since it's both parameterized, 
+  //and reused multiple times in different autos
+  public ParallelDeadlineGroup IntakeRetractCommand(){
+    return    
+    new ParallelDeadlineGroup(
+        new IntakePositionCommand( m_intakeSubsystem, Constants.INTAKE_ARM_POSITION_IN_FULL ),
+        // run the kicker forward slowly until the light curtain is blocked
+        new KickerCommand( m_shooterSubsystem, 0.5, true, true, 0 )
+          .withTimeout(5.0)
+    );
+  }
+
+  public SequentialCommandGroup KickerMultipleCommand(double m_output){
+    return    
+    new SequentialCommandGroup(
+      // run the kicker forward slowly until the light curtain is blocked
+      new KickerCommand( m_shooterSubsystem, 0.5, true, true, 0),
+
+      // wait for the shooter wheel to be at the right speed
+      new ShooterWait( m_shooterSubsystem ),
+      new WaitCommand(0.1),
+
+      // run the kicker forwards until the light curtain is not blocked (ball is gone)
+      new KickerCommand( m_shooterSubsystem, m_output, true, false, 200 ).withTimeout(2.0),
+
+      // run the kicker forward slowly until the light curtain is blocked
+      new KickerCommand( m_shooterSubsystem, 0.5, true, true, 0 ),
+
+      // wait for the shooter wheel to be at the right speed
+      new ShooterWait( m_shooterSubsystem ),
+      new WaitCommand(0.1),
+
+      // run the kicker forwards until the light curtain is not blocked (ball is gone)
+      new KickerCommand( m_shooterSubsystem, m_output, true, false, 200 ).withTimeout(2.0)
+    );
+  }
+  
 
   public void checkBumper()
   {
