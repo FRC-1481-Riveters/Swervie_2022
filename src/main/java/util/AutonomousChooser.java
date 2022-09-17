@@ -11,8 +11,6 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants;
 import frc.robot.RobotContainer;
 import frc.robot.commands.AutonMacroPlayback;
-import frc.robot.commands.AutonPathDriveTurnShoot;
-import frc.robot.commands.AutonPathDriveShoot;
 import frc.robot.commands.FollowTrajectoryCommand;
 import frc.robot.commands.Climb6PositionCommand;
 import frc.robot.commands.Climb10PositionCommand;
@@ -202,9 +200,36 @@ public class AutonomousChooser {
                     new ShooterYeetCommandPart3ElectricBoogaloo(container.getShooterSubsystem(), Constants.YEET_SPEED_HIGH),
                     new SequentialCommandGroup(
                         new WaitCommand(1.5),
-                        new container.KickerMultipleCommand( 0.7 )
+                        container.KickerMultipleCommand( 0.7 )
                     )
                 ).withTimeout(5.0)
             ).withTimeout(15.0);
     }
+
+    public Command AutonPathDriveShoot( RobotContainer container, String autonpath )
+    {
+        return 
+            new SequentialCommandGroup(
+                new ParallelCommandGroup(
+                    new AutonMacroPlayback( autonpath, container.getDrivetrainSubsystem()),
+                    new SequentialCommandGroup(
+                        new ParallelCommandGroup(
+                            new IntakePositionCommand(container.getIntakeSubsystem(), Constants.INTAKE_ARM_POSITION_OUT),
+                            new IntakeArmRollerCommand(container.getIntakeSubsystem(), 0.65)
+                        ).withTimeout(5.3),
+                        new IntakePositionCommand(container.getIntakeSubsystem(), Constants.INTAKE_ARM_POSITION_IN_FULL)
+                    )
+                ),
+                new ParallelCommandGroup(
+                    new AutoAimCommand( container.getDrivetrainSubsystem()).withTimeout(1.5),
+                    new AutoDriveCommand( container.getDrivetrainSubsystem(), 0.0, 0.0, 0.0 ).withTimeout(1.5),
+                    new ShooterYeetCommandPart3ElectricBoogaloo(container.getShooterSubsystem(), Constants.YEET_SPEED_HIGH),
+                    new SequentialCommandGroup(
+                        new WaitCommand(1.5),
+                        container.KickerMultipleCommand( 0.7 )
+                    )
+                ).withTimeout(5.0)
+            );
+    }
+
 }
