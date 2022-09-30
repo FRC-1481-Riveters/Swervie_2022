@@ -22,10 +22,6 @@ import frc.robot.commands.AutoAimCommand;
 import frc.robot.commands.AutoDriveCommand;
 import frc.robot.commands.ShooterYeetCommandPart3ElectricBoogaloo;
 
-import frc.robot.subsystems.DrivetrainSubsystem;
-import frc.robot.subsystems.IntakeSubsystem;
-import frc.robot.subsystems.ClimbSubsystem;
-import frc.robot.subsystems.ShooterSubsystem;
 import common.control.Trajectory;
 import common.math.RigidTransform2;
 import common.math.Rotation2;

@@ -20,11 +20,6 @@ public class Climb6PositionCommand extends CommandBase {
     m_climbSubsystem.setClimb6Position(m_setPosition);
   }
 
-  // Called every time the scheduler runs while the command is scheduled.
-  @Override
-  public void execute() {
-  }
-
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
@@ -36,10 +31,5 @@ public class Climb6PositionCommand extends CommandBase {
       {
         return false;
       }
-  }
-
-  // Called once the command ends or is interrupted.
-  @Override
-  public void end(boolean interrupted) {
   }
 }

@@ -10,7 +10,6 @@ public class Autoclimb6Command extends SequentialCommandGroup {
     public Autoclimb6Command( ClimbSubsystem subsystem )
     {
       m_climbSubsystem = subsystem;
-      addRequirements(m_climbSubsystem);
 
       addCommands(
         new Climb6PositionCommand(m_climbSubsystem, 8000)

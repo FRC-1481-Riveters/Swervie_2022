@@ -16,8 +16,6 @@ public class Autoclimb10Command extends SequentialCommandGroup {
       m_climbSubsystem = subsystem;
       m_driveSubsystem = drivetrainSubsystem;
 
-      addRequirements(m_climbSubsystem);
-
       // 48500 = climb10 fully extended
       addCommands( 
           sequence( 
@@ -59,7 +57,12 @@ public class Autoclimb10Command extends SequentialCommandGroup {
         5) (serial) retract Climb10 to 21" from full down.  Note: we really only need to go 9" from full down if transitioning into 15 point climb
         */
     }
-    
+
+  @Override
+  public boolean isFinished() {
+    return(false);
+  }
+
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {

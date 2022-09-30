@@ -23,8 +23,8 @@ public class ClimbSubsystem extends SubsystemBase {
 
     private ShuffleboardTab tab;
     private NetworkTableEntry kP, kI, kD, kCruise, kAcceleration;
-    private NetworkTableEntry c15pos, c15set;
-    private double c15Position;
+    private NetworkTableEntry c15pos, c15set, c10pos, c10set, c6pos, c6set;
+    private double c15Position, c10Position, c6Position;
 
     public void ClimbSubsystemInit() {
 
@@ -36,6 +36,10 @@ public class ClimbSubsystem extends SubsystemBase {
         kAcceleration = tab.add("kAcceleration",CLIMB6_MOTOR_ACCELERATION).getEntry();
         c15pos = tab.add("c15pos",0).getEntry();
         c15set = tab.add("c15set",0).getEntry();
+        c10pos = tab.add("c10pos",0).getEntry();
+        c10set = tab.add("c10set",0).getEntry();
+        c6pos = tab.add("c6pos",0).getEntry();
+        c6set = tab.add("c6set",0).getEntry();
     
         m_climb6Motor.configFactoryDefault();
         m_climb6Motor.configSelectedFeedbackSensor( FeedbackDevice.CTRE_MagEncoder_Relative, 0, Constants.TALON_TIMEOUT_MS);
@@ -110,9 +114,14 @@ public class ClimbSubsystem extends SubsystemBase {
     {
         c15pos.setDouble( m_climb15Motor.getSelectedSensorPosition(0) );
         c15set.setDouble( c15Position );
+        c10pos.setDouble( m_climb10Motor.getSelectedSensorPosition(0) );
+        c10set.setDouble( c10Position );
+        c6pos.setDouble( m_climb6Motor.getSelectedSensorPosition(0) );
+        c6set.setDouble( c6Position );
     }
 
     public void setClimb6Speed(double value){
+        c6Position = 0;
         if( value == 0.0 )
         {
             m_climb6Motor.configPeakCurrentLimit(35);
@@ -129,6 +138,7 @@ public class ClimbSubsystem extends SubsystemBase {
     }
 
     public void setClimb10Speed(double value){
+        c10Position = 0;
         if( value == 0.0 )
         {
             m_climb10Motor.configPeakCurrentLimit(35);
@@ -162,15 +172,17 @@ public class ClimbSubsystem extends SubsystemBase {
     }
 
     public void setClimb6Position(double value){
+        c6Position = value;
         m_climb6Motor.set(ControlMode.MotionMagic, value);
     }
     public void setClimb10Position(double value){
+        c10Position = value;
         m_climb10Motor.set(ControlMode.MotionMagic, value);
     }    
 
     public void setClimb15Position(double value){
         c15Position = value;
-        //m_climb15Motor.set(ControlMode.MotionMagic, value);
+        m_climb15Motor.set(ControlMode.MotionMagic, value);
     }
 
     public void zeroClimbSensors(){

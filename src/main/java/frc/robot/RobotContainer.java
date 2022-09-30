@@ -6,10 +6,12 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.networktables.NetworkTableInstance;
 
 import frc.robot.commands.DriveCommand;
 import util.AutonomousChooser;
@@ -27,6 +29,9 @@ import frc.robot.commands.AutonMacroRecord;
 import frc.robot.commands.Climb6ManualCommand;
 import frc.robot.commands.Climb10ManualCommand;
 import frc.robot.commands.Climb15ManualCommand;
+import frc.robot.commands.Climb6PositionCommand;
+import frc.robot.commands.Climb10PositionCommand;
+import frc.robot.commands.Climb15PositionCommand;
 import frc.robot.commands.ClimbZeroPosition;
 import frc.robot.commands.IntakePositionCommand;
 import frc.robot.commands.KickerCommand;
@@ -247,7 +252,7 @@ private class JoystickAxisDown extends Trigger {
     //Autoclimb6 Start
     m_controller.getStartButton()
       .and(m_controller.getYButton())
-      .whileActiveOnce(new Autoclimb6StartCommand(m_climbSubsystem, m_intakeSubsystem));
+      .whileActiveOnce( new Autoclimb6StartCommand(m_climbSubsystem) );
 
     //Autoclimb6
     m_operatorController.getStartButton()
@@ -283,7 +288,7 @@ private class JoystickAxisDown extends Trigger {
       .whileActiveOnce( new ShooterYeetCommandPart2ElectricBoogaloo( m_shooterSubsystem, Constants.YEET_SPEED_HIGH) );
 
     m_operatorController.getDPadButton(Direction.DOWN)
-      .whileActiveOnce( new ShooterYeetCommandPart2ElectricBoogaloo( m_shooterSubsystem, 2600) );
+      .whileActiveOnce( new ShooterYeetCommandPart2ElectricBoogaloo( m_shooterSubsystem, 2700) );
 
     //Kicker controls on drive controller
     m_controller.getDPadButton(Direction.UP)
@@ -315,11 +320,11 @@ private class JoystickAxisDown extends Trigger {
       .whenActive( IntakeRetractCommand() );
   }
 
-     //We build generate this using a function since it's both parameterized, 
+  //We build generate this using a function since it's both parameterized, 
   //and reused multiple times in different autos
-  public ParallelDeadlineGroup IntakeRetractCommand(){
+  public ParallelCommandGroup IntakeRetractCommand(){
     return    
-    new ParallelDeadlineGroup(
+    new ParallelCommandGroup(
         new IntakePositionCommand( m_intakeSubsystem, Constants.INTAKE_ARM_POSITION_IN_FULL ),
         // run the kicker forward slowly until the light curtain is blocked
         new KickerCommand( m_shooterSubsystem, 0.5, true, true, 0 )
@@ -331,7 +336,7 @@ private class JoystickAxisDown extends Trigger {
     return    
     new SequentialCommandGroup(
       // run the kicker forward slowly until the light curtain is blocked
-      new KickerCommand( m_shooterSubsystem, 0.5, true, true, 0),
+      new KickerCommand( m_shooterSubsystem, 1.0, true, true, 0),
 
       // wait for the shooter wheel to be at the right speed
       new ShooterWait( m_shooterSubsystem ),
@@ -341,7 +346,7 @@ private class JoystickAxisDown extends Trigger {
       new KickerCommand( m_shooterSubsystem, m_output, true, false, 200 ).withTimeout(2.0),
 
       // run the kicker forward slowly until the light curtain is blocked
-      new KickerCommand( m_shooterSubsystem, 0.5, true, true, 0 ),
+      new KickerCommand( m_shooterSubsystem, 1.0, true, true, 0 ),
 
       // wait for the shooter wheel to be at the right speed
       new ShooterWait( m_shooterSubsystem ),

@@ -14,7 +14,6 @@ public class Autoclimb15Command extends SequentialCommandGroup {
     {
       m_driveSubsystem = drivetrainSubsystem;
       m_climbSubsystem = subsystem;
-      addRequirements(m_climbSubsystem);
 
       // climb15 45700 fully extended (not including overtravel slop)
       // 50500 = climb10 fully extended (including overtravel slop)
@@ -54,7 +53,12 @@ public class Autoclimb15Command extends SequentialCommandGroup {
     }
     
 
-  // Called once the command ends or is interrupted.
+  @Override
+  public boolean isFinished() {
+    return(false);
+  }
+
+    // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
     m_climbSubsystem.setClimb6Speed(0);
