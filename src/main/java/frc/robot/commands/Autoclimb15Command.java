@@ -34,11 +34,11 @@ public class Autoclimb15Command extends SequentialCommandGroup {
               new Climb15PositionCommand( m_climbSubsystem, 22500 )
             ),
             // Wait until robot is swinging up towards 15 point bar
-            new GyroRollTransitionCommand( m_driveSubsystem, 12.0, true ),
+//            new GyroRollTransitionCommand( m_driveSubsystem, 12.0, true ),
             // Fully extend Climb15
             new Climb15PositionCommand( m_climbSubsystem, 45700 ),
             // Wait until robot is swinging down towards 6 point bar
-            new GyroRollTransitionCommand( m_driveSubsystem, 2.0, false ),
+//            new GyroRollTransitionCommand( m_driveSubsystem, 2.0, false ),
             parallel(
               // Fully retract Climb6 (just to keep it out of the way)
               new Climb6PositionCommand( m_climbSubsystem, -3400 ), 
@@ -52,7 +52,13 @@ public class Autoclimb15Command extends SequentialCommandGroup {
         );
     }
     
-
+  @Override
+  public void initialize()
+  {
+      System.out.println("Autoclimb15Command initialize");
+      super.initialize();
+  }
+  
   @Override
   public boolean isFinished() {
     return(false);
@@ -64,5 +70,6 @@ public class Autoclimb15Command extends SequentialCommandGroup {
     m_climbSubsystem.setClimb6Speed(0);
     m_climbSubsystem.setClimb10Speed(0);
     m_climbSubsystem.setClimb15Speed(0);
+    super.end(interrupted);
   }
 }

@@ -25,7 +25,7 @@ public class Autoclimb10Command extends SequentialCommandGroup {
                 new WaitCommand(0.2),
                 new Climb6PositionCommand( m_climbSubsystem, 27000 ),
                 new WaitCommand(0.2),
-                new Climb6PositionCommand( m_climbSubsystem, 24000 ),
+                new Climb6PositionCommand( m_climbSubsystem, 23000 ),
                 new WaitCommand(0.2),
                 new Climb6PositionCommand( m_climbSubsystem, 12000 )
               ),
@@ -59,6 +59,13 @@ public class Autoclimb10Command extends SequentialCommandGroup {
     }
 
   @Override
+  public void initialize()
+  {
+     System.out.println("Autoclimb10Command initialize");
+     super.initialize();
+  }
+
+  @Override
   public boolean isFinished() {
     return(false);
   }
@@ -69,5 +76,6 @@ public class Autoclimb10Command extends SequentialCommandGroup {
     m_climbSubsystem.setClimb6Speed(0);
     m_climbSubsystem.setClimb10Speed(0);
     m_climbSubsystem.setClimb15Speed(0);
+    super.end(interrupted);
   }
 }
