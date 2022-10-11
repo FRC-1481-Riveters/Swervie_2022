@@ -16,13 +16,11 @@ public class ClimbZeroPosition extends CommandBase {
   @Override
   public void initialize() {
     m_climbSubsystem.zeroClimbSensors();
-    super.initialize();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    super.execute();
   }
 
   // Returns true when the command should end.
@@ -34,6 +32,5 @@ public class ClimbZeroPosition extends CommandBase {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    super.end(interrupted);
   }
 }

@@ -19,6 +19,8 @@ public class KickerCommand extends CommandBase {
         m_useSensor = useSensor;
         m_sensorBlocked = sensorBlocked;
         m_minTime = minTime;
+
+        addRequirements(m_shooterSubsystem);
     }
     
   // Called when the command is initially scheduled.
@@ -26,13 +28,11 @@ public class KickerCommand extends CommandBase {
   public void initialize() {
     m_startTime = System.currentTimeMillis();
     m_shooterSubsystem.setKickerSpeed(m_output);
-    super.initialize();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    super.execute();
   }
 
   // Returns true when the command should end.
@@ -62,8 +62,6 @@ public class KickerCommand extends CommandBase {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    //System.out.println(System.currentTimeMillis() + " kicker end");
     m_shooterSubsystem.setKickerSpeed(0);
-    super.end(interrupted);
   }
 }

@@ -16,8 +16,6 @@ public class Autoclimb10Command extends SequentialCommandGroup {
       m_climbSubsystem = subsystem;
       m_driveSubsystem = drivetrainSubsystem;
 
-      addRequirements(m_climbSubsystem);
-
       // 48500 = climb10 fully extended
       addCommands( 
           sequence( 
@@ -27,7 +25,7 @@ public class Autoclimb10Command extends SequentialCommandGroup {
                 new WaitCommand(0.2),
                 new Climb6PositionCommand( m_climbSubsystem, 27000 ),
                 new WaitCommand(0.2),
-                new Climb6PositionCommand( m_climbSubsystem, 24000 ),
+                new Climb6PositionCommand( m_climbSubsystem, 23000 ),
                 new WaitCommand(0.2),
                 new Climb6PositionCommand( m_climbSubsystem, 12000 )
               ),
@@ -39,7 +37,8 @@ public class Autoclimb10Command extends SequentialCommandGroup {
             new Climb6PositionCommand( m_climbSubsystem, -3400 ), // 6 retract full
             new WaitCommand(1.0),
             new Climb10PositionCommand(m_climbSubsystem, 44500 ), // 10 cinched
-            new Climb6PositionCommand(m_climbSubsystem, 25000 ),
+            new WaitCommand(0.05),
+            new Climb6PositionCommand(m_climbSubsystem, 28000 ),
             parallel(
               new Climb10PositionCommand(m_climbSubsystem, 22500 ),
               new Climb6PositionCommand(m_climbSubsystem, 51400 )
@@ -58,12 +57,25 @@ public class Autoclimb10Command extends SequentialCommandGroup {
         5) (serial) retract Climb10 to 21" from full down.  Note: we really only need to go 9" from full down if transitioning into 15 point climb
         */
     }
-    
+
+  @Override
+  public void initialize()
+  {
+     System.out.println("Autoclimb10Command initialize");
+     super.initialize();
+  }
+
+  @Override
+  public boolean isFinished() {
+    return(false);
+  }
+
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
     m_climbSubsystem.setClimb6Speed(0);
     m_climbSubsystem.setClimb10Speed(0);
     m_climbSubsystem.setClimb15Speed(0);
+    super.end(interrupted);
   }
 }

@@ -25,7 +25,6 @@ public class AutonMacroPlayback extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    super.initialize();
     System.out.format( " %.3f AutonMacroPlayback initialize " + m_filename + "%n", Timer.getMatchTime() );
     try 
     {
@@ -41,7 +40,6 @@ public class AutonMacroPlayback extends CommandBase {
   @Override
   public void execute() {
     m_playback.play();
-    super.execute();
   }
 
   // Returns true when the command should end.
@@ -54,7 +52,6 @@ public class AutonMacroPlayback extends CommandBase {
   @Override
   public void end(boolean interrupted) {
     System.out.format( " %.3f AutonMacroPlayback end%n", Timer.getMatchTime() );
-    super.end( interrupted );
   }
 
 }

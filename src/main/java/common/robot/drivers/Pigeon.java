@@ -8,7 +8,7 @@ public class Pigeon extends Gyroscope {
     private final Pigeon2 pigeon;
 
     public Pigeon(int canId) {
-        pigeon = new Pigeon2(canId);
+        pigeon = new Pigeon2(canId, "CANivore");
     }
 
     @Override

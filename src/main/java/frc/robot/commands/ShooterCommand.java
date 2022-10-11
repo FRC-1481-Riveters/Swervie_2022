@@ -20,13 +20,11 @@ public class ShooterCommand extends CommandBase {
   @Override
   public void initialize() {
     m_shooterSubsystem.setYeetSpeed(m_output);
-    super.initialize();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    super.execute();
   }
 
   // Returns true when the command should end.
@@ -39,6 +37,5 @@ public class ShooterCommand extends CommandBase {
   @Override
   public void end(boolean interrupted) {
     m_shooterSubsystem.setYeetSpeed(0);
-    super.end(interrupted);
   }
 }

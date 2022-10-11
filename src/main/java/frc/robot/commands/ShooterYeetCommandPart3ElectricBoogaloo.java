@@ -11,6 +11,7 @@ public class ShooterYeetCommandPart3ElectricBoogaloo extends CommandBase{
     private double m_shooterYeetSpeed;
     public ShooterYeetCommandPart3ElectricBoogaloo(ShooterSubsystem subsystem, double shooterIntendedSpeed) {
         m_shooterSubsystem = subsystem;
+//        addRequirements( m_shooterSubsystem );    
         m_shooterYeetSpeed = shooterIntendedSpeed;
       }
     

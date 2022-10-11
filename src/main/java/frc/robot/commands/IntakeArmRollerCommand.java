@@ -18,7 +18,6 @@ public class IntakeArmRollerCommand extends CommandBase {
     @Override
     public void initialize() {
         m_intakeSubsystem.setIntakeSpeed( m_speed );
-        super.initialize();
     }
 
     // Returns true when the command should end.
@@ -31,7 +30,6 @@ public class IntakeArmRollerCommand extends CommandBase {
     @Override
     public void end(boolean interrupted) {
         m_intakeSubsystem.setIntakeSpeed( 0.0 );
-        super.end(interrupted);
     }
 
 }
