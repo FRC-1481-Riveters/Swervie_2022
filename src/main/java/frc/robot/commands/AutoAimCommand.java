@@ -37,7 +37,6 @@ public class AutoAimCommand extends CommandBase {
   @Override
   public void end(boolean interrupted) {
     m_drivetrainSubsystem.autoAimAngle = 0;
-    super.end( interrupted );
   }
 
 }

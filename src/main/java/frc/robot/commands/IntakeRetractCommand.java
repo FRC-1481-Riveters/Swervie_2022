@@ -18,16 +18,9 @@ public class IntakeRetractCommand extends SequentialCommandGroup {
     addCommands(
         new IntakePositionCommand( m_intakeSubsystem, Constants.INTAKE_ARM_POSITION_IN ),
         new WaitCommand( 2.0 ),
-        new IntakePositionCommand( m_intakeSubsystem, Constants.INTAKE_ARM_POSITION_IN_FULL ),
-        new WaitCommand( 10.0 )
+        new IntakePositionCommand( m_intakeSubsystem, Constants.INTAKE_ARM_POSITION_IN_FULL )
     );
 
-  }
-
-  // Returns true when the command should end.
-  @Override
-  public boolean isFinished() {
-    return false;
   }
 
   @Override
