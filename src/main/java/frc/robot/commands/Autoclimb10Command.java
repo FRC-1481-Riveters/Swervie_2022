@@ -1,6 +1,5 @@
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.subsystems.ClimbSubsystem;
@@ -63,11 +62,6 @@ public class Autoclimb10Command extends SequentialCommandGroup {
   {
      System.out.println("Autoclimb10Command initialize");
      super.initialize();
-  }
-
-  @Override
-  public boolean isFinished() {
-    return(false);
   }
 
   // Called once the command ends or is interrupted.

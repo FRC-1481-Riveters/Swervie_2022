@@ -58,11 +58,6 @@ public class Autoclimb15Command extends SequentialCommandGroup {
       System.out.println("Autoclimb15Command initialize");
       super.initialize();
   }
-  
-  @Override
-  public boolean isFinished() {
-    return(false);
-  }
 
     // Called once the command ends or is interrupted.
   @Override
